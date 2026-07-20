@@ -1,0 +1,9 @@
+# Obsidian per-user editor config; memory/ opens as a vault without it
+.obsidian/
+
+# Generated template pack (regenerate with: npx repomix)
+chief-of-vibes-pack*.xml
+
+# Python bytecode
+__pycache__/
+*.pyc

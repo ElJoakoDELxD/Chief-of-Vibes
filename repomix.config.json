@@ -1,0 +1,20 @@
+{
+  "output": {
+    "style": "xml",
+    "filePath": "chief-of-vibes-pack.xml"
+  },
+  "include": [
+    "README.md",
+    "SYSTEM.md",
+    "CLAUDE.md",
+    "LICENSE",
+    ".gitignore",
+    ".claude/",
+    ".github/",
+    "tools/",
+    "repomix.config.json"
+  ],
+  "security": {
+    "enableSecurityCheck": true
+  }
+}

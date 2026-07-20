@@ -1,0 +1,24 @@
+# Rejects pull requests into main that touch files outside the template.
+# Agent memory and project output belong on agent branches, never on main.
+name: guard
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  template-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reject non-template paths
+        run: |
+          allow='^(SYSTEM\.md|CLAUDE\.md|README\.md|LICENSE|repomix\.config\.json|\.claude/|\.github/|tools/|\.gitignore)'
+          fail=0
+          for f in $(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}"); do
+            if ! echo "$f" | grep -qE "$allow"; then
+              echo "REJECT: $f is outside the template"
+              fail=1
+            fi
+          done
+          exit $fail
