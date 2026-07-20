@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.0.1.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.0.2.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -118,7 +118,7 @@ The public template repository is the canon: untouchable public property. Nobody
 
 Inside your copy, two tiers:
 
-- **`main` — the template mirror.** Read-only in operation; carries no agent and no memory. It changes only by a pull request you approve. The guard hook blocks all work on it.
+- **`main` — the template mirror.** Read-only in operation; carries no agent and no memory. It changes only by a pull request you approve. The guard hook blocks all work on it. For the hard guarantee, enable GitHub branch protection on main (require a pull request before merging): hooks and CI are rails; the server-side rule is the lock.
 - **The agent branch — the home.** Created at onboarding; carries `memory/` and `projects/`. Everything durable lands here.
 
 Chat surfaces (e.g. Claude Code web's `claude/*` branches) are disposable: work anywhere, but nothing is done until it is pushed to the agent branch — push before the session ends. `git branch --show-current` is ground truth; a document naming a different branch is stale.
@@ -162,7 +162,7 @@ Time and branch come from the anchor hook's injected values (fallback: run `tool
 
 **Session start:** read `memory/state.md` and `memory/backlog.md`; surface the highest-priority pending work, anything overdue, and what the last journal note left open.
 
-**On the blueprint, the system only listens.** A chat with no `memory/state.md` starts no agent. There are exactly two reasons to be here, and the greeting offers them — briefly, in the user's language, assuming they may not yet know what this is: **create your agent** (`.claude/skills/onboard/`), or **maintain the template** (changes land only through an authorized pull request). If agent branches exist, continuing one is offered first.
+**On the template, the system only listens.** A chat with no `memory/state.md` starts no agent. There are exactly two reasons to be here, and the greeting offers them — briefly, in the user's language, assuming they may not yet know what this is: **create your agent** (`.claude/skills/onboard/`), or **maintain the template** (changes land only through an authorized pull request). If agent branches exist, continuing one is offered first.
 
 **Session end:** write or update today's `memory/journal/` note (done · decided · lessons), update `memory/backlog.md`, commit, push to the agent branch. Work that exists only in the chat window does not exist. When a session nears its limits — context, time, attention — stop opening new work: land what is in flight, push, and leave the next step written in the journal.
 

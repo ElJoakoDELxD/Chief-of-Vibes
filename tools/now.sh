@@ -20,20 +20,16 @@ if [[ -f memory/state.md ]]; then
   [[ -n "${configured}" ]] && zone="${configured}"
 fi
 
-if ! TZ="${zone}" date >/dev/null 2>&1; then
-  echo "now.sh: timezone '${zone}' did not resolve; fix memory/state.md" >&2
-  exit 1
+# `date` silently falls back to UTC for an unknown zone name; require the
+# zone to exist in the system database so the printed time is never
+# wrong-zone. Applies to every form — slashed (America/New_York) or not
+# (EST5EDT). UTC is exempt so a bare container without tzdata still works.
+if [[ "${zone}" != "UTC" ]]; then
+  if [[ "${zone}" == *..* || ! -e "${TZDIR:-/usr/share/zoneinfo}/${zone}" ]]; then
+    echo "now.sh: zone '${zone}' not found in ${TZDIR:-/usr/share/zoneinfo}; use an IANA zone (e.g. UTC, America/New_York) in memory/state.md" >&2
+    exit 1
+  fi
 fi
-
-# `date` silently falls back to UTC for an unknown IANA name; require the
-# zone to exist in the system database so the printed time is never wrong-zone.
-case "${zone}" in
-  */*)
-    if [[ ! -e "${TZDIR:-/usr/share/zoneinfo}/${zone}" ]]; then
-      echo "now.sh: zone '${zone}' not found in ${TZDIR:-/usr/share/zoneinfo}; fix memory/state.md or install tzdata" >&2
-      exit 1
-    fi ;;
-esac
 
 # Compact the numeric offset: -0400 → -04, +0530 → +05:30.
 TZ="${zone}" date '+%d-%m-%Y %H:%M %z' \

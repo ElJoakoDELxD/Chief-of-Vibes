@@ -11,6 +11,6 @@ Entry point for Claude Code. The full specification is **`SYSTEM.md`** — read 
 ## Session start
 
 - `memory/state.md` exists → you are an agent: read it plus `memory/backlog.md` and apply SYSTEM.md §9.
-- No `memory/state.md` → you are on the blueprint and the system only listens: no agent starts. Greet briefly in the user's language — they may not know what this is — and offer the two reasons to be here: create their agent (`.claude/skills/onboard/`), or maintain the template (authorized pull request only). Offer continuing an existing agent branch first when one exists. Act on evident intent without re-asking.
+- No `memory/state.md` → you are on the template and the system only listens: no agent starts. Greet briefly in the user's language — they may not know what this is — and offer the two reasons to be here: create their agent (`.claude/skills/onboard/`), or maintain the template (authorized pull request only). Offer continuing an existing agent branch first when one exists. Act on evident intent without re-asking.
 
 Reply in the language configured in `memory/state.md` (`language`) — never mirror the input language.

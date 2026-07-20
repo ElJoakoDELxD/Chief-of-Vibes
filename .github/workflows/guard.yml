@@ -1,5 +1,9 @@
 # Rejects pull requests into main that touch files outside the template.
 # Agent memory and project output belong on agent branches, never on main.
+#
+# Self-protection limit: a pull request can edit this workflow itself, and the
+# edited copy is what runs on that pull request. This guard is a tripwire, not
+# a lock — the lock is branch protection on main plus the Principal's review.
 name: guard
 on:
   pull_request:
@@ -13,12 +17,12 @@ jobs:
           fetch-depth: 0
       - name: Reject non-template paths
         run: |
-          allow='^(SYSTEM\.md|CLAUDE\.md|README\.md|LICENSE|repomix\.config\.json|\.claude/|\.github/|tools/|\.gitignore)'
+          allow='^((SYSTEM|CLAUDE|README)\.md|LICENSE|repomix\.config\.json|\.gitignore)$|^(\.claude|\.github|tools)/'
           fail=0
-          for f in $(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}"); do
-            if ! echo "$f" | grep -qE "$allow"; then
+          while IFS= read -r -d '' f; do
+            if ! printf '%s' "$f" | grep -qE "$allow"; then
               echo "REJECT: $f is outside the template"
               fail=1
             fi
-          done
+          done < <(git diff -z --name-only "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}")
           exit $fail
