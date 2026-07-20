@@ -22,7 +22,7 @@ if [[ ! -f memory/state.md ]]; then
   # Agent branches: every remote head that is not main or a chat surface.
   candidates="$(git ls-remote --heads origin 2>/dev/null \
     | sed -E 's#.*refs/heads/##' \
-    | grep -vE '^(main|claude/|HEAD$)' \
+    | grep -vE '^(main$|claude/|HEAD$)' \
     | paste -sd ',' - | sed 's/,/, /g')" || true
   menu=" No agent lives here (no memory/state.md): the system only listens — start no agent. Greet briefly in the user's language, assuming they may not know what this is, and offer the two reasons to be here: create their agent (.claude/skills/onboard/) or maintain the template (authorized pull request only)."
   if [[ -n "${candidates}" ]]; then
