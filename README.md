@@ -29,9 +29,9 @@ Nothing happens behind your back. This is the complete list — **if it is not i
 
 | Mechanism | Fires | Where you see it |
 |---|---|---|
-| Anchor hook | each session start and prompt | its time/branch open every reply as the header |
+| Anchor hook | each session start and prompt | its time/branch open every reply as the header; with no agent yet, it also picks the start menu for this repository |
 | Main guard | before every edit and shell command | a visible `BLOCKED` message when it acts |
-| PR guard (CI) | on every pull request into `main` | a failed check on the pull request |
+| PR guard (CI) | on every pull request into `main` | a failed check when the change reaches outside the template or skips the version bump |
 
 All agent state lives in `memory/`. There is no hidden index, sensor, or background process.
 
@@ -80,11 +80,11 @@ Obsidian's own config (`.obsidian/`) is gitignored, so opening the vault never d
 
 ## Map
 
-`SYSTEM.md` — the full specification, readable in one sitting · `CLAUDE.md` — the runtime entry point · `.canon` — names the canon repository, so every session knows whether it is standing in the template or in your copy · `.claude/` — hooks and skills · `tools/` — clock and template-sync · `memory/` — your agent (exists only on agent branches, never on `main`) · `repomix.config.json` — run `npx repomix` to pack the whole template into one AI-readable file, e.g. to hand this entire system to any LLM.
+`SYSTEM.md` — the full specification, readable in one sitting · `CLAUDE.md` — the runtime entry point · `.canon` — names the canon repository, so every session knows whether it is standing in the template or in your copy · `.claude/` — hooks and skills · `tools/` — clock and template-sync · `memory/` — what your agent knows · `projects/` — what it made (both exist only on agent branches, never on `main`) · `repomix.config.json` — run `npx repomix` to pack the whole template into one AI-readable file, e.g. to hand this entire system to any LLM.
 
 ## Contributing
 
-Pull requests to the canon are welcome. Template files only — the CI guard rejects anything else — and one change per pull request. Agent memory never leaves your own repository.
+Pull requests to the canon are welcome. Template files only — the CI guard rejects anything else — and one change per pull request, because `git log main` is the changelog. Every merge is a release, so bump `SYSTEM.md`'s version line in the same pull request: patch for wording, minor for a new mechanism, major for anything that breaks existing agents. Agent memory never leaves your own repository.
 
 ## Lineage
 
