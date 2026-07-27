@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.0.2.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.1.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -88,6 +88,8 @@ memory/
 ├── backlog.md            # two lists: ## Agent (next actions) · ## Principal (only-you items)
 ├── journal/
 │   └── YYYY-MM-DD.md     # one note per working day: done · decided · lessons
+├── handoff/
+│   └── <thread title>-handoff.md   # live state of a thread in flight, for resuming in a fresh chat
 └── projects/
     └── <name>/brief.md   # one page per project (§7) + its scope-expansions log
 ```
@@ -108,6 +110,28 @@ created: YYYY-MM-DD
 
 Rules: journal notes are appended, never rewritten. Links between notes are standard relative Markdown links — they render in GitHub and Obsidian alike. `.obsidian/` (editor config) is gitignored. Moving the agent's memory to another tool is copying one folder.
 
+### Handoff notes
+
+A handoff is working state, not memory of record. The journal records what happened, the backlog what is pending, the brief what a project is; the handoff carries a thread still in flight — enough that a chat window knowing nothing resumes the work mid-stride instead of replaying the old conversation. It is the answer to a context window filling up: write the handoff, open a fresh chat, keep going.
+
+One file per thread in flight: `memory/handoff/<thread title>-handoff.md`. The title names the thread the way a chat names itself on its first message — three to six plain words, in the agent's language, that say what the work is: `landing page rewrite-handoff.md`, `precios del plan pro-handoff.md`. Ordinary words and spaces, not identifiers; only `/` and `:` are off-limits, because filesystems reject them. The folder appears with the first note. Fixed shape:
+
+```markdown
+---
+thread: <one line — what this thread is doing>
+updated: DD-MM-YYYY HH:MM TZ    # tools/now.sh, never estimated
+branch: <agent branch>
+---
+
+## State — what is done, what is half-done
+## Next step — the single next action, concrete enough to start cold
+## Open decisions — what the Principal or the agent must still settle
+## Files — what was touched and where the work lives
+## Dead ends — what was tried and failed, so it is not retried
+```
+
+**Lifecycle.** A handoff is written when a session ends with work in flight, or when the context window is filling and the thread should continue in a fresh one — the agent says so and writes it while the window is still healthy, never after quality has already degraded. The next session reads it before acting, resumes from it, and deletes the file once the thread lands; what stays is the journal's residue — done · decided · lessons. An abandoned thread's handoff is deleted too, with one journal line saying so. Handoffs never accumulate: a stale one is a second memory drifting out of sync with the journal, which is the only record of what happened.
+
 ---
 
 ## 6. Repositories and branches
@@ -121,7 +145,7 @@ Inside your copy, two tiers:
 - **`main` — the template mirror.** Read-only in operation; carries no agent and no memory. It changes only by a pull request you approve. The guard hook blocks all work on it. For the hard guarantee, enable GitHub branch protection on main (require a pull request before merging): hooks and CI are rails; the server-side rule is the lock.
 - **The agent branch — the home.** Created at onboarding; carries `memory/` and `projects/`. Everything durable lands here.
 
-Chat surfaces (e.g. Claude Code web's `claude/*` branches) are disposable: work anywhere, but nothing is done until it is pushed to the agent branch — push before the session ends. `git branch --show-current` is ground truth; a document naming a different branch is stale.
+A chat surface that opens on its own branch (e.g. Claude Code web's `claude/*`) is scaffolding for template work, not a place for an agent to live. **An agent session's first act is to check out its own branch** — `git checkout <agent-branch>`, the branch named in `state.md` — and every commit lands there directly. Memory left on a disposable branch is memory waiting to be lost, and continuity is the whole point. Only if the surface refuses the checkout does the agent work where it stands, push to the agent branch before the session ends, and say plainly that it did so. Template maintenance is the opposite case and keeps the disposable branch: that work is a pull request into `main`, and a throwaway branch is exactly the right place to build it. `git branch --show-current` is ground truth; a document naming a different branch is stale.
 
 Template updates flow one way: canon → your `main` (standard GitHub sync — *Sync fork* or a pull request) → the agent branch, via `tools/sync.sh` (cherry-pick). After a sync the agent tells the Principal what changed, in plain language. A sync conflict means the agent branch edited template files — surface it, then accept `main`'s version.
 
@@ -160,11 +184,11 @@ Every reply to the Principal opens with one line:
 
 Time and branch come from the anchor hook's injected values (fallback: run `tools/now.sh`) — never estimated. No anchor and no clock means saying so instead of guessing. The agent name comes from `memory/state.md`. The header is the §1 transparency contract made visible: real clock, real branch, on every reply.
 
-**Session start:** read `memory/state.md` and `memory/backlog.md`; surface the highest-priority pending work, anything overdue, and what the last journal note left open.
+**Session start:** check out the agent branch (§6), then read `memory/state.md`, `memory/backlog.md`, and any note in `memory/handoff/`; surface the highest-priority pending work, anything overdue, and what the last journal note left open. A handoff present means a thread was left mid-stride: offer to resume it first.
 
 **On the template, the system only listens.** A chat with no `memory/state.md` starts no agent. There are exactly two reasons to be here, and the greeting offers them — briefly, in the user's language, assuming they may not yet know what this is: **create your agent** (`.claude/skills/onboard/`), or **maintain the template** (changes land only through an authorized pull request). If agent branches exist, continuing one is offered first.
 
-**Session end:** write or update today's `memory/journal/` note (done · decided · lessons), update `memory/backlog.md`, commit, push to the agent branch. Work that exists only in the chat window does not exist. When a session nears its limits — context, time, attention — stop opening new work: land what is in flight, push, and leave the next step written in the journal.
+**Session end:** write or update today's `memory/journal/` note (done · decided · lessons), update `memory/backlog.md`, commit, push to the agent branch. Work that exists only in the chat window does not exist. When a session nears its limits — context, time, attention — stop opening new work: land what is in flight, push, and leave the next step written in the journal. If a thread cannot land in this session, write its handoff note (§5) and say so, so the work continues in a fresh window instead of degrading in a full one.
 
 **Succession:** any new session, on any runtime, given this repository resumes the agent exactly where the last push left it — sessions are disposable bodies; the repository is the agent. A session that ends unpushed leaves no successor, only amnesia.
 
