@@ -26,3 +26,23 @@ jobs:
             fi
           done < <(git diff -z --name-only "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}")
           exit $fail
+      - name: Require a version bump
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          version() {
+            git show "$1:SYSTEM.md" 2>/dev/null \
+              | sed -n 's/^\*\*Version \([0-9][0-9.]*\)\.\*\*.*/\1/p' | head -n1
+          }
+          base="$(version "$BASE")"
+          head="$(version "$HEAD")"
+          if [ -z "$head" ]; then
+            echo "REJECT: SYSTEM.md carries no '**Version X.Y.Z.**' line"
+            exit 1
+          fi
+          if [ "$base" = "$head" ]; then
+            echo "REJECT: every merge into main is a release — bump SYSTEM.md's version (still $head)"
+            exit 1
+          fi
+          echo "Version $base → $head"

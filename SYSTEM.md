@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.2.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.3.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -22,7 +22,7 @@ The transparency contract: **if it is not in this table, it does not happen.** N
 |---|---|---|
 | Anchor hook — injects real time + current branch, and with no agent present the start menu for this repository (§9) | at session start and before every reply | its values open every reply as the header (§9) |
 | Main guard — keeps `main` read-only | before every file edit or shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
-| PR guard (CI) — rejects non-template files into `main` | on every pull request into `main` | a failed check on the pull request |
+| PR guard (CI) — rejects non-template files into `main`, and changes that do not bump this file's version (§8) | on every pull request into `main` | a failed check on the pull request |
 
 Everything the agent knows or records lives in `memory/` — one folder, plain Markdown, readable without this system. Every side effect (commit, push, publish) is announced in chat as it happens.
 
@@ -91,8 +91,10 @@ memory/
 ├── handoff/
 │   └── <thread title>-handoff.md   # live state of a thread in flight, for resuming in a fresh chat
 └── projects/
-    └── <name>/brief.md   # one page per project (§7) + its scope-expansions log
+    └── <name>/brief.md   # what a project IS: one page (§7) + its scope-expansions log
 ```
+
+Two folders carry the word *projects* and they hold different things: `memory/projects/<name>/` is the thinking — the brief and its scope log, memory like everything else under `memory/`. The deliverables themselves live in a separate top-level `projects/<name>/` on the agent branch: drafts, code, assets, whatever the project ships. Memory is what the agent knows; `projects/` is what it made.
 
 `memory/state.md` frontmatter — all of it:
 
@@ -147,7 +149,7 @@ Inside your copy, two tiers:
 - **`main` — the template mirror.** Read-only in operation; carries no agent and no memory. It changes only by a pull request you approve. The guard hook blocks all work on it. For the hard guarantee, enable GitHub branch protection on main (require a pull request before merging): hooks and CI are rails; the server-side rule is the lock.
 - **The agent branch — the home.** Created at onboarding; carries `memory/` and `projects/`. Everything durable lands here.
 
-A chat surface that opens on its own branch (e.g. Claude Code web's `claude/*`) is scaffolding for template work, not a place for an agent to live. **An agent session's first act is to check out its own branch** — `git checkout <agent-branch>`, the branch named in `state.md` — and every commit lands there directly. Memory left on a disposable branch is memory waiting to be lost, and continuity is the whole point. Only if the surface refuses the checkout does the agent work where it stands, push to the agent branch before the session ends, and say plainly that it did so. Template maintenance is the opposite case and keeps the disposable branch: that work is a pull request into `main`, and a throwaway branch is exactly the right place to build it. `git branch --show-current` is ground truth; a document naming a different branch is stale.
+A chat surface that opens on its own branch (e.g. Claude Code web's `claude/*`) is scaffolding for template work, not a place for an agent to live. **An agent session's first act is to check out its own branch** — `git checkout <agent-branch>`, the branch named in `state.md` — and every commit lands there directly. Memory left on a disposable branch is memory waiting to be lost, and continuity is the whole point. Only if the surface refuses the checkout does the agent work where it stands, push to the agent branch before the session ends, and say plainly that it did so. Template maintenance is the opposite case and keeps the disposable branch: that work is a pull request into `main`, and a throwaway branch is exactly the right place to build it — deleted once its pull request lands, since the branch list is a list of live work, not a graveyard. `git branch --show-current` is ground truth; a document naming a different branch is stale.
 
 Template updates flow one way: canon → your `main` (standard GitHub sync — *Sync fork* or a pull request) → the agent branch, via `tools/sync.sh` (cherry-pick). After a sync the agent tells the Principal what changed, in plain language. A sync conflict means the agent branch edited template files — surface it, then accept `main`'s version.
 
@@ -159,7 +161,7 @@ All output is organized as projects with one lifecycle:
 
 1. **Propose.** Either side may propose, any time; evidence, not enthusiasm.
 2. **Brief — the approval gate.** One page in `memory/projects/<name>/brief.md`: what it is, who it serves, what the system produces, what the Principal must do, the external-validation window, and the kill condition. No project starts without an approved brief.
-3. **Build & ship.** Published means findable: a real, crawlable host. If an ordinary web search cannot surface the piece after a fair indexing window, it is not published yet — an anonymous file-drop URL is not a launch.
+3. **Build & ship.** The work itself lives in `projects/<name>/` on the agent branch, next to the memory that plans it (§5). Published means findable: a real, crawlable host. If an ordinary web search cannot surface the piece after a fair indexing window, it is not published yet — an anonymous file-drop URL is not a launch.
 4. **Measure.** Only unsolicited external signals count: a reader, a user, a payment, a stranger's issue. Internal metrics — drafts, versions, dashboards — are cost, not progress. No signal within the brief's window → the Principal decides: scale, pivot, or kill. A project that neither grows nor closes is consuming attention without return.
 
 **One focus.** One project in construction at a time. Adding scope instead of advancing is recorded in the brief's **scope-expansions log** — a visible, counted act, never a silent slide. The log growing while the ship date doesn't is the signal to cut.
@@ -173,6 +175,10 @@ All output is organized as projects with one lifecycle:
 ## 8. Extending
 
 New capability enters as a skill: one folder under `.claude/skills/<name>/`, one `SKILL.md` whose description states exactly when it triggers. The ethos travels with the skill: a `SKILL.md` opens by naming the §3 rules it rides, so a skill is never read detached from the posture that governs it. Every skill records its provenance — what it is based on and where that came from. Skills are template files: adding one to `main` requires Principal approval, and a skill must have produced at least one real result before it is added.
+
+**Three documents, fixed roles.** `SYSTEM.md` is the specification, `CLAUDE.md` the runtime entry point carrying only what must never be missed, `README.md` the public description of what the system does. A change to any mechanism updates all three in the same commit — the §1 transparency table is a promise, and a table that lags the machinery is a broken one.
+
+**Every merge into `main` is a release.** It bumps this file's version on the way in: patch for wording and fixes, minor for a new mechanism or rule, major for a change that breaks existing agents. The CI guard enforces the bump; `git log main` is the changelog, which is why one pull request carries one change.
 
 ---
 
