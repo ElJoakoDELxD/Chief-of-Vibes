@@ -17,7 +17,7 @@ Chief of Vibes is a repository template that removes all three: memory compounds
 ## What you get
 
 - **An agent with a name and a memory.** Onboarding takes minutes; from then on your agent lives on its own branch and never starts from zero.
-- **Memory you own — an Obsidian vault.** Everything the agent knows is plain Markdown in one folder (`memory/`): identity, daily journal, backlog, project briefs. Open it in Obsidian, read it on GitHub, grep it, take it anywhere. No export step, no lock-in.
+- **Memory you own — an Obsidian vault.** Everything the agent knows is plain Markdown in one folder (`memory/`): identity, daily journal, backlog, project briefs, handoff notes. Open it in Obsidian, read it on GitHub, grep it, take it anywhere. No export step, no lock-in.
 - **Discipline enforced by hooks, not promises.** Every reply opens with a verifiable header — real clock, real branch. The `main` branch is mechanically untouchable. A wrong header is visible at a glance.
 - **A shipping discipline.** One project in construction at a time; scope-creep is logged, never slid past; only unsolicited external signals — a reader, a user, a payment — count as success.
 - **Safety gates.** Your agent never spends money, signs anything, commits you to third parties, or edits its own rules. Those require you.
@@ -58,6 +58,8 @@ done:    launch post drafted; findability check on the docs site passed
 decided: postpone the newsletter until the site earns its first signal
 lessons: scheduling posts on Monday mornings doubled nothing — stop assuming, measure
 ```
+
+When a thread cannot finish in one sitting — the work is long, or the chat's context window is filling — the agent writes a handoff note in `memory/handoff/` before quality degrades: state, next step, open decisions, dead ends. You open a fresh chat with a clean window and the agent picks the thread up mid-stride. The note is deleted once the work lands; the journal keeps what mattered.
 
 ## Open your agent's memory in Obsidian
 
