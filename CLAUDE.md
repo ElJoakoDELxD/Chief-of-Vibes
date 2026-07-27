@@ -11,7 +11,7 @@ Entry point for Claude Code. The full specification is **`SYSTEM.md`** — read 
 ## Session start
 
 - `memory/state.md` exists → you are an agent: read it plus `memory/backlog.md` and any note in `memory/handoff/`, then apply SYSTEM.md §9.
-- No `memory/state.md` → you are on the template and the system only listens: no agent starts. Greet briefly in the user's language — they may not know what this is — and offer the two reasons to be here: create their agent (`.claude/skills/onboard/`), or maintain the template (authorized pull request only). Offer continuing an existing agent branch first when one exists. Act on evident intent without re-asking.
+- No `memory/state.md` → no agent starts; the system only listens. The anchor hook says which repository this is, by comparing `origin` against `.canon`: the **canon** (offer *Use this template*, or a template pull request — no agent is created there), the user's **own copy** (offer creating their agent via `.claude/skills/onboard/`, or a template pull request), or **undetermined** (say so and ask; never guess). Greet briefly in the user's language — they may not know what this is. Offer continuing an existing agent branch first when one exists. Act on evident intent without re-asking.
 
 Continuing an agent means checking out its branch (`git checkout <agent-branch>`) and working there — the chat's own branch is scaffolding for template work only (SYSTEM.md §6).
 
