@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.1.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.2.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -20,7 +20,7 @@ The transparency contract: **if it is not in this table, it does not happen.** N
 
 | Mechanism | Fires | Where you see it |
 |---|---|---|
-| Anchor hook — injects real time + current branch | at session start and before every reply | its values open every reply as the header (§9) |
+| Anchor hook — injects real time + current branch, and with no agent present the start menu for this repository (§9) | at session start and before every reply | its values open every reply as the header (§9) |
 | Main guard — keeps `main` read-only | before every file edit or shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
 | PR guard (CI) — rejects non-template files into `main` | on every pull request into `main` | a failed check on the pull request |
 
@@ -140,6 +140,8 @@ The public template repository is the canon: untouchable public property. Nobody
 
 **Your first act — and the system's first proof of utility — is making your own copy:** use GitHub's *Use this template* (or fork) to create a repository you own. Agents are generated, and all work happens, in your copy — never in the canon.
 
+**Which repository am I in?** Not a judgment call: `.canon` at the repository root names the canon as `owner/repo`, and every session compares it against `origin`, matched on the trailing owner/repo so ssh, https, and proxied remotes all answer alike. Origin matches → this is the canon: no agent is created here, and the only things on offer are making a copy or contributing a template change. Origin differs → this is somebody's copy: the place where agents live and work. No `.canon` or no `origin` → the question is unanswered, and the session says so and asks rather than assuming; a wrong guess puts an agent's memory in the wrong repository. Copies inherit `.canon` unchanged, which keeps the answer stable through every later template sync — editing it is how a hard fork declares itself a new canon.
+
 Inside your copy, two tiers:
 
 - **`main` — the template mirror.** Read-only in operation; carries no agent and no memory. It changes only by a pull request you approve. The guard hook blocks all work on it. For the hard guarantee, enable GitHub branch protection on main (require a pull request before merging): hooks and CI are rails; the server-side rule is the lock.
@@ -186,7 +188,11 @@ Time and branch come from the anchor hook's injected values (fallback: run `tool
 
 **Session start:** check out the agent branch (§6), then read `memory/state.md`, `memory/backlog.md`, and any note in `memory/handoff/`; surface the highest-priority pending work, anything overdue, and what the last journal note left open. A handoff present means a thread was left mid-stride: offer to resume it first.
 
-**On the template, the system only listens.** A chat with no `memory/state.md` starts no agent. There are exactly two reasons to be here, and the greeting offers them — briefly, in the user's language, assuming they may not yet know what this is: **create your agent** (`.claude/skills/onboard/`), or **maintain the template** (changes land only through an authorized pull request). If agent branches exist, continuing one is offered first.
+**With no agent, the system only listens.** A chat with no `memory/state.md` starts no agent. The greeting is brief, in the user's language, assuming they may not yet know what this is — and what it offers depends on which repository the session is standing in (§6):
+
+- **On the canon** (origin matches `.canon`): no agent is created here and no work lands here. Offer the two legitimate reasons to be on the canon — **make your own copy** (*Use this template*), or **contribute a template change** through a pull request.
+- **On a copy** (origin does not match `.canon`): this is where the user's agent belongs. Offer **create your agent** (`.claude/skills/onboard/`), or **maintain the template** through a pull request into this copy's `main`. If agent branches exist, continuing one is offered first.
+- **Undetermined** (no `.canon`, or no `origin`): say so and ask which repository this is before creating anything.
 
 **Session end:** write or update today's `memory/journal/` note (done · decided · lessons), update `memory/backlog.md`, commit, push to the agent branch. Work that exists only in the chat window does not exist. When a session nears its limits — context, time, attention — stop opening new work: land what is in flight, push, and leave the next step written in the journal. If a thread cannot land in this session, write its handoff note (§5) and say so, so the work continues in a fresh window instead of degrading in a full one.
 

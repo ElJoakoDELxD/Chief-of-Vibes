@@ -40,7 +40,7 @@ All agent state lives in `memory/`. There is no hidden index, sensor, or backgro
 Requirements: git, bash, and python3 (the hooks use them); Claude Code with any Claude subscription.
 
 1. Create your own copy: **Use this template** (or fork) on [the canon repository](https://github.com/ElJoakoDELxD/Chief-of-Vibes) → a repository you own. The canon is untouchable public property — your copy is your workshop, and making it is the system's first proof of utility.
-2. Open your copy in Claude Code on `main`. You will be greeted with a menu — say **"onboard my agent"**. Name it, pick your language and timezone, state your goal. Minutes.
+2. Open your copy in Claude Code on `main`. The session compares `origin` against `.canon`, sees it is standing in your copy rather than the template, and greets you with the menu that offers onboarding — say **"onboard my agent"**. Name it, pick your language and timezone, state your goal. Minutes.
 3. Work. Your agent lives on its own branch from then on; open `memory/` in Obsidian whenever you want to read its mind.
 
 ## What a day looks like
@@ -80,7 +80,7 @@ Obsidian's own config (`.obsidian/`) is gitignored, so opening the vault never d
 
 ## Map
 
-`SYSTEM.md` — the full specification, readable in one sitting · `CLAUDE.md` — the runtime entry point · `.claude/` — hooks and skills · `tools/` — clock and template-sync · `memory/` — your agent (exists only on agent branches, never on `main`) · `repomix.config.json` — run `npx repomix` to pack the whole template into one AI-readable file, e.g. to hand this entire system to any LLM.
+`SYSTEM.md` — the full specification, readable in one sitting · `CLAUDE.md` — the runtime entry point · `.canon` — names the canon repository, so every session knows whether it is standing in the template or in your copy · `.claude/` — hooks and skills · `tools/` — clock and template-sync · `memory/` — your agent (exists only on agent branches, never on `main`) · `repomix.config.json` — run `npx repomix` to pack the whole template into one AI-readable file, e.g. to hand this entire system to any LLM.
 
 ## Contributing
 

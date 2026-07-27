@@ -9,6 +9,7 @@
     "CLAUDE.md",
     "LICENSE",
     ".gitignore",
+    ".canon",
     ".claude/",
     ".github/",
     "tools/",

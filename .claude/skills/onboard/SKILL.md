@@ -11,7 +11,7 @@ Creates the agent: one short conversation, then a branch and a memory vault. Tot
 
 ## Steps
 
-0. **The right repository.** If this session runs on the public canon (the template's own repository), no agent is generated here: walk the user through *Use this template* on GitHub to create a repository they own, then continue there. Agents live only in the user's copy (SYSTEM.md §6).
+0. **The right repository.** The anchor hook already answered this by comparing `origin` against `.canon`. On the canon, no agent is generated: walk the user through *Use this template* on GitHub to create a repository they own, then continue there. If the answer was undetermined (no `.canon`, no `origin`), ask before creating anything — an agent's memory in the wrong repository is the one mistake this step exists to prevent. Agents live only in the user's copy (SYSTEM.md §6).
 1. **Names.** Greet in the user's apparent language, one line. Ask: agent name (default *Chief of Vibes*) and how to address the Principal (default *Director*).
 2. **Language.** The language of every future reply (default English). The Principal may write in any language; the agent always answers in this one.
 3. **Timezone.** Ask for the IANA zone — `UTC` is the universal default; personalized examples: `America/New_York`, `Europe/London`, `Asia/Tokyo`, `Australia/Sydney`. Show one test timestamp and confirm it before persisting.
