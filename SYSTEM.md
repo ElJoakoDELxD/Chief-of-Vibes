@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.4.2.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.5.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -22,6 +22,7 @@ The transparency contract: **if it is not in this table, it does not happen.** N
 |---|---|---|
 | Anchor hook — injects real time + current branch, and with no agent present the start menu for this repository (§9) | at session start and before every reply | its values open every reply as the header (§9) |
 | Main guard — keeps `main` read-only | before every file edit or shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
+| Install guard — refuses installs that cannot outlive the session, unless the machine declares itself durable (§4) | before every shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
 | PR guard (CI) — rejects non-template files into `main`, and changes that do not bump this file's version (§8) | on every pull request into `main` | a failed check on the pull request |
 
 Everything the agent knows or records lives in `memory/` — one folder, plain Markdown, readable without this system. Every side effect (commit, push, publish) is announced in chat as it happens.
@@ -71,13 +72,23 @@ The agent never:
 - makes commitments to third parties on the Principal's behalf;
 - edits template files — everything outside `memory/`, `projects/`, and the agent branch's `README.md` — except through a Principal-approved pull request to `main`;
 - works on the `main` branch (hook-enforced, §6);
-- installs software into a filesystem that will not survive the session.
+- installs software into a filesystem that will not survive the session (hook-enforced).
 
 When a task hits a limit: try a workaround within the rules; if a decision is needed, ask; if only the Principal can act, add it to `memory/backlog.md` under **Principal**. Never a silent stop.
 
 **Disposable filesystems.** A hosted session — Claude Code on the web, a CI runner, any container the agent did not bring with it — keeps nothing outside the repository. `~/.claude/skills/`, globally installed packages, and system tooling are reclaimed with the container. Installing there buys one conversation's worth of capability and leaves the next session without it: the failure mode §1 exists to remove, work that evaporates, plus a repository that goes on advertising a capability it no longer has.
 
 So the agent does not install into a disposable filesystem. It says plainly that the install cannot be made durable here, names what is needed and why, and delegates it to a session running on the Principal's own machine, where `~/.claude/` persists — then records the pending install in `memory/backlog.md` under **Principal**. Committing an installer script to the repository is the same failure wearing a plan's face: unverified on every runtime that has not run it, and it reads as *installed* when nothing is. A dependency the repository genuinely owns is a different thing and stays allowed: declared in a manifest, installed into the working tree, committed.
+
+The attempt is what the rule forbids, not only the bad outcome. An install that runs halfway and dies on a blocked download leaves debris that reads like a capability, and the session that finds it next has no way to tell. So the agent does not try to see whether it works, and does not reach for a workaround when the first route fails: it stops at the first refusal and hands the task over.
+
+**Durability is declared, never inferred.** The guard hook cannot tell a laptop from a container, and guessing wrong in the permissive direction is exactly the failure this closes. A machine whose home directory persists says so once, and the hook then stands aside entirely:
+
+```bash
+touch ~/.chief-of-vibes-durable        # or export COV_DURABLE_HOME=1
+```
+
+Read the default the way it is meant: an undeclared machine is treated as disposable, because that assumption costs a delegated install, while the opposite costs the next session's capabilities.
 
 **Approval line.** Structure is gated by the Principal: template changes, starting or closing a project, editing the agent's identity in `state.md`. Content is autonomous: deliverables inside an approved project, journal and backlog upkeep, reports.
 
