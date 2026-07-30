@@ -32,6 +32,7 @@ Nothing happens behind your back. This is the complete list — **if it is not i
 | Mechanism | Fires | Where you see it |
 |---|---|---|
 | Anchor hook | each session start and prompt | its time/branch open every reply as the header; with no agent yet, it also picks the start menu for this repository |
+| Drift check | each session start, in your copy only | your agent says so when your template is older than the canon's, and offers the sync before it works |
 | Main guard | before every edit and shell command | a visible `BLOCKED` message when it acts |
 | Install guard | before every shell command | a visible `BLOCKED` message when an install would not outlive the session |
 | PR guard (CI) | on every pull request into `main` | a failed check when the change reaches outside the template or skips the version bump |

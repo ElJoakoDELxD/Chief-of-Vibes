@@ -5,6 +5,11 @@
 # agent memory it also injects the start menu — which menu depends on whether
 # this repository is the canon named in .canon or a copy of it.
 #
+# At session start it additionally compares this copy's SYSTEM.md version
+# against the canon's and reports drift. One network call, SessionStart only,
+# and it reports itself unavailable rather than guessing when the canon cannot
+# be reached.
+#
 # Usage:  anchor.sh <SessionStart|UserPromptSubmit>
 # Output: hook JSON with `additionalContext` on stdout.
 
@@ -52,8 +57,40 @@ if [[ ! -f memory/state.md ]]; then
   menu="${menu} Act on evident intent without re-asking."
 fi
 
+# Template drift, at session start only (§6). A copy running an older spec than
+# the canon is an agent obeying rules that have already been superseded, and
+# the rails it is running are the old ones too — the failure is invisible
+# precisely because everything looks normal.
+#
+# One network call, at SessionStart and never on a prompt. On any failure the
+# check reports itself unavailable rather than claiming parity: §3 forbids
+# fabricating a reading, and a silent "probably fine" is exactly that.
+drift=""
+if [[ "${event}" == "SessionStart" ]]; then
+  canon_slug="$(head -n1 .canon 2>/dev/null | tr -d '[:space:]' | sed -E 's#\.git$##; s#^/+##; s#/+$##')" || true
+  origin_url="$(git remote get-url origin 2>/dev/null | tr '[:upper:]' '[:lower:]' \
+    | sed -E 's#^[a-z+]+://##; s#^[^/@]*@##; s#^[^/:]*[:/]##; s#\.git$##; s#/+$##')" || true
+
+  # The canon cannot drift from itself.
+  if [[ -n "${canon_slug}" && "/${origin_url}" != *"/$(printf '%s' "${canon_slug}" | tr '[:upper:]' '[:lower:]')" ]]; then
+    version_of() { sed -n 's/^\*\*Version \([0-9][0-9.]*\)\.\*\*.*/\1/p' | head -n1; }
+    here_version="$(version_of < SYSTEM.md 2>/dev/null)" || true
+
+    canon_version=""
+    if timeout 20 git fetch --quiet "https://github.com/${canon_slug}" HEAD 2>/dev/null; then
+      canon_version="$(git show FETCH_HEAD:SYSTEM.md 2>/dev/null | version_of)" || true
+    fi
+
+    if [[ -z "${canon_version}" ]]; then
+      drift=" Template drift check: UNAVAILABLE (could not read the canon's SYSTEM.md; this copy is at ${here_version:-unknown}). Say the check did not run rather than assuming this copy is current."
+    elif [[ "${canon_version}" != "${here_version}" ]]; then
+      drift=" Template drift: this copy is at ${here_version:-unknown} and the canon is at ${canon_version}. Rules and hooks here are the older ones, so a rule written upstream is not in force in this session. Before substantive work, tell the Principal and offer to sync (SYSTEM.md §6): a pull request bringing the canon's template into this copy's main, then tools/sync.sh onto the agent branch."
+    fi
+  fi
+fi
+
 HOOK_EVENT="${event}" \
-HOOK_CONTEXT="Anchors (hook-measured): time=${timestamp} branch=${branch}. Open the reply with the header built from these values. Never work on main.${menu}" \
+HOOK_CONTEXT="Anchors (hook-measured): time=${timestamp} branch=${branch}. Open the reply with the header built from these values. Never work on main.${menu}${drift}" \
 python3 - <<'PY'
 import json
 import os
