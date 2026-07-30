@@ -102,6 +102,10 @@ Chief of Vibes absorbs articulations from the open source it stands on; each lin
 - [microsoft/markitdown](https://github.com/microsoft/markitdown) — ingest documents, don't guess them.
 - [yamadashy/repomix](https://github.com/yamadashy/repomix) — the single-file pack of the template.
 
+## Contributing
+
+To *use* the system, press **Use this template** and work in your copy. To change the template itself, this repository takes reviewed pull requests: what counts as a template file, how the version bump works, what the guards check, and a worked example of a release are all in [`CONTRIBUTING.md`](CONTRIBUTING.md). Issues are welcome too, and cheaper — the useful ones name where the system did the wrong thing and which rule you expected to stop it.
+
 ## License
 
 MIT — see `LICENSE`. Your agent's memory and everything it produces are yours.
