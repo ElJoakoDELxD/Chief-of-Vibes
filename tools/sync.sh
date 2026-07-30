@@ -1,16 +1,24 @@
 #!/usr/bin/env bash
 #
-# Brings template updates from origin/main into the current agent branch by
-# cherry-picking the main commits not yet applied here. Safe to re-run:
-# already-absorbed patches are excluded via `git log --cherry-pick`.
+# Brings the template from `main` into the current agent branch by merging it.
 #
-# On conflict the script stops with instructions. A conflict means this
-# branch edited template files; resolve by accepting main's version, then
-# `git cherry-pick --continue` (or `--abort` to roll back).
+# Merge rather than cherry-pick, on purpose. A cherry-pick copies main commit by
+# commit, so the agent branch is only as current as whoever remembered to run
+# this, and every sync re-raises the same conflicts. A merge makes the agent
+# branch *be* main plus `memory/` and `projects/`, and git remembers each
+# resolution through the merge base, so a conflict settled once stays settled.
+#
+# Conflicts resolve themselves, because the rule covering them has no exception
+# worth a prompt (SYSTEM.md §4, §6): template files take main's version, and the
+# agent branch's own README.md keeps the agent's. Both outcomes are printed — an
+# override the Principal never hears about is the kind of silence this system
+# exists to remove. Anything the rule does not cover stops the script.
+#
+# Safe to re-run: with nothing new on main it does nothing and says so.
 #
 # Usage:  bash tools/sync.sh
 
-set -euo pipefail
+set -uo pipefail
 
 branch="$(git rev-parse --abbrev-ref HEAD)"
 if [[ "${branch}" == "main" ]]; then
@@ -18,28 +26,66 @@ if [[ "${branch}" == "main" ]]; then
   exit 1
 fi
 
-git fetch origin main
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  echo "sync.sh: working tree has uncommitted changes; commit or stash them first." >&2
+  exit 1
+fi
 
-commits="$(git log --cherry-pick HEAD...origin/main --right-only --reverse --no-merges --format='%H')"
-if [[ -z "${commits}" ]]; then
+git fetch origin main || { echo "sync.sh: could not fetch origin/main." >&2; exit 1; }
+
+if git merge-base --is-ancestor origin/main HEAD; then
   echo "Template up to date."
   exit 0
 fi
 
-count="$(wc -l <<<"${commits}" | tr -d ' ')"
-echo "Applying ${count} template commit(s) from main:"
-git log --cherry-pick HEAD...origin/main --right-only --reverse --no-merges --format='  %h %s'
+echo "Merging template changes from main:"
+git log --oneline --no-merges HEAD..origin/main | sed 's/^/  /'
 
-while IFS= read -r commit; do
-  if ! git cherry-pick -x "${commit}"; then
-    {
-      echo ""
-      echo "Conflict at ${commit}: this branch has local template edits."
-      echo "Accept main's version, then:  git cherry-pick --continue"
-      echo "To roll back the sync:        git cherry-pick --abort"
-    } >&2
-    exit 1
+# --no-ff always, even when the branch could fast-forward. Every sync then leaves
+# exactly one merge commit on this branch's first-parent line, which is what makes
+# `git log --first-parent` show the agent's own history and none of main's. A
+# fast-forward would splice main's commits straight onto that line and the agent's
+# log would be unreadable from then on.
+if git merge --no-ff --no-edit origin/main; then
+  echo "Done. Explain to the Principal what changed."
+  exit 0
+fi
+
+# Conflicts: apply the rule rather than asking.
+mapfile -t conflicted < <(git diff --name-only --diff-filter=U)
+took_theirs=()
+kept_ours=()
+
+for f in "${conflicted[@]}"; do
+  if [[ "${f}" == "README.md" ]]; then
+    git checkout --ours -- "${f}" && git add -- "${f}" && kept_ours+=("${f}")
+  else
+    git checkout --theirs -- "${f}" && git add -- "${f}" && took_theirs+=("${f}")
   fi
-done <<<"${commits}"
+done
 
-echo "Done: ${count} commit(s) applied. Explain to the Principal what changed."
+if git diff --name-only --diff-filter=U | grep -q .; then
+  {
+    echo ""
+    echo "sync.sh: conflicts remain that the rule does not cover:"
+    git diff --name-only --diff-filter=U | sed 's/^/  /'
+    echo "Resolve them, then: git commit"
+  } >&2
+  exit 1
+fi
+
+git commit --no-edit >/dev/null || { echo "sync.sh: merge commit failed." >&2; exit 1; }
+
+echo ""
+echo "Conflicts resolved by the rule (SYSTEM.md §4, §6):"
+if [[ ${#took_theirs[@]} -gt 0 ]]; then
+  echo "  took main's version — this branch had edited template files it does not own:"
+  printf '    %s\n' "${took_theirs[@]}"
+  echo "  Tell the Principal those local edits are gone."
+fi
+if [[ ${#kept_ours[@]} -gt 0 ]]; then
+  echo "  kept this branch's version — the agent's own file:"
+  printf '    %s\n' "${kept_ours[@]}"
+fi
+echo ""
+echo "Done. Explain to the Principal what changed."
