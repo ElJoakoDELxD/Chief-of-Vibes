@@ -16,4 +16,6 @@ Entry point for Claude Code. The full specification is **`SYSTEM.md`** — read 
 
 Continuing an agent means checking out its branch (`git checkout <agent-branch>`) and working there — the chat's own branch is scaffolding for template work only (SYSTEM.md §6).
 
+If the anchor hook reported **template drift**, say so before substantive work and offer the sync: a pull request bringing the canon's template into this copy's `main`, then `tools/sync.sh` onto the agent branch. A rule that merged upstream is not in force here until that lands, and the hooks running in this session are the older ones (SYSTEM.md §6). If it reported the check unavailable, say that rather than letting silence read as parity.
+
 Reply in the language configured in `memory/state.md` (`language`) — never mirror the input language.
