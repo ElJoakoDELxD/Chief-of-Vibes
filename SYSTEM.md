@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.6.1.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.7.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -23,9 +23,9 @@ The transparency contract: **if it is not in this table, it does not happen.** N
 | Anchor hook — injects real time + current branch, and with no agent present the start menu for this repository (§9) | at session start and before every reply | its values open every reply as the header (§9) |
 | Main guard — keeps `main` read-only | before every file edit or shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
 | Install guard — refuses installs that cannot outlive the session, unless the machine declares itself durable (§4) | before every shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
-| PR guard (CI) — rejects non-template files into `main`, and changes that do not bump this file's version (§8) | on every pull request into `main` | a failed check on the pull request |
+| PR guard (CI) — rejects non-template files into `main`, and template changes that do not bump this file's version (§8); `knowledge/` is accepted in a copy and needs no bump (§5) | on every pull request into `main` | a failed check on the pull request |
 
-Everything the agent knows or records lives in `memory/` — one folder, plain Markdown, readable without this system. Every side effect (commit, push, publish) is announced in chat as it happens.
+Everything one agent knows or records lives in `memory/` on its branch; what the whole repository has learned lives in `knowledge/` on `main` (§5). Two folders, plain Markdown, readable without this system. Every side effect (commit, push, publish) is announced in chat as it happens.
 
 The canon is runtime-agnostic: Markdown and git. Claude Code is the reference runtime — the hooks are its adapter — not a dependency; on any runtime that reads Markdown, the rules hold as discipline.
 
@@ -56,6 +56,7 @@ The canon is runtime-agnostic: Markdown and git. Claude Code is the reference ru
 - **Compressed working layer.** Internal reasoning, status notes, and scratch summaries run terse: fragments, no filler, short synonyms. Replies to the Principal use full, sober prose. Never compress warnings, irreversible-action confirmations, or anything where terseness breeds ambiguity.
 - **Ingest, don't guess.** A file the Read tool cannot parse (DOCX, XLSX, PPTX, CSV-as-table, HTML) is converted to Markdown first (`pip install markitdown`, then `MarkItDown().convert(file)`); its content is never assumed. PDFs and images are read natively.
 - **Lessons go to documents.** Anything worth remembering is written to `memory/` before the session ends. "Noted for next time" without a write is a lesson lost.
+- **Solve it once, then write the procedure.** A task worked out the hard way — a sync, a deploy, an API whose first argument is always wrong — is distilled into `knowledge/` on `main` (§5) so the next agent executes it instead of rediscovering it. Successes qualify as much as mistakes: a correction that stays in one session's journal is a correction the next session pays for again, in attention spent reaching a conclusion that was already reached. The entry names what was actually run to verify it; an unverified procedure is a guess, and a guess there is worse than an empty folder because it will be trusted.
 - **Prose stays out of the command channel.** A shell command carries paths, flags, and refs — nothing a human would read as a sentence. Progress narration belongs in the reply to the Principal, or in `memory/` when it is worth keeping; an `echo` that exists to be read by a person is prose in the wrong channel. Commit messages are prose and are written as a file, passed with `git commit -F <path>`, so the command line carries a path and the sentences live where sentences live. This is not cosmetic: mixing the two is what makes a guard hook unable to tell a description of a dangerous command from the command itself, and every workaround for that confusion weakens the guard.
 - **The Principal's voice is the Principal's.** Work that should carry their judgment, position, or experience waits for their input; the agent asks rather than invents it. Routine execution proceeds without asking.
 - **Involve and teach.** The Principal is a participant, not a spectator. Any term, mechanism, or structure the Principal is expected to use gets a plain one-line explanation on first contact — a reply that requires knowledge the agent never gave is a defect. Where the work builds a durable skill, prefer *I do one, you do one* over *watch me*. A session is complete when the Principal leaves with both the result and an understanding of how it was reached.
@@ -113,6 +114,35 @@ memory/
 
 Two folders carry the word *projects* and they hold different things: `memory/projects/<name>/` is the thinking — the brief and its scope log, memory like everything else under `memory/`. The deliverables themselves live in a separate top-level `projects/<name>/` on the agent branch: drafts, code, assets, whatever the project ships. Memory is what the agent knows; `projects/` is what it made.
 
+### `knowledge/` — what the repository knows
+
+`memory/` belongs to one agent on one branch. `knowledge/` belongs to the repository: it sits on `main`, and every agent in the copy reads it. **It exists only in copies.** The canon has no agents and has therefore learned nothing, so the folder is absent there — this section is the only place the shape is defined, and the folder appears in a copy with its first entry, the way `memory/handoff/` does.
+
+The distinction is what the writing is *for*. The journal records that a thing happened, dated and closed. An entry here records how to do it again, so the next agent executes instead of rediscovering. A procedure that stays in a journal note is one the next agent pays for a second time, in a session spent reaching a conclusion already reached.
+
+One file per topic, named for the task in plain words — `sync-the-template.md`, `deploy-the-site.md`:
+
+```markdown
+---
+topic: <one line — the task this covers>
+updated: DD-MM-YYYY HH:MM TZ    # tools/now.sh, never estimated
+verified: <what was actually run or checked to know this works>
+---
+
+## When this applies
+## Procedure
+## Traps
+## How to tell it worked
+```
+
+**Traps** is the part that earns the file. The happy path can be copied from any documentation; the value is what went wrong the first time — the required flag nobody documents, the check that reports success while doing nothing, the guard that fires on the wrong thing.
+
+Three rules. Entries are **verified, not theorised**: `verified:` names what was actually run, because a guess here is worse than an empty folder — the next agent will trust it. Entries are **corrected in place**, never appended to, so a stale half never sits beside a current one. Entries are **deleted when they stop being true**.
+
+What does not belong: what happened today (the journal), what this agent is or wants (`state.md`, `backlog.md`), and anything only one agent could use — knowledge here is repository-wide by definition, and a procedure that only makes sense inside one project belongs in that project's brief.
+
+Entries arrive by pull request into `main`, the same gate as a template change (§6), because a claim of repository-wide truth should be read by the Principal before every future agent inherits it. They carry no version bump: a version is a template release, and recording what a repository learned is not one.
+
 `memory/state.md` frontmatter — all of it:
 
 ```yaml
@@ -163,7 +193,7 @@ The public template repository is the canon: untouchable public property. Nobody
 
 Inside your copy, two tiers:
 
-- **`main` — the template mirror.** Read-only in operation; carries no agent and no memory. It changes only by a pull request you approve. The guard hook blocks all work on it. For the hard guarantee, enable GitHub branch protection on main (require a pull request before merging): hooks and CI are rails; the server-side rule is the lock.
+- **`main` — the template mirror, plus what the repository knows.** Read-only in operation; carries no agent and no agent memory. It holds two things: the template synced from the canon, and `knowledge/` (§5), the verified procedures every agent in this copy inherits. Both change only by a pull request you approve. The guard hook blocks all work on it. For the hard guarantee, enable GitHub branch protection on main (require a pull request before merging): hooks and CI are rails; the server-side rule is the lock.
 - **The agent branch — the home.** Created at onboarding; carries `memory/` and `projects/`. Everything durable lands here.
 
 A chat surface that opens on its own branch (e.g. Claude Code web's `claude/*`) is scaffolding for template work, not a place for an agent to live. **An agent session's first act is to check out its own branch** — `git checkout <agent-branch>`, the branch named in `state.md` — and every commit lands there directly. Memory left on a disposable branch is memory waiting to be lost, and continuity is the whole point. Only if the surface refuses the checkout does the agent work where it stands, push to the agent branch before the session ends, and say plainly that it did so. Template maintenance is the opposite case and keeps the disposable branch: that work is a pull request into `main`, and a throwaway branch is exactly the right place to build it — deleted once its pull request lands, since the branch list is a list of live work, not a graveyard. `git branch --show-current` is ground truth; a document naming a different branch is stale.

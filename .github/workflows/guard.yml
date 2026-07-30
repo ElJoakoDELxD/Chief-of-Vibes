@@ -16,12 +16,29 @@ jobs:
         with:
           fetch-depth: 0
       - name: Reject non-template paths
+        env:
+          REPO: ${{ github.repository }}
         run: |
           allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools)/'
+
+          # knowledge/ (SYSTEM.md §5) is where a COPY records the procedures its
+          # agents verified. The canon has no agents and therefore nothing to have
+          # learned, so the folder does not exist here and is rejected like any
+          # other non-template path. `.canon` names the canon, and the comparison
+          # is case-insensitive because GitHub treats owner/repo that way.
+          canon="$(tr -d '[:space:]' < .canon 2>/dev/null | tr '[:upper:]' '[:lower:]')"
+          here="$(printf '%s' "$REPO" | tr '[:upper:]' '[:lower:]')"
+          if [ -n "$canon" ] && [ "$canon" = "$here" ]; then
+            scope='outside the template — knowledge/ belongs in a copy, not the canon'
+          else
+            allow="${allow}|^knowledge/"
+            scope='outside the template'
+          fi
+
           fail=0
           while IFS= read -r -d '' f; do
             if ! printf '%s' "$f" | grep -qE "$allow"; then
-              echo "REJECT: $f is outside the template"
+              echo "REJECT: $f is $scope"
               fail=1
             fi
           done < <(git diff -z --name-only "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}")
@@ -41,6 +58,15 @@ jobs:
             echo "REJECT: SYSTEM.md carries no '**Version X.Y.Z.**' line"
             exit 1
           fi
+
+          # A version is a template release. A pull request that only records what
+          # this repository learned (knowledge/, SYSTEM.md §5) is not one, and
+          # demanding a bump for it would turn the changelog into noise.
+          if ! git diff --name-only "$BASE...$HEAD" | grep -qvE '^knowledge/'; then
+            echo "Knowledge-only change; no version bump required (still $head)"
+            exit 0
+          fi
+
           if [ "$base" = "$head" ]; then
             echo "REJECT: every merge into main is a release — bump SYSTEM.md's version (still $head)"
             exit 1
