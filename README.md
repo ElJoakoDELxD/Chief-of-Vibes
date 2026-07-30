@@ -20,6 +20,7 @@ Chief of Vibes is a repository template that removes all three: memory compounds
 - **Memory you own — an Obsidian vault.** Everything the agent knows is plain Markdown in one folder (`memory/`): identity, daily journal, backlog, project briefs, handoff notes. Open it in Obsidian, read it on GitHub, grep it, take it anywhere. No export step, no lock-in.
 - **Discipline enforced by hooks, not promises.** Every reply opens with a verifiable header — real clock, real branch. The `main` branch is mechanically untouchable. A wrong header is visible at a glance.
 - **A shipping discipline.** One project in construction at a time; scope-creep is logged, never slid past; only unsolicited external signals — a reader, a user, a payment — count as success.
+- **Knowledge that outlives one agent.** A procedure worked out the hard way is written to `knowledge/` on `main`, where every agent in your copy inherits it. The next one runs the deploy or the sync instead of rediscovering how, and you stop paying for the same lesson twice.
 - **Safety gates.** Your agent never spends money, signs anything, commits you to third parties, or edits its own rules. Those require you.
 - **No install theatre.** A web session's filesystem is thrown away when the session ends. Your agent will not install tooling there and call it done — a hook stops it before the command runs, so it says the install cannot be made durable and hands it to a session on your own machine. Durability is declared, not guessed: `touch ~/.chief-of-vibes-durable` on a machine that persists, and the guard stands aside.
 - **A colleague that teaches as it works.** Every mechanism is explained in plain language the first time you meet it — commits, branches, pull requests — and hands-on work is shared, not just watched. You leave with the skills, not only the output.
@@ -82,7 +83,7 @@ Obsidian's own config (`.obsidian/`) is gitignored, so opening the vault never d
 
 ## Map
 
-`SYSTEM.md` — the full specification, readable in one sitting · `CLAUDE.md` — the runtime entry point · `.canon` — names the canon repository, so every session knows whether it is standing in the template or in your copy · `.claude/` — hooks and skills · `tools/` — clock and template-sync · `memory/` — what your agent knows · `projects/` — what it made (both exist only on agent branches, never on `main`) · `repomix.config.json` — run `npx repomix` to pack the whole template into one AI-readable file, e.g. to hand this entire system to any LLM.
+`SYSTEM.md` — the full specification, readable in one sitting · `CLAUDE.md` — the runtime entry point · `.canon` — names the canon repository, so every session knows whether it is standing in the template or in your copy · `.claude/` — hooks and skills · `tools/` — clock and template-sync · `memory/` — what your agent knows · `projects/` — what it made (both exist only on agent branches, never on `main`) · `knowledge/` — verified procedures every agent inherits, on your copy's `main` and never in the canon · `repomix.config.json` — run `npx repomix` to pack the whole template into one AI-readable file, e.g. to hand this entire system to any LLM.
 
 ## Contributing
 
