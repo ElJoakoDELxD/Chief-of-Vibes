@@ -43,6 +43,7 @@ A good description is not a diff in prose. It names the failure the change close
 | Guard | Where | What it catches |
 |---|---|---|
 | `guard-main.sh` | local, before every edit and shell command | work landing on the default branch by accident |
+| `guard-install.sh` | local, before every shell command | installs that cannot outlive a disposable session |
 | `guard` / `template-only` | CI, on every pull request | files outside the template allowlist |
 | `guard` / version bump | CI, on every pull request | a merge that would leave the changelog silent |
 

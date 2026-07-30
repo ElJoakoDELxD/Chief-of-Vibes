@@ -21,7 +21,7 @@ Chief of Vibes is a repository template that removes all three: memory compounds
 - **Discipline enforced by hooks, not promises.** Every reply opens with a verifiable header — real clock, real branch. The `main` branch is mechanically untouchable. A wrong header is visible at a glance.
 - **A shipping discipline.** One project in construction at a time; scope-creep is logged, never slid past; only unsolicited external signals — a reader, a user, a payment — count as success.
 - **Safety gates.** Your agent never spends money, signs anything, commits you to third parties, or edits its own rules. Those require you.
-- **No install theatre.** A web session's filesystem is thrown away when the session ends. Your agent will not install tooling there and call it done — it says the install cannot be made durable, and hands it to a session running on your own machine.
+- **No install theatre.** A web session's filesystem is thrown away when the session ends. Your agent will not install tooling there and call it done — a hook stops it before the command runs, so it says the install cannot be made durable and hands it to a session on your own machine. Durability is declared, not guessed: `touch ~/.chief-of-vibes-durable` on a machine that persists, and the guard stands aside.
 - **A colleague that teaches as it works.** Every mechanism is explained in plain language the first time you meet it — commits, branches, pull requests — and hands-on work is shared, not just watched. You leave with the skills, not only the output.
 
 ## What runs automatically
