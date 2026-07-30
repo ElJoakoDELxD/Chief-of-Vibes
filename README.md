@@ -32,6 +32,7 @@ Nothing happens behind your back. This is the complete list — **if it is not i
 |---|---|---|
 | Anchor hook | each session start and prompt | its time/branch open every reply as the header; with no agent yet, it also picks the start menu for this repository |
 | Main guard | before every edit and shell command | a visible `BLOCKED` message when it acts |
+| Install guard | before every shell command | a visible `BLOCKED` message when an install would not outlive the session |
 | PR guard (CI) | on every pull request into `main` | a failed check when the change reaches outside the template or skips the version bump |
 
 All agent state lives in `memory/`. There is no hidden index, sensor, or background process.
@@ -85,7 +86,9 @@ Obsidian's own config (`.obsidian/`) is gitignored, so opening the vault never d
 
 ## Contributing
 
-Pull requests to the canon are welcome. Template files only — the CI guard rejects anything else — and one change per pull request, because `git log main` is the changelog. Every merge is a release, so bump `SYSTEM.md`'s version line in the same pull request: patch for wording, minor for a new mechanism, major for anything that breaks existing agents. Agent memory never leaves your own repository.
+To *use* the system, press **Use this template** and work in your copy. To change the template itself, pull requests to the canon are welcome. Template files only — the CI guard rejects anything else — and one change per pull request, because `git log main` is the changelog. Every merge is a release, so bump `SYSTEM.md`'s version line in the same pull request: patch for wording, minor for a new mechanism, major for anything that breaks existing agents. Agent memory never leaves your own repository.
+
+[`CONTRIBUTING.md`](CONTRIBUTING.md) has the rest: what counts as a template file, what each guard checks and what none of them guarantee, and a worked example of a release. Issues are welcome too, and cheaper — the useful ones name where the system did the wrong thing and which rule you expected to stop it.
 
 ## Lineage
 
@@ -101,10 +104,6 @@ Chief of Vibes absorbs articulations from the open source it stands on; each lin
 - [hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop) — the publication register sweep.
 - [microsoft/markitdown](https://github.com/microsoft/markitdown) — ingest documents, don't guess them.
 - [yamadashy/repomix](https://github.com/yamadashy/repomix) — the single-file pack of the template.
-
-## Contributing
-
-To *use* the system, press **Use this template** and work in your copy. To change the template itself, this repository takes reviewed pull requests: what counts as a template file, how the version bump works, what the guards check, and a worked example of a release are all in [`CONTRIBUTING.md`](CONTRIBUTING.md). Issues are welcome too, and cheaper — the useful ones name where the system did the wrong thing and which rule you expected to stop it.
 
 ## License
 
