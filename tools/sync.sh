@@ -41,7 +41,12 @@ fi
 echo "Merging template changes from main:"
 git log --oneline --no-merges HEAD..origin/main | sed 's/^/  /'
 
-if git merge --no-edit origin/main; then
+# --no-ff always, even when the branch could fast-forward. Every sync then leaves
+# exactly one merge commit on this branch's first-parent line, which is what makes
+# `git log --first-parent` show the agent's own history and none of main's. A
+# fast-forward would splice main's commits straight onto that line and the agent's
+# log would be unreadable from then on.
+if git merge --no-ff --no-edit origin/main; then
   echo "Done. Explain to the Principal what changed."
   exit 0
 fi

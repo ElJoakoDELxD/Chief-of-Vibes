@@ -205,6 +205,14 @@ The second hop is a **merge**, not a cherry-pick, and the difference is the poin
 
 Conflicts resolve without asking, because the rule covering them has no exception worth a prompt: template files take `main`'s version, and the agent branch's own `README.md` keeps the agent's (§4). Both outcomes are printed, and a template file overwritten this way is reported by name — the branch had edited something it does not own, and the Principal hears about it. Anything the rule does not cover stops the script. After a sync the agent tells the Principal what changed, in plain language.
 
+The merge costs one thing and it is paid for: template commits land in the branch's history alongside the agent's own. Every sync is `--no-ff`, so each one leaves exactly one merge commit, and **`git log --first-parent`** on an agent branch shows what the agent did and nothing the template did. Nothing is hidden — the full log still has everything — but the default reading of an agent's history stays about the agent.
+
+### Merge for the template, cherry-pick for the world
+
+Cherry-pick keeps a job, and it is the opposite one. `main` is vertical: the agent branch wants all of it, always, so the flow is a merge and no decision is involved. Everything else is lateral — another repository, a utility, a technique read somewhere, a program worth stealing an idea from — and there the agent wants *one specific thing*, never the whole history. Fetch the source and cherry-pick the commit that carries it, or lift the idea and write it in this system's own words.
+
+Which makes the two operations sit on different rungs (§8). The merge is rung 1: nothing to decide, nothing to remember. Absorption is rung 4 and cannot climb, because every instance is a judgment — does this fit, is it worth the dependency, what does it drag in. Absorbing from outside also carries the obligations the rest of the system already states: attribution in the README's lineage for anything whose articulation shaped this one, and §7's IP hygiene for anything that reaches a published artifact.
+
 **A template change is not finished when it merges into the canon. It is finished when it governs the repository the agent works in.** A copy running an older spec is an agent obeying superseded rules with the old rails wired in, and nothing looks wrong — the guard that fires is the old guard, the limit that is missing was written upstream last week. So the version of `SYSTEM.md` on the canon and on your `main` are kept equal, the drift check reports the gap at session start (§1), and closing it comes before substantive work rather than after.
 
 ---

@@ -86,6 +86,23 @@ check 'template moved on' 'v3' "$(cat SYSTEM.md)"
 check 'agent README still the agent one' 'agent readme' "$(cat README.md)"
 check 'README not reported again' 'no' "$(grep -q "kept this branch's version" <<<"${out}" && echo yes || echo no)"
 
+say 'the agent history stays readable: --first-parent hides the template commits'
+build
+advance_main SYSTEM.md v2 'template v2'
+bash "${SYNC}" >/dev/null 2>&1
+printf 'day two\n' > memory/journal.md; git add -A; git commit -qm 'agent day two'
+advance_main SYSTEM.md v3 'template v3'
+bash "${SYNC}" >/dev/null 2>&1
+own="$(git log --first-parent --no-merges --format='%s' | paste -sd '|' -)"
+check 'agent commits are all there' 'yes' \
+  "$(grep -q 'agent day two' <<<"${own}" && grep -q 'agent vault' <<<"${own}" && echo yes || echo no)"
+check 'no template commits on the first-parent line' 'no' \
+  "$(grep -qE 'template v[23]' <<<"${own}" && echo yes || echo no)"
+check 'one merge commit per sync' 2 \
+  "$(git log --first-parent --merges --oneline | wc -l | tr -d ' ')"
+check 'full log still contains them, nothing is hidden from git' 'yes' \
+  "$(git log --format='%s' | grep -q 'template v3' && echo yes || echo no)"
+
 say 'conflict on a template file the branch should not own: main wins, loudly'
 build
 printf 'local meddling\n' > SYSTEM.md
