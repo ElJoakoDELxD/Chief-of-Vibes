@@ -42,14 +42,16 @@ In a copy, a knowledge-only pull request needs no version bump. A version is a t
 
 A good description is not a diff in prose. It names the failure the change closes, and it is honest about the limits of the fix.
 
+**When changes depend on each other**, stack them: branch each layer from the one below and target its pull request at that layer rather than at `main`. Every layer stays one change with its own version bump, so the chain lands as consecutive releases. The `guard` workflow runs on each layer against its own base, which is why its trigger covers `claude/**` and not only `main` — merging the top of a stack lands everything beneath it, and a check watching `main` alone would see only the bottom layer.
+
 ## What the guards actually do
 
 | Guard | Where | What it catches |
 |---|---|---|
 | `guard-main.sh` | local, before every edit and shell command | work landing on the default branch by accident |
 | `guard-install.sh` | local, before every shell command | installs that cannot outlive a disposable session |
-| `guard` / `template-only` | CI, on every pull request | files outside the template allowlist |
-| `guard` / version bump | CI, on every pull request | a merge that would leave the changelog silent |
+| `guard` / `template-only` | CI, on every pull request into `main` or a `claude/**` branch | files outside the template allowlist |
+| `guard` / version bump | CI, same trigger | a merge that would leave the changelog silent |
 
 None of them is a lock. The local hook only runs in sessions that wire it, and it matches strings, which is not the same as understanding intent. The server-side lock is branch protection on the default branch plus a human reading the diff. Treat all three as defence in depth and none of them as permission to stop reading.
 

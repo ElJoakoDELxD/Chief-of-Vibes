@@ -1,5 +1,9 @@
-# Rejects pull requests into main that touch files outside the template.
+# Rejects changes bound for main that touch files outside the template.
 # Agent memory and project output belong on agent branches, never on main.
+#
+# "Bound for main" rather than "into main": a stacked pull request targets the
+# layer below it, and merging the top of a stack lands every layer under it.
+# Each layer is therefore checked against its own base.
 #
 # Self-protection limit: a pull request can edit this workflow itself, and the
 # edited copy is what runs on that pull request. This guard is a tripwire, not
@@ -7,7 +11,15 @@
 name: guard
 on:
   pull_request:
-    branches: [main]
+    # main, plus the disposable branches template work is built on (§6). A
+    # stacked pull request targets the layer below it rather than main, so a
+    # trigger listening only for main would let every layer above the first
+    # merge unchecked — and merging the top of a stack lands all of them. Each
+    # layer is judged against its own base, which is the diff a reviewer sees.
+    #
+    # Agent branches are deliberately not listed. They carry memory/ and
+    # projects/ by design, and this job would reject exactly what belongs there.
+    branches: [main, 'claude/**']
 jobs:
   template-only:
     runs-on: ubuntu-latest
