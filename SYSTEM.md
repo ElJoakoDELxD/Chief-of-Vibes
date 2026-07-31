@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.13.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.14.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -14,17 +14,24 @@ The design removes three failure modes of working with LLMs:
 2. **AI self-validates.** Confident internal artifacts — plans, frameworks, dashboards — that no outsider ever touches. Here nothing counts as success except an unsolicited external signal: a reader, a user, a payment (§7).
 3. **Process eats product.** The tool improves itself instead of shipping. Here meta-work is bounded: given one unit of effort and a choice between polishing the system and shipping the work, ship the work.
 
+### What cannot happen
+
+Some things are not enforced, prevented, or remembered: they are built so the failure has no path. Nothing fires, so there is nothing to watch — which is the point, and also why they would otherwise be invisible. These are the system's rung 1 (§8):
+
+- **An agent branch cannot drift from `main`.** `tools/sync.sh` merges rather than copies, so the branch *is* `main` plus `memory/` and `projects/` (§6).
+- **A wrong-zone timestamp cannot be printed.** `tools/now.sh` exits with an error when the zone is unknown, instead of falling back to UTC (§3).
+
 ### What runs automatically
 
-The transparency contract: **if it is not in this table, it does not happen.** No other background process, sensor, hidden index, or state exists anywhere in this system.
+The transparency contract: **if it is not in this table, it does not happen.** No other background process, sensor, hidden index, or state exists anywhere in this system. The rung column is the §8 ladder: 2 blocks, 3 reports.
 
-| Mechanism | Fires | Where you see it |
-|---|---|---|
-| Anchor hook — injects real time + current branch, and with no agent present the start menu for this repository (§9) | at session start and before every reply | its values open every reply as the header (§9) |
-| Drift check (same hook) — compares this copy's `SYSTEM.md` version against the canon's; never runs on the canon (§6) | at session start only, one network call | a stated version gap, or a stated failure to check; silence means parity |
-| Main guard — keeps `main` read-only | before every file edit or shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
-| Install guard — refuses installs that cannot outlive the session, unless the machine declares itself durable (§4) | before every shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
-| PR guard (CI) — rejects non-template files bound for `main`, and template changes that do not bump this file's version (§8); `knowledge/` is accepted in a copy and needs no bump (§5) | on every pull request into `main` or a `claude/**` branch, each layer against its own base (§8) | a failed check on the pull request |
+| Mechanism | Rung | Fires | Where you see it |
+|---|---|---|---|
+| Anchor hook — injects real time + current branch, and with no agent present the start menu for this repository (§9) | 3 | at session start and before every reply | its values open every reply as the header (§9) |
+| Drift check (same hook) — compares this copy's `SYSTEM.md` version against the canon's; never runs on the canon (§6) | 3 | at session start only, one network call | a stated version gap, or a stated failure to check; silence means parity |
+| Main guard — keeps `main` read-only | 2 | before every file edit or shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
+| Install guard — refuses installs that cannot outlive the session, unless the machine declares itself durable (§4) | 2 | before every shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
+| PR guard (CI) — rejects non-template files bound for `main`, and template changes that do not bump this file's version (§8); `knowledge/` is accepted in a copy and needs no bump (§5) | 2 | on every pull request into `main` or a `claude/**` branch, each layer against its own base (§8) | a failed check on the pull request |
 
 Everything one agent knows or records lives in `memory/` on its branch; what the whole repository has learned lives in `knowledge/` on `main` (§5). Two folders, plain Markdown, readable without this system. Every side effect (commit, push, publish) is announced in chat as it happens.
 
@@ -45,6 +52,8 @@ The canon is runtime-agnostic: Markdown and git. Claude Code is the reference ru
 ---
 
 ## 3. Operating rules
+
+This section is rung 4 (§8): what is left once construction, rails, and sensors have taken everything they can hold. Nothing here can climb — each rule needs a judgment no machine can make — so the list stays short on purpose, and a rule that becomes mechanically decidable leaves it for §1.
 
 - **Act, don't queue.** When authorized and able, do the thing this session. The Principal's backlog is only for what the agent cannot do: physical-world steps, credentials, reserved decisions, approvals.
 - **Verify before assert.** A claim about any external state (a PR, a branch, a file, a service) is verified by a tool call this turn or labeled unverified. Inference from a prior turn is not verification.
@@ -246,6 +255,8 @@ New capability enters as a skill: one folder under `.claude/skills/<name>/`, one
 | 3 | **Reported by a sensor** | the drift check names the version gap at session start (§1) |
 | 4 | **Written as a rule** | the §3 rules that no machine can decide |
 | 5 | **Left to memory** | nothing, ever |
+
+The document is arranged by that column. §1 lists rung 1 under *what cannot happen* and rungs 2 and 3 in the table of what runs; §3 is the whole of rung 4; rung 5 has no section because it holds nothing. Reading a rule's rung tells you what would have to change for it to stop depending on someone remembering it.
 
 Higher is better, but only as far as a rung can hold the thing honestly. A rail can only judge what is mechanically decidable, and one pushed past that boundary produces false positives — which teach the agent to route around it, and a rail routed around protects less than no rail at all, because it also grants false confidence. So rails are narrow and arrive with a test bench that pins both what must be blocked and what must be left alone.
 
