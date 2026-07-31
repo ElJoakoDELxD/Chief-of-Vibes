@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.11.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.12.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -24,7 +24,7 @@ The transparency contract: **if it is not in this table, it does not happen.** N
 | Drift check (same hook) — compares this copy's `SYSTEM.md` version against the canon's; never runs on the canon (§6) | at session start only, one network call | a stated version gap, or a stated failure to check; silence means parity |
 | Main guard — keeps `main` read-only | before every file edit or shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
 | Install guard — refuses installs that cannot outlive the session, unless the machine declares itself durable (§4) | before every shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
-| PR guard (CI) — rejects non-template files into `main`, and template changes that do not bump this file's version (§8); `knowledge/` is accepted in a copy and needs no bump (§5) | on every pull request into `main` | a failed check on the pull request |
+| PR guard (CI) — rejects non-template files bound for `main`, and template changes that do not bump this file's version (§8); `knowledge/` is accepted in a copy and needs no bump (§5) | on every pull request into `main` or a `claude/**` branch, each layer against its own base (§8) | a failed check on the pull request |
 
 Everything one agent knows or records lives in `memory/` on its branch; what the whole repository has learned lives in `knowledge/` on `main` (§5). Two folders, plain Markdown, readable without this system. Every side effect (commit, push, publish) is announced in chat as it happens.
 
@@ -255,6 +255,8 @@ Judgment cannot climb. *Search before propose*, *the Principal's voice is the Pr
 **Three documents, fixed roles.** `SYSTEM.md` is the specification, `CLAUDE.md` the runtime entry point carrying only what must never be missed, `README.md` the public description of what the system does. A change to any mechanism updates all three in the same commit — the §1 transparency table is a promise, and a table that lags the machinery is a broken one.
 
 **Every merge into `main` is a release.** It bumps this file's version on the way in: patch for wording and fixes, minor for a new mechanism or rule, major for a change that breaks existing agents. The CI guard enforces the bump; `git log main` is the changelog, which is why one pull request carries one change.
+
+**A stack is a chain of releases, not a way around them.** When changes depend on each other, each layer targets the one below and stays one change with its own version bump, so the chain reads as consecutive releases in the changelog. The guard runs on every layer against its own base rather than only on pull requests into `main` — merging the top of a stack lands everything under it, so a check that only watched `main` would wave through every layer but the first. What a stack removes is the manual re-basing between links, not the gate on any of them.
 
 ---
 
