@@ -1,27 +1,18 @@
 #!/usr/bin/env bash
 #
 # Claude Code hook (PreToolUse on Edit|Write|Bash): keeps main read-only.
-#   - On main: blocks every edit and shell command.
-#   - Elsewhere: blocks git commands that write to, delete, check out, or
-#     force-move main: push to any main destination refspec (quoted or not),
-#     push --mirror/--all, checkout/switch onto main including -B and -f,
-#     branch -f/-D/-m/-M/-C main, worktrees on main, and ref plumbing
-#     (update-ref / symbolic-ref) that targets refs/heads/main.
-# Exit 2 makes Claude Code deny the tool call; the reason goes to stderr.
+# On main it blocks everything; elsewhere it blocks the git commands that reach
+# main, each documented at its own rule below. Exit 2 denies the call, reason on
+# stderr. Input: PreToolUse hook JSON on stdin.
 #
-# A local hook is a rail, not a lock: it only runs in sessions that wire it,
-# and string-matching shell commands is never exhaustive. The hard guarantee
-# for main is server-side branch protection plus the PR guard (CI); treat this
-# hook as defence-in-depth.
+# A rail, not a lock: it only runs in sessions that wire it, and string-matching
+# is never exhaustive. The guarantee for main is branch protection plus CI.
 #
-# It still errs closed where it cannot tell intent from text — a command that
-# writes 'git checkout main' into a file, say, reads exactly like the command
-# itself. That direction is the safe one. What it must not do is block ordinary
-# work: a commit message or an echo that merely mentions the branch is prose,
-# not a refspec, and it used to be enough to deny an unrelated push. Segment
-# scoping is what separates the two; tools/test-guard-main.sh pins both halves.
-#
-# Input: PreToolUse hook JSON on stdin.
+# It errs closed where text and intent are indistinguishable — a command writing
+# a dangerous command into a file reads exactly like the command. That direction
+# is safe. Blocking ordinary work is not, and prose mentioning the branch used to
+# be enough to deny an unrelated push. Segment scoping separates the two;
+# tools/test-guard-main.sh pins both halves.
 
 set -uo pipefail
 
@@ -37,13 +28,9 @@ command="$(printf '%s' "${input}" \
   | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input", {}).get("command", ""))' \
   2>/dev/null)" || command=""
 
-# Quotes can hide the ref ("main", 'main'); strip them before matching.
-#
-# Stripping them also flattens prose into refs: `echo "check main"; git push -u
-# origin agent-branch` used to read as a push to main, because the word and the
-# push met in one flat string. So the command is split on separators first and
-# each segment judged alone — a git invocation lives in exactly one segment, so
-# nothing hides across the split, and an echo is no longer evidence about a push.
+# Quotes can hide the ref, so strip them — which also flattens prose into refs.
+# Hence the split: each segment is judged alone, a git invocation lives in
+# exactly one of them, and an echo stops being evidence about a neighbouring push.
 cmd="$(printf '%s' "${command}" | tr -d "\"'")"
 segments="$(printf '%s' "${cmd}" | sed 's/&&/\n/g; s/||/\n/g' | tr ';|&' '\n')"
 
@@ -53,9 +40,8 @@ while IFS= read -r seg; do
   printf '%s' "${seg}" | grep -qE '(^|[^[:alnum:]_])git([[:space:]]|$)' || continue
   cmd="${seg}"
 
-  # push where main can be the destination, in any refspec form:
-  #   main | +main | :main | src:main | refs/heads/main — main must end the
-  # token, so 'maintenance', 'main-backup', 'main..HEAD' are not matched.
+  # push to any refspec form ending in main (main, +main, src:main, refs/heads/main).
+  # The token must end there, so 'maintenance' and 'main..HEAD' are not matched.
   if printf '%s' "${cmd}" | grep -qE '(^|[[:space:]])push([[:space:]]|$)' \
      && printf '%s' "${cmd}" | grep -qE '(^|[[:space:]:+/])main([[:space:];&|]|$)'; then
     reason="pushes to main"
@@ -67,9 +53,8 @@ while IFS= read -r seg; do
     reason="pushes all refs (main included)"
   fi
 
-  # checkout/switch onto main, with any leading flags (-B, -f, --detach, …).
-  # 'checkout -b <new> main' (branching OFF main) and 'checkout main-file'
-  # are not matched.
+  # checkout/switch onto main past any flags. Branching OFF main and a path
+  # named main-something are not matched.
   if printf '%s' "${cmd}" | grep -qE '(checkout|switch)([[:space:]]+-[^[:space:]]+)*[[:space:]]+main([[:space:];&|]|$)'; then
     reason="checks out main"
   fi
