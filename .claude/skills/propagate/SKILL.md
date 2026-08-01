@@ -21,7 +21,7 @@ Nobody types *propose*. The moment arrives inside other work, and recognising it
 
 - **A rule was in force, was followed, and the failure happened anyway.** The strongest signal available. It means the rule sits at the wrong rung, or has no trigger, or names a duty nobody could tell had been skipped.
 - **A rule was absent and the absence cost something measurable** — a wrong claim shipped, a session's work lost, the same step rediscovered for the third time.
-- **Something worked that the specification does not contemplate**, and would work in a copy configured nothing like this one.
+- **Something worked that the specification does not contemplate**, and would work in a copy configured nothing like this one. This is the discovery case, and it needs external validation rather than a failure — see the trap below.
 - **An external signal arrived** — paid, subscribed, returned, shipped on — and the mechanism behind it is not specific to this Principal.
 
 ## The rewording trap, which is what this skill is mostly for
@@ -34,7 +34,7 @@ So before drafting anything, read what the canon already says on the point. Then
 - **Covered, and nothing failed.** Send nothing. A sharper phrasing of a working rule is prose growth with no machinery behind it, which §8 already requires to come out negative or be deleted rather than cited.
 - **Not covered.** Now the three gates below apply.
 
-The tell for a rewording is that the draft could be written without naming what went wrong. If the failure is hard to state concretely, there probably wasn't one.
+The tell for a rewording is that the draft could be written without naming what happened. Two kinds of thing happen and both count: a **failure**, where something broke and the specification did not prevent it, and a **discovery**, where something worked that the specification does not contemplate. A discovery is not the weaker case — it is how a system learns what it did not know to look for — but it carries a harder requirement, because nothing went wrong to prove it: **it is validated from outside, or it is an idea.** What validated it is named: the tool's actual behaviour against its documentation, a measurement that came out other than predicted, a mechanism that ran where the specification said it could not, someone outside this system paying or shipping on it. A discovery whose only evidence is that it seemed right when written is a suggestion, and suggestions go in the reply.
 
 ## The gate: the canon's, this copy's, or nothing
 
