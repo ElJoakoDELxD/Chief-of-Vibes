@@ -6,7 +6,7 @@ Direction: judging a proposal someone else opened — against the canon, or agai
 
 The same three questions from SKILL.md, asked from the other side, plus what only a reviewer can see:
 
-1. **Is the failure real and stated?** A proposal with no wall behind it is a preference. Ask for the tool and the output; do not infer them generously because the writing is good. This system's own record is that the most convincing prose accompanied the most wrong conclusions.
+1. **Is the result real and stated?** A proposal with nothing behind it is a preference. Internal evidence: ask for the tool and the output, and do not infer them generously because the writing is good — this system's own record is that the most convincing prose accompanied the most wrong conclusions. External evidence, including revenue, needs no internal blessing and is the stronger of the two; what it does need is an **attribution claim**, because a payment does not say which part earned it. Approve the mechanism the proposal names, not the outcome it points at.
 2. **Would it hold in a copy unlike the proposer's?** A reviewer is better placed than an author to answer this, having a different copy in front of them. Name the copy where it would not hold, if there is one.
 3. **Is the rung honest?** A judgment call written as a rail is the expensive mistake: it produces false positives, which teach agents to route around it, and a rail routed around protects less than none because it also grants false confidence.
 

@@ -25,7 +25,11 @@ Distribution is the easy half and this system already automates it: the drift ch
 
 Most of the work is one routing decision, and getting it wrong is the common failure in both directions. Three questions, and a proposal answers **all three** before anything is written.
 
-1. **Did it already produce a real result here?** §8 demands this of a skill; it holds for every template change. The proposal carries the failure that produced it and what was run — the tool, the output, the release it forced. An improvement that has not yet failed at anything is an idea, and ideas go in the reply, not in the canon.
+1. **Did it already produce a real result here?** §8 demands this of a skill; it holds for every template change. An improvement that has not yet met reality is an idea, and ideas go in the reply, not in the canon. Two kinds of evidence count, and the stronger one is not this system's own opinion:
+   - **Internal validation** — a failure it prevented, a release it forced, a bench that went red then green. The proposal carries the tool that was run and what it returned.
+   - **External signal** — someone outside this system paid for it, subscribed, shipped on it, or came back (§7). **This qualifies on its own, with no internal validation at all.** A system that only accepts evidence it generated itself can be flawlessly coherent and useless; this one has already demonstrated that it can measure carefully and conclude falsely, with tables.
+
+   Money answers *this* question and no other. It says something worked; it does not say which part, because revenue arrives unattributed and the temptation is to credit whatever was nearby. So a proposal resting on it names the mechanism it claims was responsible, and still answers questions 2 and 3 — otherwise the canon inherits whatever happened to be in the room when the payment landed.
 2. **Would it hold in a copy that is nothing like this one?** Different Principal, goal, language, timezone, toolchain, network policy. If it only makes sense given how *this* Principal works, it is not template — it is this copy's `knowledge/` (§5), which is exactly where such things belong and where they are not lost.
 3. **Does it earn a rung?** §8's ladder: impossible by construction, blocked by a rail, reported by a sensor, or written as a §3 rule that no machine could decide. A change that lands on rung 5 has no address and is not a proposal.
 
