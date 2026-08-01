@@ -54,6 +54,18 @@ gh api /repos/ElJoakoDELxD/Chief-of-Vibes/stacks
 
 **404** means registered stacks are not enabled here and your chain is manual; **200** means they are. The CLI reads that same 404 and exits 9 with *"Stacked PRs are not enabled for this repository."* Without a terminal there is a second signal: when they are enabled, a pull request whose base is another open pull request shows a banner offering **Preview stack**. It is the weaker check of the two, because it needs a chain to already exist and its absence could mean either that the feature is off or that GitHub did not recognise the chain.
 
+### Registering a stack when you cannot reach the API
+
+A session running behind an egress policy that blocks `api.github.com` — Claude Code on the web is one — cannot call the Stacks API at all, and a token does not help, because the block is on the origin rather than the authorization. Dispatch `.github/workflows/stacks.yml` instead: it makes the same call from a runner and prints the response in the job log.
+
+| Input | Used by | Value |
+|---|---|---|
+| `operation` | all | `list`, `create`, `add` or `unstack` |
+| `pull_requests` | `create`, `add` | comma-separated pull request numbers, bottom to top |
+| `stack_number` | `add`, `unstack` | the stack's repository-scoped number |
+
+`create` takes at least two pull requests, and each one's base must be the head of the one below it — the chain you already built by hand. `add` appends onto the top of an existing stack and takes only the new layers.
+
 ## What the guards actually do
 
 | Guard | Where | What it catches |
