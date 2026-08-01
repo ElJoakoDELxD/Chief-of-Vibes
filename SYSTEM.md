@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.20.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.21.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
