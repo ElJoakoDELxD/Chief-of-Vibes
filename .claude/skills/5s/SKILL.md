@@ -31,6 +31,16 @@ The first line of the report says which one ran. A run with no budget is tidying
 
 The argument names it. With no argument, ask rather than guess: the three have different failure modes, and a run aimed at the wrong one spends the budget without touching the problem. Two targets is two runs — separate budgets, separate commits, separate reports.
 
+## Two roles, and why not six
+
+Run this as **one worker and one monitor**, not one agent per S.
+
+The five S are sequential by construction — *set in order* arranges what *sort* left, *shine* cleans what *set in order* placed — so five agents would be a slow pipeline paying a written handoff at every seam (§3: a subagent's brief is a file). Worse, the findings live in the seams: the drift between a table and the section it summarises surfaces while rewriting, in an agent that also did the reading. Partition that and the finding does not happen. The budget is the same argument: one hard limit is what makes you look, and a limit split five ways makes nobody look.
+
+**The worker** does all five, in order, and treats each as its own task with its own close. Do not blur them into one tidying pass and label the result 5S — the order is the method, and a pass that "did all of it at once" has silently skipped the two steps that produce findings. Before starting each S, say which one is starting; before leaving it, say what it produced, even when that is nothing.
+
+**The monitor** is a second agent that never edits. It receives the before state, the after state, and the report, and answers two questions the worker cannot answer about itself: is the reported number real, and did anything of value get lost to reach it. Its verdict goes in the report. This exists because *done is earned by verification* (§3) and self-grading is not verification — a worker that measured its own improvement is the one case where the measurement and the motive share a context.
+
 ## The five steps
 
 The target's reference file says what each step means there. The shape is the same everywhere.
@@ -51,6 +61,7 @@ Six lines, no ceremony:
     Net:     <signed number>
     Found:   <what shine surfaced — or "nothing", which means shine was skipped>
     Rung:    <what standardize produced, and where it lives>
+    Monitor: <the second agent's verdict: number real, nothing of value lost — or what it caught>
 
 **Report the net unpainted.** A run that came out positive says so plainly. The precedent is load-bearing: release 1.14.1 reported **+81** against its own stated aim and named itself as meeting the letter of §8 and not the spirit — and that admission is exactly what forced the next release to come out negative. A 5S that only ever reports wins is one nobody can use to argue with, which makes it decoration.
 
