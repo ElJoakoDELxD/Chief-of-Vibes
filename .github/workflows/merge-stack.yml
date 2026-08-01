@@ -12,34 +12,35 @@ jobs:
   merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Merge the bottom layer through the async merge API
+      - name: Merge the rest of the stack through the async merge API
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           printf '%s' '{"merge_method":"squash","merge_action":"default"}' > body.json
-          out=$(gh api --method PUT "repos/$REPO/pulls/24/merge-async" --input body.json)
+          out=$(gh api --method PUT "repos/$REPO/pulls/28/merge-async" --input body.json)
           printf '%s\n' "$out"
           status=$(printf '%s' "$out" | jq -r .status)
           uuid=$(printf '%s' "$out" | jq -r '.uuid // empty')
           n=0
-          while [ "$status" = "pending" ] && [ "$n" -lt 30 ]; do
+          while [ "$status" = "pending" ] && [ "$n" -lt 40 ]; do
             sleep 10
             n=$((n+1))
-            out=$(gh api "repos/$REPO/pulls/24/merge-async/$uuid")
+            out=$(gh api "repos/$REPO/pulls/28/merge-async/$uuid")
             status=$(printf '%s' "$out" | jq -r .status)
           done
           printf '%s\n' "$out"
           [ "$status" = "merged" ] || [ "$status" = "enqueued" ]
 
-      - name: Read back the bases of the layers above
+      - name: Read back the final state
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           sleep 15
-          for n in 25 26 28; do
-            gh api "repos/$REPO/pulls/$n" --jq '{pr: .number, base: .base.ref, state: .state, stack: .stack}'
+          for n in 24 25 26 28; do
+            gh api "repos/$REPO/pulls/$n" --jq '{pr: .number, state: .state, merged: .merged, base: .base.ref}'
           done
+          gh api "repos/$REPO/contents/SYSTEM.md" --jq '.content' | base64 -d | grep -m1 -o 'Version [0-9.]*'
