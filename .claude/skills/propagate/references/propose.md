@@ -19,6 +19,7 @@ Direction: this copy → the canon. Opens a pull request against a repository th
 
 Written for a reader who has never seen this copy and never will. It carries:
 
+- **The record**, when the evidence is external. An outcome without it is not reviewable. It carries four things and none of them is a number: *what the instance was* — the artifact, described so a stranger can recognise the class; *what system it ran inside* — the specification version in force, which rails were wired, what the agent had and did not; *what it was doing* when the signal arrived; and *what the signal was* — paid, subscribed, returned, shipped on — with its size and how many times. Written for someone whose conditions differ from yours in ways you cannot guess, because that is who will read it. None of it names the Principal (§7): the record describes a situation, never a person.
 - **The failure**, concretely: what was attempted, what the tool returned, why the existing specification did not prevent it. This is the part that makes a proposal reviewable — a reviewer cannot judge a rule without the wall it was written against.
 - **What changes**, and the rung it lands on.
 - **What it does not change**, especially anything a reader would reasonably assume it does.
