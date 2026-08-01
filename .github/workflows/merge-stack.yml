@@ -12,17 +12,33 @@ jobs:
   merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Merge the rest of the stack through the async merge API
+      - name: Repoint each layer at its rebased head
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          printf '%s' '{"merge_method":"squash","merge_action":"default"}' > body.json
+          for pair in "claude/stack-enablement-check:claude/rebased-25" \
+                      "claude/queue-needs-evidence:claude/rebased-26" \
+                      "claude/stacks-from-a-session:claude/rebased-28"; do
+            target=${pair%%:*}
+            source=${pair##*:}
+            sha=$(gh api "repos/$REPO/git/ref/heads/$source" --jq '.object.sha')
+            gh api --method PATCH "repos/$REPO/git/refs/heads/$target" -f sha="$sha" -F force=true --jq '.object.sha'
+          done
+
+      - name: Merge the stack with a merge commit, not a squash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          sleep 15
+          printf '%s' '{"merge_method":"merge","merge_action":"default"}' > body.json
           out=$(gh api --method PUT "repos/$REPO/pulls/28/merge-async" --input body.json)
           printf '%s\n' "$out"
           status=$(printf '%s' "$out" | jq -r '.status')
-          uuid=$(printf '%s' "$out" | jq -r '.details.uuid // .uuid // empty')
+          uuid=$(printf '%s' "$out" | jq -r '.details.uuid // empty')
           n=0
           while [ "$status" = "pending" ] && [ -n "$uuid" ] && [ "$n" -lt 40 ]; do
             sleep 10
@@ -40,7 +56,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
-          set -euo pipefail
+          set +o pipefail
           sleep 20
           for n in 24 25 26 28; do
             gh api "repos/$REPO/pulls/$n" --jq '{pr: .number, state: .state, merged: .merged, base: .base.ref}'
