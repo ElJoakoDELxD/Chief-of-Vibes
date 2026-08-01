@@ -21,25 +21,27 @@ jobs:
           printf '%s' '{"merge_method":"squash","merge_action":"default"}' > body.json
           out=$(gh api --method PUT "repos/$REPO/pulls/28/merge-async" --input body.json)
           printf '%s\n' "$out"
-          status=$(printf '%s' "$out" | jq -r .status)
-          uuid=$(printf '%s' "$out" | jq -r '.uuid // empty')
+          status=$(printf '%s' "$out" | jq -r '.status')
+          uuid=$(printf '%s' "$out" | jq -r '.details.uuid // .uuid // empty')
           n=0
-          while [ "$status" = "pending" ] && [ "$n" -lt 40 ]; do
+          while [ "$status" = "pending" ] && [ -n "$uuid" ] && [ "$n" -lt 40 ]; do
             sleep 10
             n=$((n+1))
             out=$(gh api "repos/$REPO/pulls/28/merge-async/$uuid")
-            status=$(printf '%s' "$out" | jq -r .status)
+            status=$(printf '%s' "$out" | jq -r '.status')
+            printf '%s %s\n' "$n" "$status"
           done
           printf '%s\n' "$out"
           [ "$status" = "merged" ] || [ "$status" = "enqueued" ]
 
       - name: Read back the final state
+        if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          sleep 15
+          sleep 20
           for n in 24 25 26 28; do
             gh api "repos/$REPO/pulls/$n" --jq '{pr: .number, state: .state, merged: .merged, base: .base.ref}'
           done
