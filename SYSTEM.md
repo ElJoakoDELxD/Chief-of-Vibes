@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.17.1.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.17.2.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -261,7 +261,9 @@ Higher is better, but only as far as a rung holds the thing honestly. A rail jud
 
 **Every merge into `main` is a release.** It bumps this file's version on the way in: patch for wording and fixes, minor for a new mechanism or rule, major for a change that breaks existing agents. The CI guard enforces the bump; `git log main` is the changelog, which is why one pull request carries one change.
 
-**A stack is a chain of releases, not a way around them.** When changes depend on each other, each layer targets the one below and stays one change with its own bump, so the chain reads as consecutive releases. The guard runs on every layer against its own base: merging the top lands everything under it, so a check watching only `main` would wave through every layer but the first. A stack removes the manual re-basing between links, not the gate on any of them.
+**A stack is a chain of releases, not a way around them.** When changes depend on each other, each layer targets the one below and stays one change with its own bump, so the chain reads as consecutive releases. A stack removes the manual re-basing between links, not the gate on any of them.
+
+Two things are called stacking and only one is the feature. A **registered stack** is a first-class object created through GitHub's UI, CLI, or API; there, Actions evaluates workflow triggers against the *stack's* base, so a workflow watching `main` runs on every layer with no configuration at all. **Chaining pull request bases by hand** is not that: each layer is an ordinary pull request targeting a branch, and a trigger listening only for `main` would see the bottom one and nothing else. The guard's trigger covers `claude/**` for the hand-chained case, and is harmless in the other.
 
 ---
 
