@@ -42,7 +42,29 @@ In a copy, a knowledge-only pull request needs no version bump. A version is a t
 
 A good description is not a diff in prose. It names the failure the change closes, and it is honest about the limits of the fix.
 
-**When changes depend on each other**, stack them: branch each layer from the one below and target its pull request at that layer rather than at `main`. Every layer stays one change with its own version bump, so the chain lands as consecutive releases. The `guard` workflow runs on each layer against its own base, which is why its trigger covers `claude/**` and not only `main` — merging the top of a stack lands everything beneath it, and a check watching `main` alone would see only the bottom layer.
+**When changes depend on each other**, stack them: branch each layer from the one below and target its pull request at that layer rather than at `main`. Every layer stays one change with its own version bump, so the chain lands as consecutive releases.
+
+Two different things are called stacking, and which one you get depends on the repository. A **registered stack** is a first-class object, created through GitHub's UI, CLI (`gh stack submit`) or API: layers re-target themselves as the ones below merge, and Actions evaluates workflow triggers against the stack's base, so `guard` would run on every layer even if its trigger named only `main`. **Chaining bases by hand** — ordinary pull requests pointed at each other — does neither: you re-target each layer yourself after every merge, and a trigger listening only for `main` would see the bottom layer and nothing else. The `guard` trigger covers `claude/**` for that case, and costs nothing in the other.
+
+There is no opt-in setting, so to find out which one you have, ask the endpoint the CLI asks:
+
+```
+gh api /repos/ElJoakoDELxD/Chief-of-Vibes/stacks
+```
+
+**404** means registered stacks are not enabled here and your chain is manual; **200** means they are. The CLI reads that same 404 and exits 9 with *"Stacked PRs are not enabled for this repository."* Without a terminal there is a second signal: when they are enabled, a pull request whose base is another open pull request shows a banner offering **Preview stack**. It is the weaker check of the two, because it needs a chain to already exist and its absence could mean either that the feature is off or that GitHub did not recognise the chain.
+
+### Registering a stack when you cannot reach the API
+
+A session running behind an egress policy that blocks `api.github.com` — Claude Code on the web is one — cannot call the Stacks API at all, and a token does not help, because the block is on the origin rather than the authorization. Dispatch `.github/workflows/stacks.yml` instead: it makes the same call from a runner and prints the response in the job log.
+
+| Input | Used by | Value |
+|---|---|---|
+| `operation` | all | `list`, `create`, `add` or `unstack` |
+| `pull_requests` | `create`, `add` | comma-separated pull request numbers, bottom to top |
+| `stack_number` | `add`, `unstack` | the stack's repository-scoped number |
+
+`create` takes at least two pull requests, and each one's base must be the head of the one below it — the chain you already built by hand. `add` appends onto the top of an existing stack and takes only the new layers.
 
 ## What the guards actually do
 
