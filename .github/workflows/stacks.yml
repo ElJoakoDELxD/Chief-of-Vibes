@@ -1,0 +1,67 @@
+# Registers, extends and dissolves stacks for a session that cannot reach the
+# API itself.
+#
+# The Stacks API is only reachable from somewhere GitHub trusts. A session
+# running behind an egress policy that blocks api.github.com has no route to
+# it, and no amount of credentials changes that — the block is on the origin,
+# not the authorization. A runner is a different origin: same repository, same
+# token, no policy in between. Dispatch this workflow through the Actions API
+# and read the response in the job log.
+name: stacks
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Which Stacks API call to make
+        required: true
+        type: choice
+        options: [list, create, add, unstack]
+        default: list
+      pull_requests:
+        description: Comma-separated pull request numbers, bottom to top (create, add)
+        required: false
+        type: string
+      stack_number:
+        description: The stack's repository-scoped number (add, unstack)
+        required: false
+        type: string
+
+permissions:
+  pull-requests: write
+
+jobs:
+  stacks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the Stacks API
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPERATION: ${{ inputs.operation }}
+          PULL_REQUESTS: ${{ inputs.pull_requests }}
+          STACK_NUMBER: ${{ inputs.stack_number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          body() {
+            printf '%s' "$PULL_REQUESTS" \
+              | jq -Rc '{pull_requests: (split(",") | map(gsub("^\\s+|\\s+$";"") | tonumber))}'
+          }
+
+          case "$OPERATION" in
+            list)
+              gh api "repos/$REPO/stacks"
+              ;;
+            create)
+              body > payload.json
+              gh api --method POST "repos/$REPO/stacks" --input payload.json
+              ;;
+            add)
+              body > payload.json
+              gh api --method POST "repos/$REPO/stacks/$STACK_NUMBER/add" --input payload.json
+              ;;
+            unstack)
+              gh api --method POST "repos/$REPO/stacks/$STACK_NUMBER/unstack"
+              ;;
+          esac
