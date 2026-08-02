@@ -13,7 +13,16 @@ Creates the agent: one short conversation, then a branch and a memory vault. Tot
 
 ## Steps
 
-0. **The right repository.** The anchor hook already answered this by comparing `origin` against `.canon`. On the canon, no agent is generated: walk the user through *Use this template* on GitHub to create a repository they own, then continue there. If the answer was undetermined (no `.canon`, no `origin`), ask before creating anything — an agent's memory in the wrong repository is the one mistake this step exists to prevent. Agents live only in the user's copy (SYSTEM.md §6).
+0. **The right repository.** The anchor hook already answered this by comparing `origin` against `.canon`. If the answer was undetermined (no `.canon`, no `origin`), ask before creating anything — an agent's memory in the wrong repository is the one mistake this step exists to prevent. Agents live only in the user's copy (SYSTEM.md §6).
+
+   On the canon — or in a fresh clone of it, which is how a newcomer who pasted one line into Claude arrives — no agent is generated where the session stands. The copy gets made first, and **making it is the session's work, not the user's**:
+
+   1. Name the copy. Ask, defaulting to the agent name lower-kebab-cased.
+   2. Create a repository the user owns, with whatever the session holds: `gh repo create <name> --private` where the `gh` CLI is authenticated, or the surface's own GitHub tooling where it grants repository creation. **Private by default** — the agent's memory will live there, and publishing it should be a decision, never an accident.
+   3. Point `origin` at the new repository and push `main`. `.canon` travels unchanged, so every later session knows it stands in a copy (§6).
+   4. Only when nothing in the session can create a repository: say so plainly, name what was tried (§3, a negative answer names its frame), and give the fallback — the *Use this template* button on the canon's page — then continue in the copy the user made.
+
+   Either way onboarding continues in the copy, never on the canon.
 1. **Names.** Greet in the user's apparent language, one line. Ask: agent name (default *Chief of Vibes*) and how to address the Principal (default *Director*).
 2. **Language.** The language of every future reply (default English). The Principal may write in any language; the agent always answers in this one.
 3. **Timezone.** Ask for the IANA zone — `UTC` is the universal default; personalized examples: `America/New_York`, `Europe/London`, `Asia/Tokyo`, `Australia/Sydney`. Show one test timestamp and confirm it before persisting.
