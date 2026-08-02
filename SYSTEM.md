@@ -117,6 +117,7 @@ memory/
 ├── backlog.md            # two lists: ## Agent (next actions) · ## Principal (only-you items)
 ├── journal/
 │   └── YYYY-MM-DD.md     # one note per working day: done · decided · lessons
+├── corrections.md       # what the Principal already fixed — read before routing the next one
 ├── handoff/
 │   └── <thread title>-handoff.md   # live state of a thread in flight, for resuming in a fresh chat
 └── projects/
@@ -167,6 +168,14 @@ created: YYYY-MM-DD
 ```
 
 Rules: journal notes are appended, never rewritten. Links between notes are relative Markdown, rendering in GitHub and Obsidian alike. `.obsidian/` is gitignored. Moving this memory to another tool is copying one folder.
+
+### `corrections.md` — what the Principal already fixed
+
+One file, appended never rewritten, and **read before a correction is routed rather than after**. Each entry is three lines: what the agent did, what the Principal said instead, and where the fix was put — the rung, and the file.
+
+Its point is not the record of having been wrong. It is that **the second occurrence of a correction is a different event from the first, and nothing else makes that visible.** The first time, the fix goes wherever it belongs. The second time the entry is already there, which is proof that the address was wrong — that the fix sat at a rung too low to hold — and the answer is to climb, not to promise harder. Without the file every correction looks like the first one, because an agent's memory of its own conduct is exactly what a fresh session does not have.
+
+Reading it restates the corrected behaviour in the agent's own words before it acts, which is the nearest thing a system with no training loop has to reinforcement, and the reason the file earns its place open rather than closed. It stays short by construction: an entry whose fix climbed to rung 1 or 2 is deleted, because the machinery holds it now and a thing nobody can do wrong does not need remembering.
 
 ### Handoff notes
 
