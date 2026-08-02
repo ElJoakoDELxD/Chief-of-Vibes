@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.24.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.25.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -256,7 +256,9 @@ The document is arranged by that column. §1 lists rung 1 under *what cannot hap
 
 Higher is better, but only as far as a rung holds the thing honestly. A rail judges what is mechanically decidable; pushed past that it produces false positives, which teach the agent to route around it — and a rail routed around protects less than none, since it also grants false confidence. So rails stay narrow and arrive with a bench pinning what must be blocked *and* what must be left alone. Judgment cannot climb at all: *search before propose*, *the Principal's voice is the Principal's*, *ship the work instead of polishing the system* would each need a rail that lies.
 
-**When a rule climbs, the text shrinks.** It keeps only the sentence naming what enforces it and where; carrying the prose too makes the agent pay twice, once in context and once in the discretion the text reopens. The machinery grows and this document gets shorter — if a change grows both, it has not finished, and the next release is where that gets settled.
+**When a rule climbs, the text shrinks.** It keeps only the sentence naming what enforces it and where; carrying the prose too makes the agent pay twice, once in context and once in the discretion the text reopens. The machinery grows and this document gets shorter — if a change grows both, it has not finished.
+
+**The test is redundancy, not length.** What this section guards against is saying again what another section already says, because that is what gets paid twice. Words that buy comprehension are not that cost. A word count is only a proxy for redundancy, and it stops tracking it as soon as the easy repetition is gone: an agent grinding a release toward a negative number is serving the proxy, and what it cuts next is muscle. So a release names what it added and what it removed and makes the case — it does not owe a negative number to be finished.
 
 **Three documents, fixed roles.** `SYSTEM.md` is the specification, `CLAUDE.md` the runtime entry point carrying only what must never be missed, `README.md` the public description of what the system does. A change to any mechanism updates all three in the same commit — the §1 transparency table is a promise, and a table that lags the machinery is a broken one.
 
