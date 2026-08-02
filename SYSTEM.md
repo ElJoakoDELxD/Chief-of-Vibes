@@ -11,7 +11,7 @@ Chief of Vibes turns Claude Code and a git repository into a persistent AI colle
 The design removes three failure modes of working with LLMs:
 
 1. **Work evaporates.** A chat produces something useful, the window closes, nothing accumulates. Here every session ends committed and pushed; memory compounds.
-2. **AI self-validates.** Confident internal artifacts — plans, frameworks, dashboards — that no outsider ever touches. Here nothing counts as success except an unsolicited external signal: a reader, a user, a payment (§7).
+2. **AI self-validates.** Confident internal artifacts — plans, frameworks, dashboards — no outsider ever touches. Nothing counts as success except an unsolicited external signal: a reader, a user, a payment (§7).
 3. **Process eats product.** The tool improves itself instead of shipping. Here meta-work is bounded: given one unit of effort and a choice between polishing the system and shipping the work, ship the work.
 
 ### What cannot happen
@@ -140,9 +140,9 @@ verified: <what was actually run or checked to know this works>
 ## How to tell it worked
 ```
 
-**Traps** is the part that earns the file. The happy path can be copied from any documentation; the value is what went wrong the first time — the required flag nobody documents, the check that reports success while doing nothing, the guard that fires on the wrong thing.
+**Traps** earns the file. The happy path is in any documentation; the value is what went wrong the first time — the required flag nobody documents, the check that reports success while doing nothing, the guard that fires on the wrong thing.
 
-Entries are **verified, not theorised** (`verified:` names what was actually run, because a guess here is worse than an empty folder — the next agent will trust it), **corrected in place** rather than appended to, and **deleted** once they stop being true. What does not belong: today's events (the journal), this agent's identity or wants (`state.md`, `backlog.md`), and anything only one agent could use — a procedure that only makes sense inside one project belongs in that project's brief.
+Entries are **verified, not theorised** (`verified:` names what was run — a guess here is worse than an empty folder, because it will be trusted), **corrected in place**, and **deleted** once false. Out of scope: today's events (the journal), this agent's identity (`state.md`, `backlog.md`), and anything only one agent could use — that belongs in its project's brief.
 
 Entries arrive by pull request into `main`, the same gate as a template change (§6): a claim of repository-wide truth should be read by the Principal before every future agent inherits it. They carry no version bump, since a version is a template release and this is not one.
 
@@ -211,9 +211,7 @@ Conflicts resolve without asking: template files take `main`'s version, the agen
 
 ### Merge for the template, cherry-pick for the world
 
-Cherry-pick keeps a job, and it is the opposite one. `main` is **vertical**: the branch wants all of it, always, so that flow is a merge with no decision in it — rung 1. Everything else is **lateral** — another repository, a utility, a technique read somewhere — and there the agent wants one specific thing, never the whole history: fetch the source and pick the commit that carries it, or lift the idea and write it in this system's own words.
-
-Absorption is rung 4 and cannot climb, because every instance is a judgment about fit, cost, and what it drags in. It also carries obligations the system already states: attribution in the README's lineage for anything whose articulation shaped this one, and §7's IP hygiene for anything reaching a published artifact.
+Cherry-pick keeps the opposite job. `main` is **vertical**: the branch wants all of it, always, so that flow is a merge with no decision in it — rung 1. Everything else is **lateral** — another repository, a utility, a technique read somewhere — and there the agent wants one thing, never the whole history: fetch the source and pick the commit, or lift the idea and write it in this system's own words. Absorption is rung 4 and cannot climb: every instance judges fit, cost, and what it drags in. Its obligations are already stated — lineage attribution in the README for anything whose articulation shaped this one, and §7's IP hygiene for anything published.
 
 **A template change is not finished when it merges into the canon. It is finished when it governs the repository the agent works in.** A copy on an older spec obeys superseded rules with the old rails wired in, and nothing looks wrong — the guard that fires is the old one, and the limit written upstream last week is simply absent. So the version of `SYSTEM.md` on the canon and on your `main` are kept equal, the drift check reports the gap at session start (§1), and closing it comes before substantive work rather than after.
 
@@ -288,7 +286,7 @@ Time and branch come from the anchor hook (fallback: `tools/now.sh`), never esti
 - **On a copy**: this is where the user's agent belongs. Offer **create your agent** (`.claude/skills/onboard/`), or **maintain the template** through a pull request into this copy's `main`. If agent branches exist, continuing one is offered first.
 - **Undetermined** (no `.canon`, or no `origin`): say so and ask which repository this is before creating anything.
 
-**Session end:** write or update today's `memory/journal/` note (done · decided · lessons), update `memory/backlog.md`, commit, push to the agent branch. Work that exists only in the chat window does not exist. Nearing a session's limits — context, time, attention — stop opening new work: land what is in flight, push, leave the next step in the journal, and write a handoff note (§5) for any thread that cannot land, so it continues in a fresh window rather than degrading in a full one.
+**Session end:** write today's `memory/journal/` note (done · decided · lessons), update `memory/backlog.md`, commit, push to the agent branch. Work that exists only in the chat window does not exist. Nearing a session's limits, stop opening new work: land what is in flight, push, and write a handoff note (§5) for any thread that cannot land, so it continues in a fresh window rather than degrading in a full one.
 
 **Succession:** any new session, on any runtime, given this repository resumes the agent exactly where the last push left it — sessions are disposable bodies; the repository is the agent. A session that ends unpushed leaves no successor, only amnesia.
 
