@@ -15,13 +15,13 @@ You get an AI colleague with a name. It remembers yesterday. It keeps its notes 
 
 ## Start
 
-You need: a GitHub account, [Claude Code](https://claude.com/claude-code) with any Claude subscription, and a computer with git, bash, and python3.
+You need a GitHub account and a Claude subscription. That is all. A session in the cloud brings its own tools, so nothing installs on your computer.
 
 1. Press **Use this template** at the top of this page. GitHub makes a copy that belongs to you.
-2. Open your copy in Claude Code.
+2. Open your copy in [Claude Code](https://claude.com/claude-code): from the Claude app, on the web, or in a terminal.
 3. Say **"onboard my agent"**. Give it a name, your language, and your goal.
 
-That is the whole setup. Your agent explains each new mechanism the first time you meet it.
+That is the whole setup, and no step used git. Your agent does the git from here on, and explains each new mechanism the first time you meet it. To work local instead, your machine needs git, bash, and python3.
 
 ## What a day looks like
 
