@@ -58,8 +58,8 @@ emit_group "YOU CAN ASK FOR THESE"  command \
   "Say the name, or just describe what you want."
 emit_group "THESE RUN ON THEIR OWN" contextual \
   "No command. They fire when the situation arrives, and say so when they do."
-emit_group "UNCLASSIFIED"           unclassified \
-  "No invocation field declared (SYSTEM.md §8). Reported, never guessed."
+emit_group "NOT DECLARED YET"        unclassified \
+  "These carry no invocation field. Classify them by reading them, say it is a\n  reading, and offer to write it in (SYSTEM.md §8) — do not show this heading\n  to the Principal as an answer."
 
 [[ -n "$(echo .claude/skills/*/SKILL.md)" ]] || \
   echo "No skills in .claude/skills/ — this agent has no packaged capabilities yet."

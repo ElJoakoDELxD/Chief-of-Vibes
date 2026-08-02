@@ -25,7 +25,11 @@ Grouping comes from each skill's own `invocation:` field for the same reason. Ad
 
 ## What to do with what comes back
 
-- **Anything under UNCLASSIFIED is a finding, not a footnote.** It means a skill shipped without declaring how it is invoked, so the Principal cannot tell whether to ask for it or wait for it. Say so plainly and offer to fix it — it is one line of frontmatter.
+- **A missing field is the agent's work, not the Principal's.** Reading a skill and saying in one line what it does is the job; so is deciding whether it is something to ask for or something that fires on its own. Handing the Principal a raw `UNCLASSIFIED` or a truncated description is returning labour that was never theirs.
+
+  So: where a skill has no `summary:`, write one from reading its `SKILL.md` — plain, one line, in the Principal's language, saying what it does rather than when it triggers. Where it has no `invocation:`, classify it from what its description actually fires on, and say the classification is a reading rather than a declaration.
+
+  **Then close the gap.** Offer to write both into the skill's frontmatter, so the next run needs no judgment at all. A judgment repeated every session is rung 4 doing rung 1's work — the roster should end up needing nothing but the directory.
 - **Answer the question that was actually asked.** Someone asking *"can it do X?"* wants a yes or no about X and a route, not a wall of everything. Lead with the answer, then offer the full roster.
 - **Where nothing fits, say that too**, and say what the nearest thing does. A capability that does not exist is a better answer than a capability bent to fit.
 
