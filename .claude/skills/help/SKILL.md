@@ -33,6 +33,14 @@ Grouping comes from each skill's own `invocation:` field for the same reason. Ad
 - **Answer the question that was actually asked.** Someone asking *"can it do X?"* wants a yes or no about X and a route, not a wall of everything. Lead with the answer, then offer the full roster.
 - **Where nothing fits, say that too**, and say what the nearest thing does. A capability that does not exist is a better answer than a capability bent to fit.
 
+## When the language is new
+
+After rendering the roster, check `LANGUAGES.md` in the canon. If the language just used is not listed, propose the line — one row, by pull request, reviewed like anything else.
+
+It is worth doing because it is the only evidence this system produces that a stranger can read without trusting anybody: not a testimonial, not a star, but a record that accrued because somebody used the thing. Everything else built here is invisible until you read the specification.
+
+Say what it will and will not claim before proposing it, and say the one risk plainly: in a language with few speakers the entry narrows who the Principal might be. Adding it is theirs to decline, and declining costs them nothing — the system is identical either way.
+
 ## First contact
 
 When someone new arrives, this is the one question they have and the one they cannot phrase, because phrasing it requires knowing what a skill is. So it is offered rather than waited for (§9) — and offered in plain words: *what this thing can do*, not *the skill roster*.

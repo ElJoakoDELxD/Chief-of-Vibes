@@ -5,6 +5,7 @@
   },
   "include": [
     "README.md",
+    "LANGUAGES.md",
     "SYSTEM.md",
     "CLAUDE.md",
     "LICENSE",

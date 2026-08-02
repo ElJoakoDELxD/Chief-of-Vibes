@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.26.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.27.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -276,6 +276,8 @@ Higher is better, but only as far as a rung holds the thing honestly. A rail jud
 **When a rule climbs, the text shrinks.** It keeps only the sentence naming what enforces it and where; carrying the prose too makes the agent pay twice, once in context and once in the discretion the text reopens. The machinery grows and this document gets shorter — if a change grows both, it has not finished.
 
 **The test is redundancy, not length.** What this section guards against is saying again what another section already says, because that is what gets paid twice. Words that buy comprehension are not that cost. A word count is only a proxy for redundancy, and it stops tracking it as soon as the easy repetition is gone: an agent grinding a release toward a negative number is serving the proxy, and what it cuts next is muscle. So a release names what it added and what it removed and makes the case — it does not owe a negative number to be finished.
+
+**`LANGUAGES.md` is the reach record.** One line per language the system has explained itself in, added by an agent the first time it renders its roster in a language absent from the file, by pull request like anything else. It is the only artefact here that a stranger can read without trusting anyone — everything else is invisible until you read this document. It carries the language and the day and nothing that identifies a Principal (§7), and it says on its face what it counts: one rendering, never an adopter. A count of languages read as a count of users is a vanity number wearing evidence's clothes.
 
 **Three documents, fixed roles.** `SYSTEM.md` is the specification, `CLAUDE.md` the runtime entry point carrying only what must never be missed, `README.md` the public description of what the system does. A change to any mechanism updates all three in the same commit — the §1 transparency table is a promise, and a table that lags the machinery is a broken one.
 
