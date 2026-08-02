@@ -1,5 +1,7 @@
 ---
 name: propagate
+invocation: contextual
+summary: Notice when something learned here would help everyone, and turn it into a proposal to the shared template — or decide it should not.
 description: Recognise, mid-work, that something just learned would improve the canon for everyone — and turn it into a proposal, a knowledge entry, or nothing. This is not a command anyone types. It fires from the situation: a rule that was followed while the failure happened anyway, an absence that cost something measurable, a mechanism that worked and is not in the specification, an external signal whose cause is generic. It also covers the other two directions of the same loop — syncing the canon's template down when the drift check reports a gap, and reviewing a proposal somebody else opened. Load it whenever a finding feels bigger than this repository, and load it especially to decide that it is not.
 ---
 
@@ -23,6 +25,7 @@ Nobody types *propose*. The moment arrives inside other work, and recognising it
 - **A rule was absent and the absence cost something measurable** — a wrong claim shipped, a session's work lost, the same step rediscovered for the third time.
 - **Something worked that the specification does not contemplate**, and would work in a copy configured nothing like this one. This is the discovery case, and it needs external validation rather than a failure — see the trap below.
 - **An external signal arrived** — paid, subscribed, returned, shipped on — and the mechanism behind it is not specific to this Principal.
+- **The Principal corrected the agent's conduct.** Read `memory/corrections.md` first (§5): if the entry is already there this is a second occurrence, and a second occurrence is not another rule — it is proof the first fix sat too low to hold, so what gets proposed is the climb. Not the work — the conduct: what was handed over in a way that could not be acted on, what was assumed known, what was returned to them that was never theirs. This is the trigger with the best record in this system's history and the easiest to miss, because a correction arrives feeling like something to apologise for rather than something to route, and an apology is rung 5 — it holds nothing, so the same correction comes back. The test: could this correction be needed twice? If yes it has an address, and *"from now on I will"* is not one.
 
 ## The rewording trap, which is what this skill is mostly for
 

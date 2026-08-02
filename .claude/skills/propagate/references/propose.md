@@ -6,6 +6,7 @@ Direction: this copy → the canon. Opens a pull request against a repository th
 
 - **The gate in SKILL.md, answered in writing.** All three questions. Question 2 is the one that fails quietly: a rule that reads as universal because it is phrased universally, but whose only evidence is this Principal's toolchain.
 - **The canon is `.canon`**, read from the file rather than assumed — a copy that hard-forked edited it, and proposing into the wrong repository is not recoverable by editing the pull request.
+- **Written in the template's language** (§6), whatever language the failure was found and discussed in. The agent translates; the canon stays readable to every agent that inherits it.
 - **One change per pull request** (§8). A proposal carrying two ideas gets the weaker one merged with the stronger.
 
 ## The change itself
