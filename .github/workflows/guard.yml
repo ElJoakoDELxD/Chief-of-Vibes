@@ -31,7 +31,7 @@ jobs:
         env:
           REPO: ${{ github.repository }}
         run: |
-          allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools)/'
+          allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools)/'
 
           # knowledge/ (SYSTEM.md §5) is where a COPY records the procedures its
           # agents verified. The canon has no agents and therefore nothing to have
