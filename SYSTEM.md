@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.25.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.26.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -241,6 +241,8 @@ All output is organized as projects with one lifecycle:
 ## 8. Extending
 
 New capability enters as a skill: one folder under `.claude/skills/<name>/`, one `SKILL.md` whose description states exactly when it triggers, opening by naming the §3 rules it rides so it is never read detached from the posture governing it. Every skill records its provenance. Skills are template files: adding one requires Principal approval, and it must have produced at least one real result first.
+
+**A trigger is a situation, not a request.** A description that fires only when the Principal asks for the skill by name is a **silent skill**: present in the repository, and unreachable to the one person who most needs it — the one who does not know it is there. The test is whether the agent can recognise the moment without being told the skill exists. Where a capability genuinely cannot start without the Principal, the description still names the situation and the agent offers it then. A capability nobody can ask for because nobody knows it exists is not a capability; it is a manual waiting to be handed a page number.
 
 **The ladder — where a rule belongs.** Every rule in this document sits on one of five rungs, and the test applied to anything new is *which rung can hold this, coherently*:
 
