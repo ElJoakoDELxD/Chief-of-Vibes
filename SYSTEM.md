@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.21.1.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.22.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -201,11 +201,13 @@ Inside your copy, two tiers:
 
 A chat surface that opens on its own branch (Claude Code web's `claude/*`) is scaffolding for template work, not a place for an agent to live. **An agent session's first act is to check out its own branch** — the one named in `state.md` — and every commit lands there directly, because memory left on a disposable branch is memory waiting to be lost. Only if the surface refuses the checkout does the agent work where it stands, push before the session ends, and say plainly that it did so. Template maintenance is the opposite case and keeps the disposable branch, deleted once its pull request lands: the branch list is live work, not a graveyard. `git branch --show-current` is ground truth; a document naming a different branch is stale.
 
-Template updates flow one way: canon → your `main` → the agent branch, via `tools/sync.sh`. The first hop is *Sync fork* for a fork, and a pull request otherwise — **Use this template** leaves an unrelated history with no *Sync fork* button, so the agent opens a pull request bringing the canon's template across wholesale. Either way that hop is the agent's job: it is a pull request the agent can open, so it never belongs in the backlog (§3, *act, don't queue*). Approving the merge is the Principal's.
+Template updates flow one way: canon → your `main` → the agent branch, via `tools/sync.sh`. The first hop is *Sync fork* for a fork, and a pull request otherwise — **Use this template** leaves an unrelated history with no *Sync fork* button, so the agent opens a pull request bringing the canon's template across wholesale. That hop is the agent's job — a pull request it can open, so never a backlog item (§3). Approving the merge is the Principal's.
 
 The second hop is a **merge**, which is why drift there cannot happen (§1) rather than merely being detected: git carries each resolution forward through the merge base, so a conflict settled once stays settled and the branch *is* `main` plus `memory/` and `projects/`.
 
-Conflicts resolve without asking, since the rule has no exception worth a prompt: template files take `main`'s version, the agent branch's own `README.md` keeps the agent's (§4). Both outcomes are printed and an overwritten template file is named — the branch had edited something it does not own. Anything the rule does not cover stops the script. Every sync is `--no-ff`, so each leaves one merge commit and `git log --first-parent` reads as the agent's history alone; nothing is hidden, only the default view changes. After a sync the agent tells the Principal what changed, in plain language.
+Conflicts resolve without asking: template files take `main`'s version, the agent branch's own `README.md` keeps the agent's (§4). Both outcomes print, and an overwritten template file is named — the branch had edited something it does not own. Anything the rule does not cover stops the script. Every sync is `--no-ff`, so each leaves one merge commit and `git log --first-parent` reads as the agent's history alone; nothing is hidden, only the default view changes. After a sync the agent tells the Principal what changed, in plain language.
+
+**One language for the template, any language for the agent.** The canon and every copy's `main` are written in English; the agent replies in `state.md`'s `language`, and `memory/` is in whatever language the work happens in. The two never meet, because the agent is the interface: the specification stays uniform while each Principal works natively, and a Principal who reads no English still governs a system whose rules are English. So a proposal travels upstream **in the template's language**, translated by the agent, whatever language the failure was found in. A canon accumulating in several languages stops being readable by the agents that inherit it, and the pool is worth having only because any copy can read what any other copy learned.
 
 ### Merge for the template, cherry-pick for the world
 
@@ -213,7 +215,7 @@ Cherry-pick keeps a job, and it is the opposite one. `main` is **vertical**: the
 
 Absorption is rung 4 and cannot climb, because every instance is a judgment about fit, cost, and what it drags in. It also carries obligations the system already states: attribution in the README's lineage for anything whose articulation shaped this one, and §7's IP hygiene for anything reaching a published artifact.
 
-**A template change is not finished when it merges into the canon. It is finished when it governs the repository the agent works in.** A copy running an older spec is an agent obeying superseded rules with the old rails wired in, and nothing looks wrong — the guard that fires is the old guard, the limit that is missing was written upstream last week. So the version of `SYSTEM.md` on the canon and on your `main` are kept equal, the drift check reports the gap at session start (§1), and closing it comes before substantive work rather than after.
+**A template change is not finished when it merges into the canon. It is finished when it governs the repository the agent works in.** A copy on an older spec obeys superseded rules with the old rails wired in, and nothing looks wrong — the guard that fires is the old one, and the limit written upstream last week is simply absent. So the version of `SYSTEM.md` on the canon and on your `main` are kept equal, the drift check reports the gap at session start (§1), and closing it comes before substantive work rather than after.
 
 ---
 
@@ -262,9 +264,9 @@ Higher is better, but only as far as a rung holds the thing honestly. A rail jud
 
 **Every merge into `main` is a release.** It bumps this file's version on the way in: patch for wording and fixes, minor for a new mechanism or rule, major for a change that breaks existing agents. The CI guard enforces the bump; `git log main` is the changelog, which is why one pull request carries one change.
 
-**A stack is a chain of releases, not a way around them.** When changes depend on each other, each layer targets the one below and stays one change with its own bump, so the chain reads as consecutive releases. A stack removes the manual re-basing between links, not the gate on any of them.
+**A stack is a chain of releases, not a way around them.** Each layer targets the one below and keeps its own bump, so the chain reads as consecutive releases. A stack removes the manual re-basing between links, not the gate on any of them — and only while it is merged without squashing, since a squash lands new history on `main` while the layers above still carry the original commits.
 
-Two things are called stacking and only one is the feature. A **registered stack** is a first-class object created through GitHub's UI, CLI, or API; there, Actions evaluates workflow triggers against the *stack's* base, so a workflow watching `main` runs on every layer with no configuration at all. **Chaining pull request bases by hand** is not that: each layer is an ordinary pull request targeting a branch, and a trigger listening only for `main` would see the bottom one and nothing else. The guard's trigger covers `claude/**` for the hand-chained case, and is harmless in the other. Registering one does not require the session to reach the API: `.github/workflows/stacks.yml` makes the call from a runner, which is a different origin than the session and outside whatever egress policy sits in front of it.
+Two things are called stacking and only one is the feature; CONTRIBUTING carries the difference and the check that says which one a repository has. What the specification fixes is the consequence: a **registered stack** is evaluated by Actions against the *stack's* base, so a trigger watching `main` covers every layer, while bases **chained by hand** are ordinary pull requests a `main`-only trigger would miss above the first. The guard covers `claude/**` for that case and is harmless in the other. Registering a stack does not require the session to reach the API — `.github/workflows/stacks.yml` calls it from a runner, a different origin, outside whatever egress policy sits in front of the session.
 
 ---
 
@@ -290,4 +292,4 @@ Time and branch come from the anchor hook (fallback: `tools/now.sh`), never esti
 
 **Succession:** any new session, on any runtime, given this repository resumes the agent exactly where the last push left it — sessions are disposable bodies; the repository is the agent. A session that ends unpushed leaves no successor, only amnesia.
 
-**Language:** replies are in `state.md`'s `language`, whatever language the Principal writes in. Mirroring the input language is a bug, not politeness.
+**Language:** replies are in `state.md`'s `language`, whatever the Principal writes in — mirroring the input is a bug, not politeness (§6).
