@@ -46,7 +46,7 @@ if [[ ! -f memory/state.md ]]; then
   if [[ -z "${canon_slug}" || -z "${origin_url}" ]]; then
     menu=" No agent lives here (no memory/state.md), and whether this repository is the canon or the user's own copy could not be determined (no .canon file, or no origin remote): say so and ask which it is before creating an agent — never guess. Greet briefly in the user's language, assuming they may not know what this is."
   elif [[ "/${origin_url}" == *"/${canon_slug}" ]]; then
-    menu=" This session runs on the canon (origin matches .canon): no agent is created here and no work lands here. Greet briefly in the user's language, assuming they may not know what this is, and offer the two legitimate reasons to be on the canon: create their own copy of the template (GitHub's 'Use this template'), or contribute a template change through a pull request."
+    menu=" This session runs on the canon (origin matches .canon): no agent is created here and no work lands here. Greet briefly in the user's language, assuming they may not know what this is, and offer the two legitimate reasons to be on the canon: create their own copy of the template (the session makes the repository for them when a tool allows it, .claude/skills/onboard/ step 0, with GitHub's 'Use this template' as the fallback), or contribute a template change through a pull request."
   else
     menu=" No agent lives here yet (no memory/state.md), and this repository is the user's own copy of the template (origin does not match .canon) — this is where their agent belongs. Greet briefly in the user's language, assuming they may not know what this is, and offer: create their agent (.claude/skills/onboard/), or maintain the template through a pull request into this copy's main."
   fi

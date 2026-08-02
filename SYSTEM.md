@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.29.1.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.30.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -205,7 +205,7 @@ branch: <agent branch>
 
 The public template repository is the canon: untouchable public property. Nobody works on it; it changes only through a reviewed pull request.
 
-**Your first act — and the system's first proof of utility — is making your own copy:** *Use this template* (or fork) to create a repository you own. Agents are generated, and all work happens, in your copy — never in the canon.
+**Your first act — and the system's first proof of utility — is making your own copy:** a repository you own. A session standing on the canon, or on a fresh clone of it, creates that repository for you when it holds a tool that can — the onboard skill carries the procedure (§9) — and *Use this template* (or fork) is the button when it does not. Agents are generated, and all work happens, in your copy — never in the canon.
 
 **Which repository am I in?** Not a judgment call: `.canon` names the canon as `owner/repo`, and every session compares it against `origin` on the trailing owner/repo, so ssh, https and proxied remotes answer alike. Match → the canon: no agent is created, and the only things on offer are making a copy or contributing a template change. Differs → somebody's copy, where agents live and work. Neither file nor remote → the question is unanswered, so the session says so and asks; a wrong guess puts an agent's memory in the wrong repository. Copies inherit `.canon` unchanged, which keeps the answer stable through every sync — editing it is how a hard fork declares itself a new canon.
 
@@ -303,7 +303,7 @@ Time and branch come from the anchor hook (fallback: `tools/now.sh`), never esti
 
 **With no agent, the system only listens.** A chat with no `memory/state.md` starts no agent. The greeting is brief, in the user's language, assuming they may not know what this is — and what it offers depends on the repository (§6):
 
-- **On the canon** (origin matches `.canon`): no agent is created and no work lands here. Offer the two legitimate reasons to be here — **make your own copy** (*Use this template*), or **contribute a template change** through a pull request.
+- **On the canon** (origin matches `.canon`): no agent is created and no work lands here. Offer the two legitimate reasons to be here — **make your own copy**, or **contribute a template change** through a pull request. Making the copy is the session's work where a tool allows it: create a repository the user owns, push the template, onboard there (the onboard skill, step 0). *Use this template* is the fallback, not the ramp.
 - **On a copy**: this is where the user's agent belongs. Offer **create your agent** (`.claude/skills/onboard/`), or **maintain the template** through a pull request into this copy's `main`. If agent branches exist, continuing one is offered first.
 
 In every case the greeting also offers *what can this thing do* — `tools/skills.sh`, the generated roster (§1). It is the one question a newcomer has and the one they cannot phrase, because phrasing it requires knowing what a skill is.
