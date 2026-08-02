@@ -1,23 +1,29 @@
 #!/usr/bin/env bash
 #
 # Prints the current time as "DD-MM-YYYY HH:MM ±TZ" in the agent's timezone.
-# The zone comes from the `timezone:` field in memory/state.md's YAML
-# frontmatter; without a state file it defaults to UTC.
+# The zone comes from the `timezone:` field in memory/state.md's frontmatter.
 #
-# Exits non-zero with a message on stderr when the zone cannot be resolved,
-# so callers report a missing clock instead of printing a wrong one.
+# Two failures, two different exits, because they are not the same thing:
+#   - a configured zone that does not exist  → exit 1, nothing printed
+#   - no zone configured at all              → exit 2, UTC printed and SAID SO
+#
+# The second matters more than it looks. A bare `+00` is indistinguishable from
+# a Principal who really is in UTC, so a caller stamps a default as an answer
+# and nothing downstream can tell. Marking it is what makes the difference
+# visible; exiting 2 is what makes it checkable without reading the string.
 #
 # Usage:  bash tools/now.sh      →  13-07-2026 03:16 +00
 
 set -euo pipefail
 
 zone="UTC"
+defaulted=1
 if [[ -f memory/state.md ]]; then
   configured="$(awk '
     /^---[[:space:]]*$/ { fence++; next }
     fence == 1 && $1 == "timezone:" { gsub(/["'\''`]/, "", $2); print $2; exit }
   ' memory/state.md)"
-  [[ -n "${configured}" ]] && zone="${configured}"
+  if [[ -n "${configured}" ]]; then zone="${configured}"; defaulted=0; fi
 fi
 
 # `date` silently falls back to UTC for an unknown zone name; require the
@@ -32,5 +38,11 @@ if [[ "${zone}" != "UTC" ]]; then
 fi
 
 # Compact the numeric offset: -0400 → -04, +0530 → +05:30.
-TZ="${zone}" date '+%d-%m-%Y %H:%M %z' \
-  | sed -E 's/([+-][0-9]{2})([0-9]{2})$/\1:\2/; s/:00$//'
+stamp="$(TZ="${zone}" date '+%d-%m-%Y %H:%M %z' \
+  | sed -E 's/([+-][0-9]{2})([0-9]{2})$/\1:\2/; s/:00$//')"
+
+if [[ "${defaulted}" -eq 1 ]]; then
+  printf '%s (UTC default — no timezone configured in memory/state.md)\n' "${stamp}"
+  exit 2
+fi
+printf '%s\n' "${stamp}"

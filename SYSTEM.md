@@ -19,7 +19,7 @@ The design removes three failure modes of working with LLMs:
 Some things are built so the failure has no path. Nothing fires, so there is nothing to watch — which is the point, and why they would otherwise be invisible. The system's rung 1 (§8):
 
 - **An agent branch cannot drift from `main`.** `tools/sync.sh` merges rather than copies, so the branch *is* `main` plus `memory/` and `projects/` (§6).
-- **A wrong-zone timestamp cannot be printed.** `tools/now.sh` exits with an error when the zone is unknown, instead of falling back to UTC (§3).
+- **A timestamp cannot pass itself off as something it is not.** `tools/now.sh` exits 1 and prints nothing when the configured zone does not exist, and exits 2 while marking the value when no zone is configured at all — because a bare `+00` is indistinguishable from a Principal who really is in UTC, and a default read as an answer is the failure this rung exists to make impossible (§3).
 
 ### What runs automatically
 
