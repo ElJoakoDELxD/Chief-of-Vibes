@@ -33,6 +33,12 @@ The transparency contract: **if it is not in this table, it does not happen.** N
 | Install guard — refuses installs that cannot outlive the session, unless the machine declares itself durable (§4) | 2 | before every shell command | a visible `BLOCKED` message when it acts; nothing otherwise |
 | PR guard (CI) — rejects non-template files bound for `main`, and template changes that do not bump this file's version (§8); `knowledge/` is accepted in a copy and needs no bump (§5) | 2 | on every pull request into `main` or a `claude/**` branch, each layer against its own base (§8) | a failed check on the pull request |
 
+### What the agent can do
+
+The table above is what fires unasked. This is the other half, under the same contract: **the roster is generated, never maintained.** `tools/skills.sh` reads every `.claude/skills/*/SKILL.md` and prints its name and description, so a skill that exists is listed by construction and one that is listed exists. A hand-written list is a second copy that starts drifting the day after it is written — rung 5 wearing a table's clothes.
+
+The Principal sees it by asking, and the greeting offers it when there is no agent yet (§9). A capability nobody can ask for because nobody knows it is there is not a capability, it is a manual waiting to be handed a page number — and a skill whose description is worded well does not fix that, because the Principal never reads the description.
+
 Everything one agent knows lives in `memory/` on its branch; what the repository has learned lives in `knowledge/` on `main` (§5). Both are plain Markdown, readable without this system. Every side effect — commit, push, publish — is announced in chat as it happens.
 
 The canon is runtime-agnostic: Markdown and git. Claude Code is the reference runtime — the hooks are its adapter — not a dependency; on any runtime that reads Markdown, the rules hold as discipline.
@@ -242,7 +248,7 @@ All output is organized as projects with one lifecycle:
 
 New capability enters as a skill: one folder under `.claude/skills/<name>/`, one `SKILL.md` whose description states exactly when it triggers, opening by naming the §3 rules it rides so it is never read detached from the posture governing it. Every skill records its provenance. Skills are template files: adding one requires Principal approval, and it must have produced at least one real result first.
 
-**A trigger is a situation, not a request.** A description that fires only when the Principal asks for the skill by name is a **silent skill**: present in the repository, and unreachable to the one person who most needs it — the one who does not know it is there. The test is whether the agent can recognise the moment without being told the skill exists. Where a capability genuinely cannot start without the Principal, the description still names the situation and the agent offers it then. A capability nobody can ask for because nobody knows it exists is not a capability; it is a manual waiting to be handed a page number.
+**Write the trigger as a situation where one exists** — a description the agent can recognise from the work beats one that waits to be named. But a trigger is a judgment, so it sits at rung 4, and judgment is not what makes a capability findable: **discovery is the generated roster in §1.** A well-worded trigger is worth having and is not a substitute for being listed, because a trigger only fires when someone notices, and nobody can see the times it did not.
 
 **The ladder — where a rule belongs.** Every rule in this document sits on one of five rungs, and the test applied to anything new is *which rung can hold this, coherently*:
 
@@ -288,6 +294,8 @@ Time and branch come from the anchor hook (fallback: `tools/now.sh`), never esti
 
 - **On the canon** (origin matches `.canon`): no agent is created and no work lands here. Offer the two legitimate reasons to be here — **make your own copy** (*Use this template*), or **contribute a template change** through a pull request.
 - **On a copy**: this is where the user's agent belongs. Offer **create your agent** (`.claude/skills/onboard/`), or **maintain the template** through a pull request into this copy's `main`. If agent branches exist, continuing one is offered first.
+
+In every case the greeting also offers *what can this thing do* — `tools/skills.sh`, the generated roster (§1). It is the one question a newcomer has and the one they cannot phrase, because phrasing it requires knowing what a skill is.
 - **Undetermined** (no `.canon`, or no `origin`): say so and ask which repository this is before creating anything.
 
 **Session end:** write today's `memory/journal/` note (done · decided · lessons), update `memory/backlog.md`, commit, push to the agent branch. Work that exists only in the chat window does not exist. Nearing a session's limits, stop opening new work: land what is in flight, push, and write a handoff note (§5) for any thread that cannot land, so it continues in a fresh window rather than degrading in a full one.
