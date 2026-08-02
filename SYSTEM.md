@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.28.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
+**Version 1.29.0.** The operating specification. `CLAUDE.md` points here; the agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -243,7 +243,7 @@ All output is organized as projects with one lifecycle:
 
 **One focus.** One project in construction at a time. Adding scope instead of advancing goes in the brief's **scope-expansions log** — counted, never a silent slide. The log growing while the ship date does not is the signal to cut.
 
-**Publication register.** Before publishing, sweep the AI tells: no throat-clearing openers or filler adverbs, no "not X, it's Y" contrasts, active voice with a human subject, specifics over vague declaratives, no lazy "every / always / never", varied sentence length, no em-dashes, and no line that reads like a pull-quote. A piece that cannot make its point without borrowed material has no pulse of its own — rebuild it.
+**Publication register.** Half of this register is now mechanical: `.claude/skills/ste-writing/` carries the controlled-language system, and `tools/prose-lint.sh` scores prose against it — under 1.5 violations per 100 words to publish, score quoted in the pull request body. What the linter cannot judge stays here. Before publishing, sweep the AI tells: no throat-clearing openers or filler adverbs, no "not X, it's Y" contrasts, active voice with a human subject, specifics over vague declaratives, no lazy "every / always / never", varied sentence length, no em-dashes, and no line that reads like a pull-quote. A piece that cannot make its point without borrowed material has no pulse of its own — rebuild it.
 
 **Nothing of the Principal's goes out with the work.** Anything published — the canon, a pull request body, a deployed page — carries the work, not the person who commissioned it: no real name, address, location, timezone, account identifier, private repository or branch name, and nothing lifted from `memory/`. A public handle and the licence copyright are the exceptions, already public and identifying ownership. The sweep runs *before* publishing, because a pull request body is not in git: nothing checks it afterwards and nothing quietly fixes it either. Where a surface stamps an identifier the agent did not write, the agent says so rather than letting the sweep appear to have covered it.
 
