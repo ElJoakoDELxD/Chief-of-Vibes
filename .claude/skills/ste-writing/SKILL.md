@@ -1,13 +1,15 @@
 ---
 name: ste-writing
 invocation: both
-summary: Write published prose in a controlled language, then measure it with the linter.
-description: Apply the controlled writing system to prose that leaves this repository. That covers the README, a pull request body, release notes, and a published page. Use it before every publish. Use it when the Principal asks for clear or simple text. Use it when tools/prose-lint.sh reports a score above the gate. Do not apply it to code, or to work that needs an authorial voice.
+summary: The controlled language this system writes in by default, and the linter that scores it.
+description: The controlled writing system this system uses by default for all prose (SYSTEM.md section 3). Read it when you need a rule itself. It holds the word discipline, the sentence discipline, the two lengths, and the linter. Read it before every publish. Read it when the Principal asks for clear or simple text. Read it when tools/prose-lint.sh reports a score above the gate. It does not govern code and identifiers, quoted material, or work the Principal asks for in an authorial voice.
 ---
 
 # ste-writing
 
-Rides SYSTEM.md section 3: *done is earned by verification* (the score is the check) and *register* (compression is not omission).
+Rides SYSTEM.md section 3: *write in the controlled language, by default*, and *done is earned by verification*. That rule names this file. This file holds the rules, and the score is the check.
+
+**The default is on.** Section 3 makes this system the one every piece of prose starts in. This file is not a mode to switch on. It is the rules themselves, for the moment you need to check one.
 
 This file follows its own rules. That is the test of the system. The authors of ASD-STE100 wrote the manual in the language it defines. A writing rule that its own text breaks is decoration.
 
