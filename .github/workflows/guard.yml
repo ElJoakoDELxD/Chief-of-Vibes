@@ -31,7 +31,7 @@ jobs:
         env:
           REPO: ${{ github.repository }}
         run: |
-          allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools)/'
+          allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools)/'
 
           # knowledge/ (SYSTEM.md §5) is where a COPY records the procedures its
           # agents verified. The canon has no agents and therefore nothing to have
@@ -55,6 +55,12 @@ jobs:
             fi
           done < <(git diff -z --name-only "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}")
           exit $fail
+      - name: Require a current INDEX.md
+        run: |
+          # The index is generated, never maintained (SYSTEM.md §1). A hand-written
+          # list is a second copy that starts to drift the day after it is written,
+          # so the check regenerates it and compares.
+          bash tools/index.sh --check
       - name: Require a version bump
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
