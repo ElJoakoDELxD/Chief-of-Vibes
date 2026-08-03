@@ -89,8 +89,22 @@ if [[ "${event}" == "SessionStart" ]]; then
   fi
 fi
 
+# Findings kept instead of sent upstream, at session start only (§1, §9).
+# The canon has no agent and no backlog, so this is silent there by construction.
+# It reports and never blocks: deciding that a finding generalizes is a judgment,
+# and a rail on a judgment lies (§8).
+candidates=""
+if [[ "${event}" == "SessionStart" && -f memory/state.md ]]; then
+  waiting="$(bash tools/candidates.sh 2 2>/dev/null)" || waiting=""
+  if [[ -n "${waiting}" ]]; then
+    candidates=" Findings tagged for upstream and still waiting:
+${waiting}
+Each one reaches other copies only through a pull request to the canon (§9). Route them or say why they stay."
+  fi
+fi
+
 HOOK_EVENT="${event}" \
-HOOK_CONTEXT="Anchors (hook-measured): time=${timestamp} branch=${branch}. Open the reply with the header built from these values. Never work on main.${menu}${drift}" \
+HOOK_CONTEXT="Anchors (hook-measured): time=${timestamp} branch=${branch}. Open the reply with the header built from these values. Never work on main.${menu}${drift}${candidates}" \
 python3 - <<'PY'
 import json
 import os
