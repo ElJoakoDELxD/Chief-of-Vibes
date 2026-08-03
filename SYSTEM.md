@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.34.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
+**Version 1.35.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -31,6 +31,7 @@ The transparency contract is this: **if it is not in this table, it does not hap
 | Drift check, in the same hook. Compares this copy against the canon, and never runs on the canon (§6) | 3 | at session start, one network call | a stated version gap, or a stated failure to check. Silence means parity |
 | Main guard. Keeps `main` read-only (§6) | 2 | before every file edit and shell command | a visible `BLOCKED` message when it acts, nothing otherwise |
 | Install guard. Refuses an install that cannot outlive the session (§4) | 2 | before every shell command | a visible `BLOCKED` message when it acts, nothing otherwise |
+| Candidate sensor, in the anchor hook. Names the findings tagged for upstream that have waited, and their age (§9) | 3 | at session start, in a copy with an agent | a line for each one, or silence when none waits |
 | PR guard, in CI. Rejects non-template files bound for `main`, and template changes with no version bump (§8) | 2 | on every pull request into `main` or a `claude/**` branch, each layer against its own base (§8) | a failed check on the pull request |
 
 ### What the agent can do
@@ -329,6 +330,8 @@ Time and branch come from the anchor hook, with `tools/now.sh` as the fallback. 
 - **Undetermined**, with no `.canon` or no `origin`: say so and ask which repository this is before creating anything.
 
 In every case the greeting also offers *what can this thing do*, which is `tools/skills.sh`, the generated roster (§1). It is the one question a newcomer has and the one they cannot phrase, because phrasing it requires knowing what a skill is.
+
+**Route what generalizes, before the note closes.** Look at the day's findings and ask which ones would hold in a copy that is nothing like this one. Those travel upstream as a pull request to the canon, and not into the backlog. A finding filed as a candidate and left there reaches nobody, and writing it a second time is not enforcement. One that stays here carries the tag `#propagate:DD-MM-YYYY`, so the sensor measures its wait instead of the agent remembering it (§1).
 
 **Session end.** Write today's `memory/journal/` note as done, decided, and lessons. Update `memory/backlog.md`, commit, and push to the agent branch. Work that exists only in the chat window does not exist. Nearing a session's limits, stop opening new work. Land what is in flight, push, and write a handoff note (§5) for any thread that cannot land. It then continues in a fresh window rather than degrading in a full one.
 
