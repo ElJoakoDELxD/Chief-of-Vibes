@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.35.1.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
+**Version 1.36.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -32,11 +32,14 @@ The transparency contract is this: **if it is not in this table, it does not hap
 | Main guard. Keeps `main` read-only (§6) | 2 | before every file edit and shell command | a visible `BLOCKED` message when it acts, nothing otherwise |
 | Install guard. Refuses an install that cannot outlive the session (§4) | 2 | before every shell command | a visible `BLOCKED` message when it acts, nothing otherwise |
 | Candidate sensor, in the anchor hook. Names the findings tagged for upstream that have waited, and their age (§9) | 3 | at session start, in a copy with an agent | a line for each one, or silence when none waits |
+| Index check, in CI. Regenerates `INDEX.md` from the tree and compares, so a stale index fails rather than lying (§1) | 2 | on every pull request into `main` or a `claude/**` branch | a failed check on the pull request |
 | PR guard, in CI. Rejects non-template files bound for `main`, and template changes with no version bump (§8) | 2 | on every pull request into `main` or a `claude/**` branch, each layer against its own base (§8) | a failed check on the pull request |
 
 ### What the agent can do
 
 The table above is what fires unasked. The roster is the other half, under the same contract. **The system generates the roster and nobody maintains it.** `tools/skills.sh` reads every `.claude/skills/*/SKILL.md` and prints its name and description. A skill that exists is therefore listed, and a skill that is listed therefore exists. A hand-written list is a second copy, and it starts to drift the day after somebody writes it. That is rung 5 wearing a table's clothes.
+
+`INDEX.md` carries the same contract over the rules: `tools/index.sh` reads the tree and prints where every section, rule, skill and tool lives, and CI fails when the committed file is stale. It is how a reader finds the whole rule from its name.
 
 The Principal sees the roster by asking (§9). A capability nobody can ask for, because nobody knows it is there, is not a capability. Wording the trigger well does not fix that, because the Principal never reads the description.
 
