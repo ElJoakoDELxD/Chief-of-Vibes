@@ -24,7 +24,7 @@ grep -n '#propagate' "${file}" 2>/dev/null | while IFS= read -r hit; do
 
   if [[ -z "${tag}" ]]; then
     printf '  undated: %s\n' "$(printf '%s' "${line}" \
-      | sed -E 's/^[[:space:]*_-]+//; s/\*\*//g' | cut -c1-88)"
+      | sed -E 's/^[[:space:]*_-]+//; s/\*\*//g; s/`//g; s/[[:space:]]+$//' | cut -c1-88)"
     continue
   fi
 
@@ -36,6 +36,6 @@ grep -n '#propagate' "${file}" 2>/dev/null | while IFS= read -r hit; do
   age=$(( (today_epoch - filed_epoch) / 86400 ))
   if (( age >= days )); then
     printf '  %s days: %s\n' "${age}" "$(printf '%s' "${line}" \
-      | sed -E "s/${tag}//; s/^[[:space:]*_-]+//; s/\*\*//g" | cut -c1-88)"
+      | sed -E "s/${tag}//; s/^[[:space:]*_-]+//; s/\*\*//g; s/\`//g; s/[[:space:]]+\$//" | cut -c1-88)"
   fi
 done
