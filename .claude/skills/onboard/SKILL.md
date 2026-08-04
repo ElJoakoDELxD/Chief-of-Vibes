@@ -1,5 +1,6 @@
 ---
 name: onboard
+effort: medium
 summary: Create your agent: name it, pick its language and timezone, set its goal, and give it a branch and a memory.
 description: Create a new agent on a clean chat — name it, configure language and timezone, set the goal, and create its branch and memory vault. Use when a chat has no memory/state.md and the user chooses to create an agent.
 ---

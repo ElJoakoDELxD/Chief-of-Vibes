@@ -1,5 +1,6 @@
 ---
 name: help
+effort: low
 summary: Show everything this agent can do — what you can ask for, and what runs on its own.
 description: Show the Principal what this agent can actually do. Use when they type /help, ask what this thing can do, what commands exist, what they can ask for, whether something is possible here, or say they do not know where to start — and use it unprompted the first time someone new arrives, or when a request suggests they are working around a capability that already exists. It reads the skills directory live, so it is never a stale list.
 ---

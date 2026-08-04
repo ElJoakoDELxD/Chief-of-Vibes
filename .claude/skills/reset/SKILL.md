@@ -1,5 +1,6 @@
 ---
 name: reset
+effort: high
 summary: Empty a full chat window without losing the thread: distil what only the conversation knows into memory, push it, then hand the window back clean.
 description: Clear a chat's context without losing the work — distil what lives only in the conversation into memory/, push it, then clear: call the runtime's clearing tool where one exists, and otherwise apply the effect directly, discarding the conversation as a source of truth. Use when the Principal asks to clear, reset, empty, compact or clean up this chat, when the window is heavy — before a long session starts reading slow or repetitive, not after — or when a thread ends and the next one starts in the same window. The sibling of handoff: handoff hands a thread to a fresh chat, reset hands it back to this one.
 ---
