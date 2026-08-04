@@ -61,6 +61,13 @@ jobs:
           # list is a second copy that starts to drift the day after it is written,
           # so the check regenerates it and compares.
           bash tools/index.sh --check
+      - name: Report the prose score
+        run: |
+          # Section 7 sets the gate at 1.5 violations per 100 words and nothing
+          # measured it until now. This reports and never blocks: most of the
+          # repository is over the gate today, and a check that is red from the
+          # first day is a check nobody reads (section 8).
+          bash tools/prose-gate.sh
       - name: Require a version bump
         env:
           BASE: ${{ github.event.pull_request.base.sha }}

@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.36.0**
+Specification version: **1.37.0**
 
 ## The specification
 
@@ -65,6 +65,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/candidates.sh` | Reports findings the agent kept instead of sending upstream. |
 | `tools/index.sh` | Generates INDEX.md: where every rule is stored, and what this repository can do. |
 | `tools/now.sh` | Prints the current time as "DD-MM-YYYY HH:MM ±TZ" in the agent's timezone. |
+| `tools/prose-gate.sh` | Scores every piece of published prose against the gate in SYSTEM.md section 7. |
 | `tools/prose-lint.sh` | Scores prose against the writing system in .claude/skills/ste-writing/ |
 | `tools/skills.sh` | Prints what this agent can do, derived from the skills themselves. |
 | `tools/sync.sh` | Brings the template from `main` into the current agent branch by merging it. |
@@ -72,4 +73,5 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/test-guard-install.sh` | Test bench for .claude/hooks/guard-install.sh. |
 | `tools/test-guard-main.sh` | Test bench for .claude/hooks/guard-main.sh. |
 | `tools/test-index.sh` | Bench for tools/index.sh. It pins that the index is generated from the tree and |
+| `tools/test-prose-gate.sh` | Bench for tools/prose-gate.sh. It pins that the check reports and never blocks, |
 | `tools/test-sync.sh` | Test bench for tools/sync.sh. |
