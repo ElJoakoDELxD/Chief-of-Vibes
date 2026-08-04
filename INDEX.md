@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.38.0**
+Specification version: **1.39.0**
 
 ## The specification
 
@@ -75,4 +75,5 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/test-guard-main.sh` | Test bench for .claude/hooks/guard-main.sh. |
 | `tools/test-index.sh` | Bench for tools/index.sh. It pins that the index is generated from the tree and |
 | `tools/test-prose-gate.sh` | Bench for tools/prose-gate.sh. It pins that the check reports and never blocks, |
+| `tools/test-skills.sh` | Bench for tools/skills.sh. It pins the grouping against the two fields the |
 | `tools/test-sync.sh` | Test bench for tools/sync.sh. |

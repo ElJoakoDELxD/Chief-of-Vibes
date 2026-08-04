@@ -1,6 +1,6 @@
 ---
 name: propagate
-invocation: contextual
+user-invocable: false
 summary: Notice when something learned here would help everyone, and turn it into a proposal to the shared template — or decide it should not.
 description: Recognise, mid-work, that something just learned would improve the canon for everyone — and turn it into a proposal, a knowledge entry, or nothing. This is not a command anyone types. It fires from the situation: a rule that was followed while the failure happened anyway, an absence that cost something measurable, a mechanism that worked and is not in the specification, an external signal whose cause is generic. It also covers the other two directions of the same loop — syncing the canon's template down when the drift check reports a gap, and reviewing a proposal somebody else opened. Load it whenever a finding feels bigger than this repository, and load it especially to decide that it is not.
 ---

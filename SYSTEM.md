@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.38.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
+**Version 1.39.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -282,7 +282,9 @@ All output is organized as projects with one lifecycle:
 
 ## 8. Extending
 
-New capability enters as a skill: one folder under `.claude/skills/<name>/`, and one `SKILL.md` whose description states exactly when it triggers, opening by naming the §3 rules it rides so it is never read detached from the posture governing it. Its frontmatter also carries `invocation:`, which is `command`, `contextual`, or `both`, and `summary:`, one plain line for a person rather than for trigger matching. Both exist so the §1 roster needs nothing but the directory. Where a skill lacks them the agent supplies them by reading it, because describing a capability in one line is the agent's work and not the Principal's. It then writes them in, so the judgment is spent once instead of every session. Every skill records its provenance. Skills are template files: adding one requires Principal approval, and it must have produced at least one real result first.
+New capability enters as a skill: one folder under `.claude/skills/<name>/`, and one `SKILL.md` whose description states exactly when it triggers, opening by naming the §3 rules it rides so it is never read detached from the posture governing it. Its frontmatter also carries `summary:`, one plain line for a person rather than for trigger matching, so the §1 roster needs nothing but the directory. Where a skill lacks it the agent supplies it by reading the skill, because describing a capability in one line is the agent's work and not the Principal's. It then writes it in, so the judgment is spent once instead of every session. Every skill records its provenance. Skills are template files: adding one requires Principal approval, and it must have produced at least one real result first.
+
+**Who can invoke a skill is the runtime's field, never a second one of ours.** A skill is a command and fires on its own by default. `user-invocable: false` removes the command, for a skill that answers to a situation and that nobody would type. `disable-model-invocation: true` removes the automatic firing, for a skill whose timing is the Principal's. The roster groups on those two fields because they are the ones enforced. A field only our own script reads is rung 5 wearing a declaration's clothes: it can say a skill has no command while the runtime goes on offering one, and the roster is the half a reader trusts. The `propagate` skill states the general form as a trap — where the runtime controls the thing, a rule of ours is decoration. So the specification does not restate what the runtime already enforces. It says which field to write.
 
 **Write the trigger as a situation where one exists.** A description the agent can recognise from the work beats one that waits to be named. But a trigger is a judgment, so it sits at rung 4. Judgment is not what makes a capability findable: **discovery is the generated roster in §1.** A well-worded trigger is worth having. It is not a substitute for being listed. A trigger only fires when someone notices, and nobody can see the times it did not.
 
