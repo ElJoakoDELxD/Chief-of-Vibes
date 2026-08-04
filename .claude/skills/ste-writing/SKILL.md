@@ -1,6 +1,6 @@
 ---
 name: ste-writing
-invocation: both
+effort: low
 summary: The controlled language this system writes in by default, and the linter that scores it.
 description: The controlled writing system this system uses by default for all prose (SYSTEM.md section 3). Read it when you need a rule itself. It holds the word discipline, the sentence discipline, the two lengths, and the linter. Read it before every publish. Read it when the Principal asks for clear or simple text. Read it when tools/prose-lint.sh reports a score above the gate. It does not govern code and identifiers, quoted material, or work the Principal asks for in an authorial voice.
 ---

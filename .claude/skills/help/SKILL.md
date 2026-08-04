@@ -1,6 +1,6 @@
 ---
 name: help
-invocation: both
+effort: low
 summary: Show everything this agent can do — what you can ask for, and what runs on its own.
 description: Show the Principal what this agent can actually do. Use when they type /help, ask what this thing can do, what commands exist, what they can ask for, whether something is possible here, or say they do not know where to start — and use it unprompted the first time someone new arrives, or when a request suggests they are working around a capability that already exists. It reads the skills directory live, so it is never a stale list.
 ---
@@ -21,15 +21,15 @@ The roster is **not written here.** It is read from `.claude/skills/*/SKILL.md` 
 
 That is the whole reason this skill does not list capabilities itself. A help page that names them is a hand-maintained list wearing a command's clothes: it would be right the day it is written and wrong the day after, and being wrong there is worse than being absent, because a roster is trusted.
 
-Grouping comes from each skill's own `invocation:` field for the same reason. Adding a skill must never mean editing the thing that lists skills.
+Grouping comes from the frontmatter the runtime obeys, `user-invocable:` and `disable-model-invocation:`, for the same reason and one more. Adding a skill must never mean editing the thing that lists skills, and the roster must never say a skill has no command while the runtime still offers one (§8).
 
 ## What to do with what comes back
 
-- **A missing field is the agent's work, not the Principal's.** Reading a skill and saying in one line what it does is the job; so is deciding whether it is something to ask for or something that fires on its own. Handing the Principal a raw `UNCLASSIFIED` or a truncated description is returning labour that was never theirs.
+- **A missing summary is the agent's work, not the Principal's.** Reading a skill and saying in one line what it does is the job. Handing the Principal a truncated description is returning labour that was never theirs.
 
-  So: where a skill has no `summary:`, write one from reading its `SKILL.md` — plain, one line, in the Principal's language, saying what it does rather than when it triggers. Where it has no `invocation:`, classify it from what its description actually fires on, and say the classification is a reading rather than a declaration.
+  So: where a skill has no `summary:`, write one from reading its `SKILL.md` — plain, one line, in the Principal's language, saying what it does rather than when it triggers. **Then close the gap.** Offer to write it into the frontmatter, so the next run needs no judgment at all. A judgment repeated every session is rung 4 doing rung 1's work — the roster should end up needing nothing but the directory.
 
-  **Then close the gap.** Offer to write both into the skill's frontmatter, so the next run needs no judgment at all. A judgment repeated every session is rung 4 doing rung 1's work — the roster should end up needing nothing but the directory.
+  The grouping never needs this, because there is no undeclared state to read. A skill with neither runtime field is a command that also fires on its own, which is what the runtime does with it.
 - **Answer the question that was actually asked.** Someone asking *"can it do X?"* wants a yes or no about X and a route, not a wall of everything. Lead with the answer, then offer the full roster.
 - **Where nothing fits, say that too**, and say what the nearest thing does. A capability that does not exist is a better answer than a capability bent to fit.
 

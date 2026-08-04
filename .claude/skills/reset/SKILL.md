@@ -1,6 +1,6 @@
 ---
 name: reset
-invocation: both
+effort: high
 summary: Empty a full chat window without losing the thread: distil what only the conversation knows into memory, push it, then hand the window back clean.
 description: Clear a chat's context without losing the work — distil what lives only in the conversation into memory/, push it, then clear: call the runtime's clearing tool where one exists, and otherwise apply the effect directly, discarding the conversation as a source of truth. Use when the Principal asks to clear, reset, empty, compact or clean up this chat, when the window is heavy — before a long session starts reading slow or repetitive, not after — or when a thread ends and the next one starts in the same window. The sibling of handoff: handoff hands a thread to a fresh chat, reset hands it back to this one.
 ---
@@ -30,7 +30,7 @@ Both write to `memory/handoff/`. One folder, one shape (§5), no second schema t
 5. **Land it.** Commit on the agent branch, push, and verify the push reached the remote. Nothing is cleared until this succeeds.
 6. **Hand the window back**, in the same turn and in this order.
 
-   First tell the Principal what is now on disk, and what only they can press: `/clear` when the window is heavy — one key, never both, since `/compact` replaces the window with a generated summary and the note just pushed is a better one, curated and versioned.
+   First tell the Principal what is now on disk, and what only they can press: `/clear` when the window is heavy — one key, never both, since `/compact` replaces the window with a generated summary and the note just pushed is a better one, curated and versioned. Say what the key costs them, which is nothing: the anchor hook reads the cleared start and opens the empty window on the note just written (§1). They press it and the work continues.
 
    Then close the reply on the reset itself, in the Principal's language, naming the note's path:
 
@@ -43,6 +43,8 @@ Both write to `memory/handoff/`. One folder, one shape (§5), no second schema t
 Call the runtime's own context-clearing tool where one exists. Where none does, the declaration is the clearing: it drops the conversation as a source of truth, which is the part that corrupts work — an answer half-remembered from an hour ago, quietly drifting from what the files say. It does not free the tokens the window is holding. That part needs the client, and it is the Principal's key.
 
 Claude Code holds no tool that empties its own window (surveyed 02-08-2026: no `SlashCommand`, no compaction tool; the `claude` CLI starts a separate process, and the session transcript on disk is a record the live window does not read back). Missing capability, not a control being respected — so a runtime that grows one has step 6 call it.
+
+**The other end of that key is no longer the skill's problem.** Getting back was rung 5 until 04-08-2026: the cleared window came up empty, and the note on disk was read only if the next session thought to read it. The runtime reports how a session began, so the hook now writes the first turn after a clear and names the note (§1, §9). What this skill owes is unchanged and is the harder half — the note has to be worth resuming from.
 
 ## Provenance
 

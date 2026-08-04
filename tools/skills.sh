@@ -8,10 +8,16 @@
 # directory means a skill that exists is listed by construction, and one that
 # is listed exists.
 #
-# Grouping comes from each skill's own `invocation:` field, not from this
+# Grouping comes from the two fields the runtime itself obeys, not from this
 # script and not from a help page: adding a skill must never mean editing the
-# thing that lists skills. A skill with no field is reported as unclassified
-# rather than guessed into a group — a wrong group is worse than a visible gap.
+# thing that lists skills. `user-invocable: false` means no command exists.
+# `disable-model-invocation: true` means the skill never fires on its own.
+# Neither field means both, which is the runtime's default and a declaration
+# like any other — so there is no unclassified group to report.
+#
+# The roster reads the enforced fields on purpose. A field only this script
+# read could say a skill has no command while the runtime went on offering
+# one, and the roster is the half a reader trusts (SYSTEM.md section 1).
 #
 # Usage:  bash tools/skills.sh
 
@@ -37,20 +43,24 @@ read_field() {
 emit_group() {
   local title="$1" want="$2" blurb="$3" any=0
   for f in .claude/skills/*/SKILL.md; do
-    local name inv line
-    name="$(read_field "$f" name)"; inv="$(read_field "$f" invocation)"
+    local name asks fires line
+    name="$(read_field "$f" name)"
     [[ -z "${name}" ]] && continue
+    # Both default to on. Only an explicit field turns one off.
+    asks=1; fires=1
+    [[ "$(read_field "$f" user-invocable)" == "false" ]] && asks=0
+    [[ "$(read_field "$f" disable-model-invocation)" == "true" ]] && fires=0
     case "${want}" in
-      command)      [[ "${inv}" == "command" || "${inv}" == "both" ]] || continue ;;
-      contextual)   [[ "${inv}" == "contextual" ]] || continue ;;
-      unclassified) [[ -z "${inv}" ]] || continue ;;
+      command)    (( asks )) || continue ;;
+      contextual) (( asks )) && continue ;;
     esac
     if [[ "${any}" -eq 0 ]]; then printf '%s\n%s\n\n' "${title}" "${blurb}"; any=1; fi
     # One human line: `summary:` if the skill carries one, else the first sentence
     # of the description — which is written to match a situation, not to be read.
     line="$(read_field "$f" summary)"
     [[ -z "${line}" ]] && line="$(read_field "$f" description | sed 's/\([.!?]\) .*/\1/')"
-    printf '  %s%s\n      %s\n\n' "${name}" "$([[ "${inv}" == "both" ]] && printf '   (also fires on its own)')" "${line}"
+    printf '  %s%s\n      %s\n\n' "${name}" \
+      "$( (( asks && fires )) && printf '   (also fires on its own)')" "${line}"
   done
 }
 
@@ -58,8 +68,6 @@ emit_group "YOU CAN ASK FOR THESE"  command \
   "Say the name, or just describe what you want."
 emit_group "THESE RUN ON THEIR OWN" contextual \
   "No command. They fire when the situation arrives, and say so when they do."
-emit_group "NOT DECLARED YET"        unclassified \
-  "No invocation field. Classify them by reading them, say it is a reading, and offer to write it in (SYSTEM.md §8) — never show this heading to the Principal as an answer."
 
 [[ -n "$(echo .claude/skills/*/SKILL.md)" ]] || \
   echo "No skills in .claude/skills/ — this agent has no packaged capabilities yet."

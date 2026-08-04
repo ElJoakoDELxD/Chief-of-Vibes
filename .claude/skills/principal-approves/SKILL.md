@@ -1,6 +1,6 @@
 ---
 name: principal-approves
-invocation: both
+effort: medium
 summary: Land an approved change everywhere it belongs — one approval, not one per hop.
 description: Carry out a Principal's approval to completion. Use the moment they approve, agree, say to merge it, say principal approves, or otherwise clear a change to land — and use it on the whole change rather than the pull request in front of you, because an approval that produces another approval request has not been carried out. Also use when an approval was given earlier and part of it is still sitting unlanded.
 ---

@@ -1,6 +1,6 @@
 ---
 name: 5s
-invocation: both
+effort: high
 summary: Tidy something that has grown — the specification, the repository, or the agent memory — against a budget you declare first.
 description: Run 5S — sort, set in order, shine, standardize, sustain — over something that has accumulated: the template documents, the repository tree, or the agent's memory. Use whenever the Principal asks to tidy, prune, trim, clean up, declutter or "run 5S" on any of those, and use it on your own initiative before shipping a release that adds prose, because §8 requires the net to be reported rather than felt. Also use after a session that installed or generated things, when residue may be sitting where nobody looks. Takes the target as an argument: documents, tree, or memory.
 ---

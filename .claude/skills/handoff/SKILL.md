@@ -1,6 +1,6 @@
 ---
 name: handoff
-invocation: both
+effort: high
 summary: Write the handoff note that lets a fresh chat pick up a thread mid-stride, then commit and push it.
 description: Write a handoff note for every thread in flight — state, next step, open decisions, files, dead ends — then commit it to the agent branch and push, so a fresh chat resumes mid-stride instead of replaying the conversation. Use when the Principal asks for a handoff (/handoff), when the context window is filling and quality has not yet degraded, and before ending any session that leaves a thread unfinished. Also covers the other end of the lifecycle: a resumed thread that lands gets its note deleted.
 ---
