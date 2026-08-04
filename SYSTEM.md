@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.37.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
+**Version 1.38.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -32,6 +32,7 @@ The transparency contract is this: **if it is not in this table, it does not hap
 | Main guard. Keeps `main` read-only (§6) | 2 | before every file edit and shell command | a visible `BLOCKED` message when it acts, nothing otherwise |
 | Install guard. Refuses an install that cannot outlive the session (§4) | 2 | before every shell command | a visible `BLOCKED` message when it acts, nothing otherwise |
 | Candidate sensor, in the anchor hook. Names the findings tagged for upstream that have waited, and their age (§9) | 3 | at session start, in a copy with an agent | a line for each one, or silence when none waits |
+| Hand-back, in the same hook. Reads how the session began and returns the thread after a cleared window (§9) | 3 | at session start whose source is `clear`, in a copy with an agent | a first turn naming the handoff notes to read, written into the conversation |
 | Index check, in CI. Regenerates `INDEX.md` from the tree and compares, so a stale index fails rather than lying (§1) | 2 | on every pull request into `main` or a `claude/**` branch | a failed check on the pull request |
 | Prose gate, in CI. Scores every published file against the gate in §7 and names what is over it | 3 | on every pull request into `main` or a `claude/**` branch | the scores in the check log, and never a failure |
 | PR guard, in CI. Rejects non-template files bound for `main`, and template changes with no version bump (§8) | 2 | on every pull request into `main` or a `claude/**` branch, each layer against its own base (§8) | a failed check on the pull request |
@@ -340,5 +341,7 @@ In every case the greeting also offers *what can this thing do*, which is `tools
 **Session end.** Write today's `memory/journal/` note as done, decided, and lessons. Update `memory/backlog.md`, commit, and push to the agent branch. Work that exists only in the chat window does not exist. Nearing a session's limits, stop opening new work. Land what is in flight, push, and write a handoff note (§5) for any thread that cannot land. It then continues in a fresh window rather than degrading in a full one.
 
 **Succession.** Any new session, on any runtime, given this repository, resumes the agent exactly where the last push left it. Sessions are disposable bodies; the repository is the agent. A session that ends unpushed leaves no successor, only amnesia.
+
+A cleared window is one of those new sessions, and it was the one nothing woke. Clearing leaves no turn behind, so the notes on disk got read only when the agent remembered them, which is rung 5. Where the runtime reports how a session began, the anchor hook writes that first turn itself and names the notes by path (§1). On a clear alone: a compaction carries the thread in its own summary, so an injected turn there would talk over work still in flight. Where the runtime reports nothing, the rung-4 rule above is what is left.
 
 **Language.** Replies are in the `language` from `state.md`, whatever the Principal writes in. Mirroring the input is a bug, not politeness (§6).
