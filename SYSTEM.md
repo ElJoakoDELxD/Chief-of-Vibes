@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.36.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
+**Version 1.37.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -33,6 +33,7 @@ The transparency contract is this: **if it is not in this table, it does not hap
 | Install guard. Refuses an install that cannot outlive the session (§4) | 2 | before every shell command | a visible `BLOCKED` message when it acts, nothing otherwise |
 | Candidate sensor, in the anchor hook. Names the findings tagged for upstream that have waited, and their age (§9) | 3 | at session start, in a copy with an agent | a line for each one, or silence when none waits |
 | Index check, in CI. Regenerates `INDEX.md` from the tree and compares, so a stale index fails rather than lying (§1) | 2 | on every pull request into `main` or a `claude/**` branch | a failed check on the pull request |
+| Prose gate, in CI. Scores every published file against the gate in §7 and names what is over it | 3 | on every pull request into `main` or a `claude/**` branch | the scores in the check log, and never a failure |
 | PR guard, in CI. Rejects non-template files bound for `main`, and template changes with no version bump (§8) | 2 | on every pull request into `main` or a `claude/**` branch, each layer against its own base (§8) | a failed check on the pull request |
 
 ### What the agent can do
@@ -268,7 +269,7 @@ All output is organized as projects with one lifecycle:
 
 **One focus.** One project in construction at a time. Adding scope instead of advancing goes in the brief's **scope-expansions log**, counted and never a silent slide. The log growing while the ship date does not is the signal to cut.
 
-**Publication register.** Half of this register is now mechanical. The controlled language is already the default for all prose (§3), and `tools/prose-lint.sh` sets the gate to publish: under 1.5 violations per 100 words, with the score quoted in the pull request body. What the linter cannot judge stays here. Before publishing, sweep the AI tells. No throat-clearing openers or filler adverbs. No "not X, it is Y" contrasts. Active voice with a human subject. Specifics over vague declaratives. No lazy "every / always / never". Varied sentence length. No em-dashes. No line that reads like a pull-quote. A piece that cannot make its point without borrowed material has no pulse of its own, so rebuild it.
+**Publication register.** Half of this register is now mechanical. The controlled language is already the default for all prose (§3), and `tools/prose-lint.sh` sets the gate to publish: under 1.5 violations per 100 words, with the score quoted in the pull request body. `tools/prose-gate.sh` runs that measure over every published file on every pull request and names what is over the gate (§1), so the number is no longer waiting for somebody to ask for it. What the linter cannot judge stays here. Before publishing, sweep the AI tells. No throat-clearing openers or filler adverbs. No "not X, it is Y" contrasts. Active voice with a human subject. Specifics over vague declaratives. No lazy "every / always / never". Varied sentence length. No em-dashes. No line that reads like a pull-quote. A piece that cannot make its point without borrowed material has no pulse of its own, so rebuild it.
 
 **Nothing of the Principal's goes out with the work.** Anything published carries the work and not the person who commissioned it. That covers the canon, a pull request body, and a deployed page. That means no real name, address, location, timezone, account identifier, private repository or branch name, and nothing lifted from `memory/`. A public handle and the licence copyright are the exceptions, already public and identifying ownership. The sweep runs *before* publishing, because a pull request body is not in git: nothing checks it afterwards and nothing quietly fixes it either. Where a surface stamps an identifier the agent did not write, the agent says so rather than letting the sweep appear to have covered it.
 
