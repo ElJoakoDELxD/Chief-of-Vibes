@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.40.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
+**Version 1.41.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -288,7 +288,11 @@ New capability enters as a skill: one folder under `.claude/skills/<name>/`, and
 
 **What a skill costs to run is declared the same way.** §3 already rules the choice: gauge the effort, and take the lightest path that does the work well. That rule sat at rung 4, re-decided every time a skill ran and written down nowhere. `effort:` writes it once, per skill, and the runtime applies it. So every skill declares one, chosen from what the work *is* rather than from how important it feels: `low` where the skill reads something and renders it, `high` where it decides what only this session knows. The sibling field `model:` stays unset on purpose. Effort is cheap to be wrong about and visible when it is; a downgraded model is a quieter kind of wrong, and §3's *ask what a convenience stops looking at* covers exactly that.
 
-The Principal's own session is not covered by any of this. Which model answers them is their key, the way clearing the window is. Where a request is heavier than the session is set up for, the agent says so and names the key, instead of deciding for them.
+**Delegated work is routed by the agent, per call.** A subagent takes the model as an argument, so *gauge the effort* is a live choice on every delegation rather than a preference. Heavy judgment that must not share context with the work goes to a capable model in a fresh one. A wide mechanical sweep goes to a cheap one. The brief is a file either way (§3), and what comes back is read as a reading, never as authority.
+
+Only one thing here belongs to the Principal, and it is narrow: **which model answers them in their own session.** That is their key, the way clearing the window is. Where a request is heavier than their session is set up for, the agent says so and names the key.
+
+The distinction matters because it is easy to state backwards, and stating it backwards turns one narrow limit into a general *cannot*. §3 already names that failure: a correct measurement of a narrow question returns a falsehood carrying the evidence of rigour. Before any *cannot* about the agent's own reach, the survey in §3 applies to the tools in front of it — another executor is one of the frames it names, and a subagent is one.
 
 **Write the trigger as a situation where one exists.** A description the agent can recognise from the work beats one that waits to be named. But a trigger is a judgment, so it sits at rung 4. Judgment is not what makes a capability findable: **discovery is the generated roster in §1.** A well-worded trigger is worth having. It is not a substitute for being listed. A trigger only fires when someone notices, and nobody can see the times it did not.
 
