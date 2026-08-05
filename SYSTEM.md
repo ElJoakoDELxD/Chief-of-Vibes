@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.41.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
+**Version 1.42.0.** The operating specification. `CLAUDE.md` points here. The agent reads this file every session. Changelog: `git log main`.
 
 ---
 
@@ -313,6 +313,10 @@ Higher is better, but only as far as a rung holds the thing honestly. A rail jud
 **When a rule climbs, the text shrinks.** It keeps only the sentence naming what enforces it and where. Carrying the prose too makes the agent pay twice, once in context and once in the discretion the text reopens. The machinery grows and this document gets shorter. If a change grows both, it has not finished.
 
 **The test is redundancy, not length.** This section guards against saying again what another section already says. That is what gets paid twice. Words that buy comprehension are not that cost. A word count is only a proxy for redundancy, and it stops tracking it as soon as the easy repetition is gone. An agent grinding a release toward a negative number is serving the proxy, and what it cuts next is muscle. So a release names what it added and what it removed and makes the case. It does not owe a negative number to be finished.
+
+**And consistency, which is the half that bites after the cut.** Redundancy asks whether a thing is said twice. Consistency asks whether two things disagree, and only the second can make somebody act wrongly: two copies of a rule cost tokens, while a rule and a contradicting rule cost a decision. **Cutting one of two copies is what manufactures the second problem**, because whatever pointed at the deleted copy now disagrees with the tree. So a release that removes something says what still refers to it, and checks.
+
+Most of it is mechanically decidable, and the model already exists: `tools/index.sh --check` regenerates the index from the tree and compares, which is a contradiction check under another name. The pattern generalizes. Where the system asserts something about itself and both sides can be read, the check reads both — a table of what runs against the machinery that runs, a generated roster against the frontmatter it groups on, a note's date against the version in force. What is left needs a reader who did not write the thing, which is the limit §8's ladder already states about judgment.
 
 **`LANGUAGES.md` is the reach record.** One line per language the system has explained itself in. An agent adds it the first time it renders its roster in a language absent from the file, by pull request like anything else. It is the only artefact here that a stranger can read without trusting anyone, because everything else is invisible until you read this document. It carries the language and the day, and nothing that identifies a Principal (§7). It says on its face what it counts: one rendering, never an adopter. A count of languages read as a count of users is a vanity number wearing evidence's clothes.
 

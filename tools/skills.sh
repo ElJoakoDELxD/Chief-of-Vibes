@@ -15,6 +15,11 @@
 # Neither field means both, which is the runtime's default and a declaration
 # like any other — so there is no unclassified group to report.
 #
+# Two fields make three reachable states, and the third is a defect rather
+# than a category: both off means nothing can load the skill. It gets its own
+# heading, because filing it under "they fire when the situation arrives"
+# would be the roster asserting what the runtime contradicts.
+#
 # The roster reads the enforced fields on purpose. A field only this script
 # read could say a skill has no command while the runtime went on offering
 # one, and the roster is the half a reader trusts (SYSTEM.md section 1).
@@ -50,9 +55,13 @@ emit_group() {
     asks=1; fires=1
     [[ "$(read_field "$f" user-invocable)" == "false" ]] && asks=0
     [[ "$(read_field "$f" disable-model-invocation)" == "true" ]] && fires=0
+    # Three states, not two. A skill with both fields off is reachable by
+    # nobody, and printing it under "they fire when the situation arrives"
+    # is the roster asserting something the runtime contradicts.
     case "${want}" in
-      command)    (( asks )) || continue ;;
-      contextual) (( asks )) && continue ;;
+      command)     (( asks )) || continue ;;
+      contextual)  { (( asks )) || (( fires == 0 )); } && continue ;;
+      unreachable) { (( asks )) || (( fires )); } && continue ;;
     esac
     if [[ "${any}" -eq 0 ]]; then printf '%s\n%s\n\n' "${title}" "${blurb}"; any=1; fi
     # One human line: `summary:` if the skill carries one, else the first sentence
@@ -68,6 +77,8 @@ emit_group "YOU CAN ASK FOR THESE"  command \
   "Say the name, or just describe what you want."
 emit_group "THESE RUN ON THEIR OWN" contextual \
   "No command. They fire when the situation arrives, and say so when they do."
+emit_group "NOTHING CAN REACH THESE" unreachable \
+  "Both routes are switched off in the frontmatter, so no command exists and nothing fires them. That is a defect in the skill, not a category — say so, and name the field to change."
 
 [[ -n "$(echo .claude/skills/*/SKILL.md)" ]] || \
   echo "No skills in .claude/skills/ — this agent has no packaged capabilities yet."
