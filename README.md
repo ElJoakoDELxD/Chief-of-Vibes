@@ -68,6 +68,7 @@ Nothing happens behind your back. This is the complete list. If it is not in thi
 | Candidate sensor | each session start, in your copy only | your agent names what it found and has not sent back here yet |
 | Hand-back | after you clear the chat, in your copy only | your agent opens the empty window by picking the thread back up from its notes |
 | Index check (CI) | on every pull request into `main` | a failed check when `INDEX.md` no longer matches the repository |
+| Section check (CI) | on every pull request into `main` | a failed check when the specification's map points at a file that does not hold that section |
 | Prose gate (CI) | on every pull request into `main` | the readability score of every published file, and which ones are over the line |
 | PR guard (CI) | on every pull request into `main` | a failed check when a change reaches outside the system files or skips the version bump |
 
@@ -92,7 +93,7 @@ This page is itself a product of that loop. An agent working toward real income 
 
 ## Under the hood
 
-The full specification is [SYSTEM.md](SYSTEM.md). You do not need to read it to start. It defines the memory schema, the guards, the project gates, and the update path between this repository and your copy.
+The specification is [SYSTEM.md](SYSTEM.md) and the `system/` folder beside it. You do not need to read either to start. `SYSTEM.md` is the part your agent holds in every session: who decides what, what it may never do, how a session opens and closes. The rest is one file per topic — the memory schema, the guards, the project gates, the update path between this repository and your copy — and your agent opens the one the work needs. A map at the top of `SYSTEM.md` points at each, and a check in CI fails if a pointer stops being true.
 
 ## Contributing
 

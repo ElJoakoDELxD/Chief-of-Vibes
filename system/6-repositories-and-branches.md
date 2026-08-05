@@ -1,0 +1,32 @@
+## 6. Repositories and branches
+
+The public template repository is the canon: untouchable public property. Nobody works on it, and it changes only through a reviewed pull request.
+
+**Your first act, and the system's first proof of utility, is making your own copy:** a repository you own. A session standing on the canon, or on a fresh clone of it, creates that repository for you when it holds a tool that can. The onboard skill carries the procedure (§9). *Use this template*, or a fork, is the button when it does not. Agents are generated, and all work happens, in your copy and never in the canon.
+
+**Which repository am I in?** This is not a judgment call. `.canon` names the canon as `owner/repo`, and every session compares it against `origin` on the trailing owner/repo, so ssh, https, and proxied remotes all answer alike. A match means the canon: no agent is created, and the only things on offer are making a copy or contributing a template change. A difference means somebody's copy, where agents live and work. Neither file nor remote means the question is unanswered, so the session says so and asks. A wrong guess puts an agent's memory in the wrong repository. Copies inherit `.canon` unchanged, which keeps the answer stable through every sync. Editing it is how a hard fork declares itself a new canon.
+
+Inside your copy there are two tiers:
+
+- **`main`, the template mirror plus what the repository knows.** It is read-only in operation. It carries no agent and no agent memory. It holds two things: the template synced from the canon, and `knowledge/` (§5). Both change only by a pull request you approve. The guard hook blocks all work on it. For the hard guarantee, enable GitHub branch protection on `main` and require a pull request before merging. Hooks and CI are rails; the server-side rule is the lock.
+- **The agent branch, the home.** It is created at onboarding and carries `memory/` and `projects/`. Everything durable lands here.
+
+A chat surface may open on its own branch, as Claude Code web's `claude/*` does. That is scaffolding for template work, and not a place for an agent to live. **An agent session's first act is to check out its own branch**, the one named in `state.md`. Every commit lands there directly. Memory left on a disposable branch is memory waiting to be lost. Only if the surface refuses the checkout does the agent work where it stands. It then pushes before the session ends, and says plainly that it did so. Template maintenance is the opposite case and keeps the disposable branch, deleted once its pull request lands. The branch list is live work, not a graveyard. `git branch --show-current` is ground truth, and a document naming a different branch is stale.
+
+Template updates flow one way: canon, then your `main`, then the agent branch, via `tools/sync.sh`. The first hop is *Sync fork* for a fork, and a pull request otherwise. **Use this template** leaves an unrelated history with no *Sync fork* button. There the agent opens a pull request bringing the canon's template across wholesale. That hop is the agent's job, since it is a pull request the agent can open, so it is never a backlog item (§3). Approving the merge is the Principal's.
+
+The second hop is a **merge**, which is why drift there cannot happen (§1) rather than merely being detected. Git carries each resolution forward through the merge base, so a conflict settled once stays settled, and the branch *is* `main` plus `memory/` and `projects/`.
+
+Conflicts resolve without asking. Template files take `main`'s version, and the agent branch's own `README.md` keeps the agent's (§4). Both outcomes print, and an overwritten template file is named, because the branch had edited something it does not own. Anything the rule does not cover stops the script. Every sync is `--no-ff`, so each one leaves a single merge commit and `git log --first-parent` reads as the agent's history alone. Nothing is hidden; only the default view changes. After a sync the agent tells the Principal what changed, in plain language.
+
+**One language for the template, any language for the agent.** The canon and every copy's `main` are written in English. The agent replies in its own configured language (§9), and `memory/` is in whatever language the work happens in. The two never meet, because the agent is the interface. The specification stays uniform while each Principal works natively. A Principal who reads no English still governs a system whose rules are English. So a proposal travels upstream **in the template's language**, translated by the agent, whatever language the failure was found in. A canon accumulating in several languages stops being readable by the agents that inherit it. The pool is worth having only because any copy can read what any other copy learned.
+
+### Merge for the template, cherry-pick for the world
+
+Cherry-pick keeps the opposite job. `main` is **vertical**: the branch wants all of it, always, so that flow is a merge with no decision in it, which is rung 1. Everything else is **lateral**, such as another repository, a utility, or a technique read somewhere. There the agent wants one thing and never the whole history. Fetch the source and pick the commit, or lift the idea and write it in this system's own words. Absorption is rung 4 and cannot climb, because every instance judges fit, cost, and what it drags in. Its obligations are already stated: lineage attribution in the README for anything whose articulation shaped this one, and §7's IP hygiene for anything published.
+
+**A template change is not finished when it merges into the canon. It is finished when it governs the repository the agent works in.** A copy on an older spec obeys superseded rules with the old rails wired in, and nothing looks wrong. The guard that fires is the old one. The limit written upstream last week is simply absent. So the version of `SYSTEM.md` on the canon and on your `main` are kept equal. The drift check reports the gap at session start (§1). Closing it comes before substantive work rather than after.
+
+---
+
+*Part of the specification. The core is [`SYSTEM.md`](../SYSTEM.md); [`INDEX.md`](../INDEX.md) maps every section to its file.*

@@ -3,23 +3,24 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.42.0**
+Specification version: **1.43.0**
 
 ## The specification
 
-`SYSTEM.md` holds the rules. Each section is one address.
+`SYSTEM.md` is the core, read every session. `system/` holds the leaves, read when the
+work reaches them. Each section is one address.
 
-| Section | Holds |
-|---|---|
-| [§1](SYSTEM.md#1-purpose) | Purpose |
-| [§2](SYSTEM.md#2-roles) | Roles |
-| [§3](SYSTEM.md#3-operating-rules) | Operating rules |
-| [§4](SYSTEM.md#4-limits) | Limits |
-| [§5](SYSTEM.md#5-memory-an-obsidian-vault) | Memory — an Obsidian vault |
-| [§6](SYSTEM.md#6-repositories-and-branches) | Repositories and branches |
-| [§7](SYSTEM.md#7-projects) | Projects |
-| [§8](SYSTEM.md#8-extending) | Extending |
-| [§9](SYSTEM.md#9-header-and-session) | Header and session |
+| Section | Holds | File |
+|---|---|---|
+| [§1](system/1-purpose.md#1-purpose) | Purpose | `system/1-purpose.md` |
+| [§2](SYSTEM.md#2-roles) | Roles | `SYSTEM.md` |
+| [§3](SYSTEM.md#3-operating-rules) | Operating rules | `SYSTEM.md` |
+| [§4](SYSTEM.md#4-limits) | Limits | `SYSTEM.md` |
+| [§5](system/5-memory-an-obsidian-vault.md#5-memory-an-obsidian-vault) | Memory — an Obsidian vault | `system/5-memory-an-obsidian-vault.md` |
+| [§6](system/6-repositories-and-branches.md#6-repositories-and-branches) | Repositories and branches | `system/6-repositories-and-branches.md` |
+| [§7](system/7-projects.md#7-projects) | Projects | `system/7-projects.md` |
+| [§8](system/8-extending.md#8-extending) | Extending | `system/8-extending.md` |
+| [§9](SYSTEM.md#9-header-and-session) | Header and session | `SYSTEM.md` |
 
 ### The rules of §3, by name. There are 19.
 
@@ -67,6 +68,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/now.sh` | Prints the current time as "DD-MM-YYYY HH:MM ±TZ" in the agent's timezone. |
 | `tools/prose-gate.sh` | Scores every piece of published prose against the gate in SYSTEM.md section 7. |
 | `tools/prose-lint.sh` | Scores prose against the writing system in .claude/skills/ste-writing/ |
+| `tools/sections.sh` | Checks that the specification's map and its tree agree. |
 | `tools/skills.sh` | Prints what this agent can do, derived from the skills themselves. |
 | `tools/sync.sh` | Brings the template from `main` into the current agent branch by merging it. |
 | `tools/test-anchor.sh` | Bench for the resumption half of .claude/hooks/anchor.sh. It pins what must |
@@ -75,5 +77,6 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/test-guard-main.sh` | Test bench for .claude/hooks/guard-main.sh. |
 | `tools/test-index.sh` | Bench for tools/index.sh. It pins that the index is generated from the tree and |
 | `tools/test-prose-gate.sh` | Bench for tools/prose-gate.sh. It pins that the check reports and never blocks, |
+| `tools/test-sections.sh` | Bench for tools/sections.sh. It pins each way the map and the tree can |
 | `tools/test-skills.sh` | Bench for tools/skills.sh. It pins the grouping against the two fields the |
 | `tools/test-sync.sh` | Test bench for tools/sync.sh. |

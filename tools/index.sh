@@ -26,8 +26,23 @@ def anchor(title):
 out = []
 w = out.append
 
-spec = open("SYSTEM.md", encoding="utf-8").read()
-version = re.search(r"\*\*Version ([0-9]+\.[0-9]+\.[0-9]+)\.\*\*", spec)
+core = open("SYSTEM.md", encoding="utf-8").read()
+version = re.search(r"\*\*Version ([0-9]+\.[0-9]+\.[0-9]+)\.\*\*", core)
+
+# The specification is a core plus leaves, so a section lives in one of two
+# places and the index has to read both. tools/sections.sh checks that this
+# reading and the core's own map agree.
+sources = {"SYSTEM.md": core}
+for leaf in sorted(glob.glob("system/*.md")):
+    sources[leaf] = open(leaf, encoding="utf-8").read()
+
+sections = []
+for path, text in sources.items():
+    for num, title in re.findall(r"(?m)^## (\d+)\. (.+)$", text):
+        sections.append((int(num), title, path))
+sections.sort()
+
+spec = "\n".join(sources.values())
 
 w("# INDEX\n")
 w("Where a rule is stored, and what this repository can do. `tools/index.sh` generates")
@@ -35,13 +50,14 @@ w("this file from the tree. Do not edit it: CI regenerates it and fails when it 
 w(f"Specification version: **{version.group(1) if version else 'unknown'}**\n")
 
 w("## The specification\n")
-w("`SYSTEM.md` holds the rules. Each section is one address.\n")
-w("| Section | Holds |")
-w("|---|---|")
-for num, title in re.findall(r"(?m)^## (\d+)\. (.+)$", spec):
-    w(f"| [§{num}](SYSTEM.md#{anchor(num + '. ' + title)}) | {title} |")
+w("`SYSTEM.md` is the core, read every session. `system/` holds the leaves, read when the")
+w("work reaches them. Each section is one address.\n")
+w("| Section | Holds | File |")
+w("|---|---|---|")
+for num, title, path in sections:
+    w(f"| [§{num}]({path}#{anchor(str(num) + '. ' + title)}) | {title} | `{path}` |")
 
-sec3 = re.search(r"(?ms)^## 3\..*?(?=^## 4\.)", spec)
+sec3 = re.search(r"(?ms)^## 3\..*?(?=^## \d+\.|\Z)", core)
 if sec3:
     names = re.findall(r"(?m)^- \*\*([^*]+)\*\*", sec3.group(0))
     w(f"\n### The rules of §3, by name. There are {len(names)}.\n")

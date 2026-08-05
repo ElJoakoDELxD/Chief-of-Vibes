@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Entry point for Claude Code. The full specification is **`SYSTEM.md`**. Read it before doing anything substantive. This file carries only what must never be missed.
+Entry point for Claude Code. The specification is **`SYSTEM.md`**, and it is the core: §2, §3, §4 and §9, read every session. The rest is one file per section under **`system/`**, opened when the work reaches it — the map at the top of `SYSTEM.md` says which, and `INDEX.md` says where every rule lives. This file carries only what must never be missed.
 
 ## Four hard rules
 
