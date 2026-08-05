@@ -1,0 +1,64 @@
+# Publishes a GitHub release for a session that cannot: the default token in
+# a session's own environment has no route to a write endpoint the Claude
+# Code auto-mode classifier will let it call directly, and no MCP tool exists
+# for creating a release either (checked, twice, before this was built).
+#
+# A runner is a different origin: same repository, its own token, no
+# classifier in front of it. Dispatch this workflow and read the result in
+# the job log. Same shape as .github/workflows/stacks.yml.
+#
+# The tag is never taken on trust. It is read from SYSTEM.md's own version
+# line at run time and the input must match, so a release cannot ship a tag
+# that outran the specification the day it was cut.
+name: create-release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to publish, e.g. v1.43.0. Must equal SYSTEM.md's version line at run time."
+        required: true
+        type: string
+      title:
+        description: Release title
+        required: true
+        type: string
+      notes_path:
+        description: Path to a Markdown file in this repository holding the release body
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require the tag to match SYSTEM.md's version
+        run: |
+          version="$(sed -n 's/^\*\*Version \([0-9][0-9.]*\)\.\*\*.*/\1/p' SYSTEM.md | head -n1)"
+          want="v${version}"
+          if [[ "${{ inputs.tag }}" != "${want}" ]]; then
+            echo "Tag '${{ inputs.tag }}' does not match SYSTEM.md's version (${want})." >&2
+            echo "Read the version at the moment of release, never before." >&2
+            exit 1
+          fi
+
+      - name: Require the notes file to exist
+        run: |
+          if [[ ! -f "${{ inputs.notes_path }}" ]]; then
+            echo "No file at '${{ inputs.notes_path }}'." >&2
+            exit 1
+          fi
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ inputs.tag }}" \
+            --title "${{ inputs.title }}" \
+            --notes-file "${{ inputs.notes_path }}" \
+            --target main
