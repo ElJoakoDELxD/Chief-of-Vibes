@@ -22,7 +22,7 @@ files=()
 for f in README.md SYSTEM.md CLAUDE.md CONTRIBUTING.md INDEX.md; do
   [[ -f "${f}" ]] && files+=("${f}")
 done
-for f in .claude/skills/*/SKILL.md .claude/skills/*/references/*.md knowledge/*.md; do
+for f in system/*.md .claude/skills/*/SKILL.md .claude/skills/*/references/*.md knowledge/*.md; do
   [[ -f "${f}" ]] && files+=("${f}")
 done
 

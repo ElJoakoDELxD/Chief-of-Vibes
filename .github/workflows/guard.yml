@@ -31,7 +31,7 @@ jobs:
         env:
           REPO: ${{ github.repository }}
         run: |
-          allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools)/'
+          allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools|system)/'
 
           # knowledge/ (SYSTEM.md §5) is where a COPY records the procedures its
           # agents verified. The canon has no agents and therefore nothing to have
@@ -61,6 +61,13 @@ jobs:
           # list is a second copy that starts to drift the day after it is written,
           # so the check regenerates it and compares.
           bash tools/index.sh --check
+      - name: Require the specification's map to match its tree
+        run: |
+          # SYSTEM.md is the core and system/ holds the leaves, so most of the
+          # specification is read on demand. That is safe only while every
+          # pointer is true: a row sending an agent to a file that does not
+          # hold that section says a rule exists where it does not (§8).
+          bash tools/sections.sh --check
       - name: Report the prose score
         run: |
           # Section 7 sets the gate at 1.5 violations per 100 words and nothing
