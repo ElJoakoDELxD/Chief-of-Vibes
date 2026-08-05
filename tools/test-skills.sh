@@ -45,8 +45,10 @@ check() {  # check <want|want-not> <pattern> <label>
   fi
 }
 
+whole="${out}"
 asked="${out%%THESE RUN ON THEIR OWN*}"
-own="${out#*THESE RUN ON THEIR OWN}"
+own="${out#*THESE RUN ON THEIR OWN}"; own="${own%%NOTHING CAN REACH THESE*}"
+stuck="${out#*NOTHING CAN REACH THESE}"
 
 out="${asked}"
 check want     "plain"    "a skill with no field is something you can ask for"
@@ -56,7 +58,18 @@ check want-not "mute"     "both fields off still removes the command"
 
 out="${own}"
 check want     "quiet"    "user-invocable false lands under runs on its own"
-check want     "mute"     "a skill with neither route is still listed"
+# The heading over this group says the skill fires when the situation arrives.
+# A skill with both routes off never fires, so putting it here would be the
+# roster asserting what the runtime contradicts.
+check want-not "mute"     "a skill that never fires is not filed under runs on its own"
+
+out="${stuck}"
+check want     "mute"     "both routes off lands under nothing can reach these"
+check want-not "quiet"    "a contextual skill is not called unreachable"
+
+out="${whole}"
+check want     "NOTHING CAN REACH THESE" "the unreachable group is named rather than hidden"
+check want     "defect in the skill"     "the heading says it is a defect, not a category"
 
 out="$(bash "${tmp}/tools/skills.sh")"
 check want     "plain   (also fires on its own)"  "the default says it fires on its own too"

@@ -89,8 +89,15 @@ if [[ "${event}" == "SessionStart" ]]; then
   origin_url="$(git remote get-url origin 2>/dev/null | tr '[:upper:]' '[:lower:]' \
     | sed -E 's#^[a-z+]+://##; s#^[^/@]*@##; s#^[^/:]*[:/]##; s#\.git$##; s#/+$##')" || true
 
+  # Two silences used to look alike here, and §1 promises only one of them:
+  # silence means parity. With no .canon, or no origin, the comparison cannot
+  # run at all, and saying nothing would read as "current" (§3 never fabricate
+  # a reading). Say the check did not run instead.
+  if [[ -z "${canon_slug}" || -z "${origin_url}" ]]; then
+    drift=" Template drift check: UNAVAILABLE (no .canon file, or no origin remote, so this copy cannot be compared against anything). Say the check did not run rather than assuming this copy is current."
+
   # The canon cannot drift from itself.
-  if [[ -n "${canon_slug}" && "/${origin_url}" != *"/$(printf '%s' "${canon_slug}" | tr '[:upper:]' '[:lower:]')" ]]; then
+  elif [[ "/${origin_url}" != *"/$(printf '%s' "${canon_slug}" | tr '[:upper:]' '[:lower:]')" ]]; then
     version_of() { sed -n 's/^\*\*Version \([0-9][0-9.]*\)\.\*\*.*/\1/p' | head -n1; }
     here_version="$(version_of < SYSTEM.md 2>/dev/null)" || true
 

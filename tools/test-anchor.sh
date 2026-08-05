@@ -61,6 +61,13 @@ check want     "additionalContext"                  "an unreadable payload still
 out="$(run SessionStart '{"hook_event_name":"SessionStart"}')"
 check want-not "initialUserMessage"                 "a runtime that sends no source is not read as a clear"
 
+# §1 promises that silence from the drift check means parity. A fixture with
+# no .canon cannot be compared against anything, so silence there would be the
+# table lying. It says the check did not run instead.
+out="$(run SessionStart '{"hook_event_name":"SessionStart","source":"startup"}')"
+check want "drift check: UNAVAILABLE"               "no .canon says the check did not run, never nothing"
+check want "no .canon file, or no origin remote"    "the unavailable line names why it could not run"
+
 rm -f "${tmp}/memory/handoff/"*.md
 out="$(run SessionStart '{"hook_event_name":"SessionStart","source":"clear"}')"
 check want     "initialUserMessage"                 "a cleared start with no note still hands back"
