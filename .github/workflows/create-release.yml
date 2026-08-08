@@ -47,14 +47,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Require the tag to match SYSTEM.md's version
+      - name: Check the tag against what the mode means
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          version="$(sed -n 's/^\*\*Version \([0-9][0-9.]*\)\.\*\*.*/\1/p' SYSTEM.md | head -n1)"
-          want="v${version}"
-          if [[ "${{ inputs.tag }}" != "${want}" ]]; then
-            echo "Tag '${{ inputs.tag }}' does not match SYSTEM.md's version (${want})." >&2
-            echo "Read the version at the moment of release, never before." >&2
-            exit 1
+          # Each mode has its own question, and asking the wrong one blocks
+          # legitimate work. A new release must match the specification's
+          # version right now. A correction targets a release already
+          # published, which by definition names an older version — the first
+          # attempt to correct one was refused by asking the create question.
+          if [[ "${{ inputs.mode }}" == create ]]; then
+            version="$(sed -n 's/^\*\*Version \([0-9][0-9.]*\)\.\*\*.*/\1/p' SYSTEM.md | head -n1)"
+            want="v${version}"
+            if [[ "${{ inputs.tag }}" != "${want}" ]]; then
+              echo "Tag '${{ inputs.tag }}' does not match SYSTEM.md's version (${want})." >&2
+              echo "Read the version at the moment of release, never before." >&2
+              exit 1
+            fi
+          else
+            if ! gh release view "${{ inputs.tag }}" >/dev/null 2>&1; then
+              echo "No release published under '${{ inputs.tag }}', so there is nothing to correct." >&2
+              exit 1
+            fi
           fi
 
       - name: Read the title and body out of the notes file
