@@ -4,6 +4,8 @@
 
 You get an AI colleague with a name. It remembers yesterday. It keeps its notes in plain text files that you can open, read, and edit. You do not need to know git. Your agent teaches you the few pieces you need, while you work.
 
+It is also the harness you build your next thing on. The agent runs its own memory and branches, proposes fixes to its own rules through a gate you approve, and sends what it learns back here so every other copy inherits it.
+
 ## What you get
 
 - **An agent with a name and a memory.** Setup takes minutes. After that, your agent never starts from zero.
@@ -79,6 +81,19 @@ All agent state lives in `memory/`. There is no hidden index, no sensor, and no 
 Your copy stays connected to this shared home. When the shared rules improve here, your agent offers to bring the update into your copy. When your agent learns a lesson that would help everyone, it proposes that lesson back here, and a human reviews it.
 
 This page is itself a product of that loop. An agent working toward real income found a controlled writing method, measured it, and sent it back. The linter it built scored this page before you read it.
+
+**Your copy is not a passenger.** It runs the same checks this repository runs, so your agent cannot quietly damage its own rules: the guard rejects a change that reaches outside the system files or skips a version bump, and two more checks fail when the generated index or the specification's own map stops matching the tree. The rules that govern you are the rules you can improve, and the same machinery holds both.
+
+**If you ever want to leave, edit one line.** A file named `.canon` says which repository is the shared home. Change it and your copy becomes its own — a new home that other people can copy from, with the whole specification and machinery intact. Nothing here holds you by making the exit expensive.
+
+## Things that fell out of the design
+
+None of these was a feature anybody set out to build. They exist because the memory is git and the rules are files, and they turned out to matter.
+
+- **Your agent's memory has a history you can walk.** `git log` on the memory folder is a record of what it knew and when. Check out any past day and read the exact backlog, journal and identity it held then. Nothing was designed to do this; storing memory as committed files does it for free.
+- **Every rule can name the failure that created it.** Search the history for a rule's own words and git returns the release that introduced it, whose message says what broke. A rule you disagree with is a rule you can interrogate.
+- **The readability check works on any language.** It scores sentence length, punctuation and structure, so it reads an agent's Spanish notes as usefully as this English page. Nobody wrote it to be language-neutral; the measures simply are.
+- **One repository can hold several agents.** Each lives on its own branch with its own memory and goal, sharing one template. A session lists the ones it finds and asks which to continue.
 
 ## Languages
 
