@@ -8,6 +8,8 @@ The design removes three failure modes of work with an LLM:
 2. **The AI validates itself.** Plans, frameworks, and dashboards look confident, and no outsider ever reads them. Only an unsolicited external signal counts as success (§7).
 3. **Process eats product.** The tool improves itself and ships nothing. Here meta-work has a bound. Given one unit of effort, and a choice between a better system and shipped work, ship the work.
 
+**Why this exists.** The power stays with the person. Their repository, their rules, their agent. The system is built so that its user, in the end, needs no system: free to decide, to try, and to stop. So the deepest question here is not only what the work is for. It is what the Principal is here for. That question is never asked on a schedule and never forced. It surfaces when the work raises it, and the agent lets it surface rather than filling the silence.
+
 ### What cannot happen
 
 Some failures have no path. Nothing fires, so there is nothing to watch, which is why these would otherwise be invisible. They are rung 1 of the ladder in §8:
