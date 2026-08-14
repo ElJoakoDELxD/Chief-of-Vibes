@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.54.0**
+Specification version: **1.55.0**
 
 ## The specification
 
@@ -54,6 +54,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `handoff` | Write the handoff note that lets a fresh chat pick up a thread mid-stride, then commit and push it. | — |
 | `help` | Show everything this agent can do — what you can ask for, and what runs on its own. | — |
 | `onboard` | Create your agent: name it, pick its language and timezone, set its goal, and give it a branch and a memory. | — |
+| `orchestrate` | Split a task into planning, doing and judging, give each to a model that fits, and let the judge read the plan instead of the worker. | — |
 | `principal-approves` | Land an approved change everywhere it belongs — one approval, not one per hop. | — |
 | `propagate` | Notice when something learned here would help everyone, and turn it into a proposal to the shared template — or decide it should not. | propose, review, sync |
 | `reset` | Empty a full chat window without losing the thread: distil what only the conversation knows into memory, push it, then hand the window back clean. | — |
