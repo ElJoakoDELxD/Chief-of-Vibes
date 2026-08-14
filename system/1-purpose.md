@@ -15,7 +15,7 @@ The design removes three failure modes of work with an LLM:
 Some failures have no path. Nothing fires, so there is nothing to watch, which is why these would otherwise be invisible. They are rung 1 of the ladder in §8:
 
 - An agent branch cannot drift from `main`, because `tools/sync.sh` merges instead of copying (§6).
-- A timestamp cannot pass itself off as something else, because `tools/now.sh` fails loudly instead of printing a default. It exits 1 and prints nothing when the configured zone does not exist. It exits 2, and marks the value, when no zone is configured at all. A bare `+00` is indistinguishable from a Principal who really is in UTC, and a default read as an answer is the failure this rung exists to make impossible (§3).
+- A timestamp cannot pass itself off as something else, because `tools/now.sh` fails loudly instead of printing a default. It exits 1 and prints nothing when the configured zone does not exist. It exits 2, and marks the value, when no zone is configured at all. A bare `+00` is indistinguishable from a Principal who really is in UTC, and a default read as an answer is the failure this rung exists to make impossible (§3). Refusing is only half of it: **the clock asks two origins before it refuses**, the platform's zone database and python3's own copy of it, because a platform that ships no database at all would otherwise cost the agent the header on every reply. What it never does is offer the machine's local time in place of the configured zone, which would be plausible and wrong.
 
 ### What runs automatically
 
@@ -24,15 +24,17 @@ The transparency contract is this: **if it is not in this table, it does not hap
 | Mechanism | Rung | Fires | Where you see it |
 |---|---|---|---|
 | Anchor hook. Injects real time and current branch, and the start menu when no agent is present (§9) | 3 | at session start and before every reply | the header that opens every reply (§9) |
-| Drift check, in the same hook. Compares this copy against the canon, and never runs on the canon (§6) | 3 | at session start, one network call | a stated version gap, or a stated failure to check. Silence means parity |
+| Drift check, in the same hook. Compares this copy against the canon, and never runs on the canon (§6) | 3 | at session start, one network call | a stated version gap **with its direction**, behind or ahead, or a stated failure to check. Silence means parity |
 | Main guard. Keeps `main` read-only (§6) | 2 | before every file edit and shell command | a visible `BLOCKED` message when it acts, nothing otherwise |
 | Install guard. Refuses an install that cannot outlive the session (§4) | 2 | before every shell command | a visible `BLOCKED` message when it acts, nothing otherwise |
 | Candidate sensor, in the anchor hook. Names the findings tagged for upstream that have waited, and their age (§9) | 3 | at session start, in a copy with an agent | a line for each one, or silence when none waits |
+| Hygiene sensor, in the same hook. Names a backlog too large to act on, a handoff older than the specification in force, and a file outside the shape `memory/projects/` is meant to have (§5) | 3 | at session start, in a copy with an agent | a line for each finding with its number, or silence when the tree is clean |
+| Clock reach sensor, in the same hook. Names this platform when `CLOCKS.md` has no row for it and the origin that answered (§8) | 3 | at session start, once ever per platform and origin | one line naming the platform, or silence when it is already recorded |
 | Hand-back, in the same hook. Reads how the session began and returns the thread after a cleared window (§9) | 3 | at session start whose source is `clear`, in a copy with an agent | a first turn naming the handoff notes to read, written into the conversation |
-| Index check, in CI. Regenerates `INDEX.md` from the tree and compares, so a stale index fails rather than lying (§1) | 2 | on every pull request into `main` or a `claude/**` branch | a failed check on the pull request |
-| Section check, in CI. Compares the core's map against the tree, so a pointer to a section cannot outlive it (§8) | 2 | on every pull request into `main` or a `claude/**` branch, and on demand with `tools/sections.sh` | a failed check naming each row and file that disagree |
-| Prose gate, in CI. Scores every published file against the gate in §7 and names what is over it | 3 | on every pull request into `main` or a `claude/**` branch | the scores in the check log, and never a failure |
-| PR guard, in CI. Rejects non-template files bound for `main`, and template changes with no version bump (§8) | 2 | on every pull request into `main` or a `claude/**` branch, each layer against its own base (§8) | a failed check on the pull request |
+| Index check, in CI as `index-check`. Regenerates `INDEX.md` from the tree and compares, so a stale index fails rather than lying (§1) | 2 | on every pull request into `main` or a `claude/**` branch | a failed check on the pull request |
+| Section check, in CI as `section-check`. Compares the core's map against the tree, so a pointer to a section cannot outlive it (§8) | 2 | on every pull request into `main` or a `claude/**` branch, and on demand with `tools/sections.sh` | a failed check naming each row and file that disagree |
+| Prose gate, in CI as `prose-gate`. Scores every published file against the gate in §7 and names what is over it | 3 | on every pull request into `main` or a `claude/**` branch | the scores in the check log, and never a failure |
+| PR guard, in CI as `pr-guard`. Rejects non-template files bound for `main`, and template changes with no version bump (§8) | 2 | on every pull request into `main` or a `claude/**` branch, each layer against its own base (§8) | a failed check on the pull request, naming both rejections rather than the first |
 
 ### What the agent can do
 

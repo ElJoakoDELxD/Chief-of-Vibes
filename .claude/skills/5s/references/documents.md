@@ -18,6 +18,12 @@ Take the count before the first edit and after the last one. Lines are a weaker 
 
 **Shine.** Rewrite for density and read for contradiction at the same time — they are the same pass. The findings that matter come out here: two sections that disagree, a rule that cannot be complied with, a claim the machinery no longer supports. When shine finds a contradiction, fixing it is the release; the word count is secondary and the report says so.
 
+Start the pass with the instrument, so the reading is aimed rather than hopeful:
+
+    python3 tools/redundancy.py SYSTEM.md system/*.md CONTRIBUTING.md README.md CLAUDE.md
+
+It ranks sentence pairs from different sections by shared vocabulary. Read down from the top and decide each one, then **write the verdicts down, including the pairs you left alone and why**. A pair judged once and not recorded is re-litigated by every future run, and the run after this one will look at the same 0.25 band and reach the same conclusion at full price. The worked example is `veredictos.md` in the copy that built the tool: four facts cut, one formulaic construction that was not redundancy at all, and a band of shared vocabulary deliberately kept. The score is a ranking, not a verdict, and a controlled language inflates it by construction because it forces one word per meaning.
+
 **Standardize.** Ask whether the cut could have been prevented. A paragraph that drifted out of sync with a table is a candidate for a sensor, not for a rule about writing carefully.
 
 **Sustain.** The standing trigger is §8's own: a release that adds prose without adding machinery must come out negative, or the criterion is decoration and should be deleted rather than cited.

@@ -37,9 +37,21 @@ except Exception:
     print("")' 2>/dev/null)" || origin_kind=""
 fi
 
-timestamp="$(bash tools/now.sh 2>/dev/null)" \
-  || timestamp="CLOCK UNAVAILABLE (tools/now.sh failed) — say so; do not estimate"
+# now.sh has two failure exits and they are not the same thing. Exit 1 prints
+# nothing: there is no reading, so the header says so. Exit 2 prints a real
+# reading that carries its own marking, and discarding it threw away a value
+# SYSTEM.md section 1 says is usable. A hook that reports a dead clock while the
+# clock answered is itself a fabricated reading, one level up.
+timestamp="$(bash tools/now.sh 2>/dev/null)"; now_exit=$?
+if (( now_exit != 0 )) && [[ -z "${timestamp}" ]]; then
+  timestamp="CLOCK UNAVAILABLE (tools/now.sh failed) — say so; do not estimate"
+fi
 branch="$(git branch --show-current 2>/dev/null || echo unknown)"
+
+# The reach record for time (SYSTEM.md §8). Silent on every platform already
+# listed, which is every session after the first one on a machine.
+clocks="$(bash tools/clocks.sh 2>/dev/null)" || clocks=""
+[[ -n "${clocks}" ]] && clocks=" Clock reach: ${clocks}"
 
 menu=""
 if [[ ! -f memory/state.md ]]; then
@@ -102,14 +114,31 @@ if [[ "${event}" == "SessionStart" ]]; then
     here_version="$(version_of < SYSTEM.md 2>/dev/null)" || true
 
     canon_version=""
-    if timeout 20 git fetch --quiet "https://github.com/${canon_slug}" HEAD 2>/dev/null; then
+    # Where the canon is read from. It is the GitHub URL in every real session,
+    # and the bench points it at a local repository so the direction of the gap
+    # can be pinned without a network call (CONTRIBUTING: rails are testable).
+    canon_remote="${CHIEF_CANON_REMOTE:-https://github.com/${canon_slug}}"
+    if timeout 20 git fetch --quiet "${canon_remote}" HEAD 2>/dev/null; then
       canon_version="$(git show FETCH_HEAD:SYSTEM.md 2>/dev/null | version_of)" || true
     fi
 
     if [[ -z "${canon_version}" ]]; then
       drift=" Template drift check: UNAVAILABLE (could not read the canon's SYSTEM.md; this copy is at ${here_version:-unknown}). Say the check did not run rather than assuming this copy is current."
     elif [[ "${canon_version}" != "${here_version}" ]]; then
-      drift=" Template drift: this copy is at ${here_version:-unknown} and the canon is at ${canon_version}. Rules and hooks here are the older ones, so a rule written upstream is not in force in this session. Before substantive work, tell the Principal and offer to sync (SYSTEM.md §6): a pull request bringing the canon's template into this copy's main, then tools/sync.sh onto the agent branch."
+      # A gap has a direction and the two are opposite situations. Behind is a
+      # defect: this session runs superseded rules with the old rails wired in.
+      # Ahead is the system working, because §6 says improvement is born in the
+      # copy. Reporting both as "the rules here are the older ones" told a copy
+      # carrying newer rules to sync older ones over them, which is a fabricated
+      # reading with a version number attached (§3).
+      older="$(printf '%s
+%s
+' "${here_version:-0}" "${canon_version}" | sort -V | head -n1)"
+      if [[ "${older}" == "${canon_version}" ]]; then
+        drift=" Template lead: this copy is at ${here_version:-unknown} and the canon is at ${canon_version}, so this copy is AHEAD. Nothing to sync, and syncing would move it backwards. What is missing is the other direction: these changes reach other copies only through a pull request to the canon (§6, §9). Tell the Principal which releases are waiting."
+      else
+        drift=" Template drift: this copy is at ${here_version:-unknown} and the canon is at ${canon_version}, so this copy is BEHIND. Rules and hooks here are the older ones, so a rule written upstream is not in force in this session. Before substantive work, tell the Principal and offer to sync (SYSTEM.md §6): a pull request bringing the canon's template into this copy's main, then tools/sync.sh onto the agent branch."
+      fi
     fi
   fi
 fi
@@ -125,6 +154,20 @@ if [[ "${event}" == "SessionStart" && -f memory/state.md ]]; then
     candidates=" Findings tagged for upstream and still waiting:
 ${waiting}
 Each one reaches other copies only through a pull request to the canon (§9). Route them or say why they stay."
+  fi
+fi
+
+# Memory hygiene, in the same hole and for the same reason. The 5S run of
+# 03-08-2026 found two defects that nothing was watching for, so both returned:
+# a backlog too large to act on, and a handoff describing a session that ran
+# under superseded rules (§5). Reports, never blocks.
+hygiene=""
+if [[ "${event}" == "SessionStart" && -f memory/state.md ]]; then
+  untidy="$(bash tools/hygiene.sh 2>/dev/null)" || untidy=""
+  if [[ -n "${untidy}" ]]; then
+    hygiene=" Memory hygiene:
+${untidy}
+Tell the Principal what this says, with its numbers, in this session's first reply. A sensor whose report stops at the agent is rung 4 wearing rung 3's clothes."
   fi
 fi
 
@@ -157,7 +200,7 @@ if [[ "${event}" == "SessionStart" && "${origin_kind}" == "clear" && -f memory/s
 fi
 
 HOOK_EVENT="${event}" \
-HOOK_CONTEXT="Anchors (hook-measured): time=${timestamp} branch=${branch}. Open the reply with the header built from these values. Never work on main.${menu}${drift}${candidates}" \
+HOOK_CONTEXT="Anchors (hook-measured): time=${timestamp} branch=${branch}. Open the reply with the header built from these values. Never work on main.${menu}${drift}${candidates}${hygiene}${clocks}" \
 HOOK_RESUME="${resume}" \
 python3 - <<'PY'
 import json

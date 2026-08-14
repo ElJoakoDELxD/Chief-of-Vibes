@@ -77,6 +77,48 @@ rm -f "${tmp}/memory/state.md"
 out="$(run SessionStart '{"hook_event_name":"SessionStart","source":"clear"}')"
 check want-not "initialUserMessage"                 "a chat with no agent is left alone"
 
+# --- the direction of a version gap -------------------------------------------
+# Behind and ahead are opposite situations, and the hook reported both as "the
+# rules here are the older ones". That told a copy carrying newer rules to sync
+# older ones over them: a fabricated reading with a version number on it.
+#
+# CHIEF_CANON_REMOTE points the fetch at a local repository, so both directions
+# are pinned without a network call (CONTRIBUTING: rails are testable).
+canon_dir="${tmp}/canon"
+mkdir -p "${canon_dir}"
+( cd "${canon_dir}" && git init -q .   && git config user.email bench@example.com && git config user.name bench   && printf '**Version 1.47.0.** spec
+' > SYSTEM.md   && git add -A && git commit -q -m spec ) >/dev/null 2>&1
+
+copy_dir="${tmp}/copy"
+copy_at() {
+  rm -rf "${copy_dir}"; mkdir -p "${copy_dir}/tools" "${copy_dir}/memory"
+  cp "${here}/now.sh" "${copy_dir}/tools/now.sh"
+  cp "${here}/clocks.sh" "${copy_dir}/tools/clocks.sh"
+  ( cd "${copy_dir}" && git init -q .     && git remote add origin https://github.com/someone/their-copy ) >/dev/null 2>&1
+  printf 'Owner/Canon
+' > "${copy_dir}/.canon"
+  printf '**Version %s.** spec
+' "$1" > "${copy_dir}/SYSTEM.md"
+  printf -- '---
+timezone: UTC
+---
+' > "${copy_dir}/memory/state.md"
+}
+drift_run() {
+  CLAUDE_PROJECT_DIR="${copy_dir}" CHIEF_CANON_REMOTE="${canon_dir}"     bash "${here}/../.claude/hooks/anchor.sh" SessionStart     <<< '{"hook_event_name":"SessionStart","source":"startup"}'
+}
+
+copy_at 1.49.0
+out="$(drift_run 2>/dev/null)"
+check want     "this copy is AHEAD"   "a copy ahead of the canon is told it is ahead"
+check want     "Nothing to sync"      "and is not told to sync backwards"
+check want-not "offer to sync"        "the sync is not offered to a copy that leads"
+
+copy_at 1.40.0
+out="$(drift_run 2>/dev/null)"
+check want     "this copy is BEHIND"  "a copy behind the canon is told it is behind"
+check want     "offer to sync"        "and the sync is offered"
+
 if (( fails )); then
   printf '\n%d failed\n' "${fails}"; exit 1
 fi
