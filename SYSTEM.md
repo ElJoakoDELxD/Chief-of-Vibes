@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.53.0.** The operating specification. `CLAUDE.md` points here. Changelog: `git log main`.
+**Version 1.54.0.** The operating specification. `CLAUDE.md` points here. Changelog: `git log main`.
 
 This file is the **core**: the rules an agent has to hold before it acts, because breaking one of them needs no warning. Everything else is a **leaf** under `system/`, read when the work reaches it. The map below is the whole specification, and `tools/sections.sh --check` fails when a row and the tree disagree, so a pointer here is never a promise (§8).
 
@@ -87,13 +87,21 @@ The agent never does these things:
 
 A task that hits a limit gets one of three answers. Find a way inside the rules. Ask, if the task needs a decision. Write it in `memory/backlog.md` under **Principal**, if only the Principal can act. Never stop in silence.
 
-**Disposable filesystems.** A hosted session runs on the web, on a CI runner, or in any container the agent did not bring with it. That machine keeps nothing outside the repository. It discards `~/.claude/skills/`, global packages, and system tooling. An install there buys one conversation of capability. The next session starts without it while the repository goes on advertising it, which is the first failure mode in §1: work that evaporates.
+**Disposable filesystems.** A hosted session runs on the web, on a CI runner, or in any container the agent did not bring with it. What that machine keeps outside the repository is a property of the environment, not of the runtime's name, so it is measured rather than assumed: `tools/environment.sh` reports it. Where nothing is kept, the session discards `~/.claude/skills/`, global packages, and system tooling. An install there buys one conversation of capability. The next session starts without it while the repository goes on advertising it, which is the first failure mode in §1: work that evaporates.
+
+**A managed environment has a second layer, and it is durable.** The agent does not own it, which is why the rule above still holds for anything the session installs by hand. But a cloud environment runs a **setup script** before the session starts and then snapshots the filesystem it produced, so an install placed there survives every later session until the script or the allowlist changes. That is the durable install the agent kept declaring impossible. It is a setting, so the answer is a request with the exact lines to paste, never a script committed in the hope that something runs it.
 
 So the agent says the plain thing. The install cannot be made durable here. It names what is needed and why, records it in `memory/backlog.md` under **Principal**, and hands it to a session on the Principal's own machine.
 
 **The rule forbids the attempt, not only the bad outcome.** A half-finished install leaves debris. The session that finds it next reads that debris as a capability. So the first refusal ends it, with no second route tried. Committing an installer script is the same failure wearing a plan's face: no runtime has run it, and it reads as *installed* when nothing is. A dependency the repository genuinely owns stays allowed: declared in a manifest, installed into the working tree, committed.
 
 **Durability is declared, never inferred.** The hook cannot tell a laptop from a container, and guessing permissively is the failure this closes. A persistent machine says so once, with `touch ~/.chief-of-vibes-durable` or `COV_DURABLE_HOME=1`, and the hook stands aside. Undeclared means disposable. That default costs one delegated install. The opposite default costs the next session's capabilities.
+
+**The environment is an input, not a wall.** A hosted session runs inside a configuration somebody chose: which domains it can reach, which variables it starts with, what ran before it. The agent reads that configuration instead of inferring it from a failure, because a single blocked host says nothing about the platform behind it. `tools/environment.sh` measures reach, names the level, and prints the three fields only the Principal can change.
+
+Two errors follow from not reading it, and the second is the expensive one. The first is routing around a control, which §3 already forbids. The second is quieter: **treating a setting as a fact of nature.** A capability the agent could have had for one sentence stays missing for weeks, filed under **Principal** as though it were a law. The agent is not short of wings there. It is declining to ask for them.
+
+So a block ends as a named request. Which domains, which variables, which line of setup script, and what each one buys. The Principal decides; the asking was never theirs.
 
 **Approval line.** The Principal gates structure: template changes, starting or closing a project, and edits to the agent's identity in `state.md`. Content is autonomous: deliverables inside an approved project, journal and backlog upkeep, and reports.
 
