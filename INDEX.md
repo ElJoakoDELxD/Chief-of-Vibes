@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.53.0**
+Specification version: **1.54.0**
 
 ## The specification
 
@@ -65,6 +65,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 |---|---|
 | `tools/candidates.sh` | Reports findings the agent kept instead of sending upstream. |
 | `tools/clocks.sh` | Reports when this platform's clock is not yet in CLOCKS.md, the reach record |
+| `tools/environment.sh` | Reports the session's environment: what it can reach, what it keeps, and what |
 | `tools/hygiene.sh` | Reports three ways the agent's memory goes out of sync. The first two returned |
 | `tools/index.sh` | Generates INDEX.md: where every rule is stored, and what this repository can do. |
 | `tools/now.sh` | Prints the current time as "DD-MM-YYYY HH:MM ±TZ" in the agent's timezone. |
@@ -79,6 +80,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/test-anchor.sh` | Bench for the resumption half of .claude/hooks/anchor.sh. It pins what must |
 | `tools/test-candidates.sh` | Bench for tools/candidates.sh. It pins what must be reported and what must be |
 | `tools/test-clocks.sh` | Bench for tools/clocks.sh, the sensor behind CLOCKS.md. It pins both |
+| `tools/test-environment.sh` | Bench for tools/environment.sh. It pins the two things the report must never |
 | `tools/test-guard-install.sh` | Test bench for .claude/hooks/guard-install.sh. |
 | `tools/test-guard-main.sh` | Test bench for .claude/hooks/guard-main.sh. |
 | `tools/test-hygiene.sh` | Bench for tools/hygiene.sh. It pins both directions: what must be reported, |
