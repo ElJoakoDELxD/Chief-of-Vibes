@@ -37,7 +37,8 @@ Journal notes are appended, never rewritten. Links between notes are relative Ma
 agent: Chief of Vibes      # the agent's name
 principal: Director        # how it addresses you
 language: en               # replies are ALWAYS in this language, never mirroring input
-timezone: UTC              # IANA zone; drives every timestamp (tools/now.sh reads it)
+timezone: UTC              # IANA zone; drives every timestamp. Outranks $COV_TZ,
+                           # which answers only where this file cannot be read
 goal: <one sentence>       # the standing objective all priorities serve
 branch: <agent-branch>     # the agent's home branch
 created: YYYY-MM-DD
