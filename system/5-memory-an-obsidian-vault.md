@@ -45,13 +45,19 @@ created: YYYY-MM-DD
 ---
 ```
 
-### `knowledge/` — what the repository knows
+### `knowledge/` — what a repository knows
 
-`memory/` belongs to one agent on one branch. `knowledge/` belongs to the repository, sits on `main`, and is read by every agent in the copy. **It exists only in copies.** The canon has no agents and has therefore learned nothing. So the folder is absent there. It appears in a copy with its first entry, the way `memory/handoff/` does. **The agent writes that entry the first time it works a procedure out, and not later.** A folder that waits for a reason to exist never gets one, and every agent in the copy then rediscovers the same thing. This section is the only place its shape is defined.
+`memory/` belongs to one agent on one branch. `knowledge/` belongs to the repository, sits on `main`, and is read by every agent there. **The agent writes an entry the first time it works a procedure out, and not later.** A folder that waits for a reason to exist never gets one, and every agent then rediscovers the same thing. This section is the only place its shape is defined.
 
 The distinction is what the writing is *for*. The journal records that a thing happened, dated and closed. An entry here records how to do it again.
 
-One file per topic, named for the task in plain words, such as `sync-the-template.md` or `deploy-the-site.md`:
+**It exists in the canon as well, and the two do not admit the same thing.** A copy's folder holds whatever that repository learned, including what is true only there: this Principal's tools, this account, this machine. The canon's holds **only what is agnostic**: knowledge about operating this system, improvements toward it, and reflections on it. Nothing about one Principal, one agent, or one project reaches it, because an entry there is inherited by every copy that ever syncs, and a wrong one propagates further than any single repository can correct.
+
+**So `verified:` stops being hygiene and becomes the gate.** In a copy it records what was run. In the canon it is the condition of entry: an entry nobody ran is a guess wearing a procedure's format, and a guess that every copy inherits is worse than an empty folder, because it will be trusted.
+
+**The register is honest, serious, self-critical, and without preferences.** An entry that flatters the system is not knowledge about it. What earns a place is what was measured, including what the measurement said about the writer — and *especially* that, because it is the part no one else can supply.
+
+**One folder per topic, and the folder is the point.** An entry lives at `knowledge/<topic>/<entry>.md`, never loose at the top. Choosing the folder forces the question *has this already been thought* before a second copy of the same thought gets written, which is the cheapest place to catch it. The same shape governs `memory/projects/` for the same reason, and the two are one discipline rather than two conventions.
 
 ```markdown
 ---
