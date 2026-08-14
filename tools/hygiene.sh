@@ -34,6 +34,26 @@ set -uo pipefail
 
 threshold="${1:-2000}"
 
+# knowledge/ has the same two rules memory/projects/ has, for the same reason:
+# an entry loose at the top is an entry nobody had to place, and placing it is
+# what forces the question of whether the thought already exists. The second
+# rule is the gate section 5 names: an entry with no `verified:` is a guess in a
+# procedure's format, and in the canon every copy inherits it.
+if [[ -d knowledge ]]; then
+  while IFS= read -r file; do
+    rel="${file#knowledge/}"
+    if [[ "${rel}" != */* ]]; then
+      echo "${file} sits loose in knowledge/. Every entry belongs to a topic folder (SYSTEM.md 5)."
+    fi
+    grep -q '^verified:' "${file}" \
+      || echo "${file} carries no \`verified:\`. An entry nobody ran is a guess in a procedure's format (SYSTEM.md 5)."
+  done < <(find knowledge -type f -name '*.md' | sort)
+fi
+
+# Everything below needs memory/, and the canon has none. The knowledge checks
+# above do not: since 1.61.0 the canon carries knowledge/ too, so a guard that
+# sent the whole sensor home on a repository without agents would take those
+# with it — in the one repository whose entries every copy inherits.
 [[ -d memory ]] || exit 0
 
 if [[ -f memory/backlog.md ]]; then

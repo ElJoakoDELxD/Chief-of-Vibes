@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.60.0.** The operating specification. `CLAUDE.md` points here. Changelog: `git log main`.
+**Version 1.62.0.** The operating specification. `CLAUDE.md` points here. Changelog: `git log main`.
 
 This file is the **core**: the rules an agent has to hold before it acts, because breaking one of them needs no warning. Everything else is a **leaf** under `system/`, read when the work reaches it. The map below is the whole specification, and `tools/sections.sh --check` fails when a row and the tree disagree, so a pointer here is never a promise (§8).
 

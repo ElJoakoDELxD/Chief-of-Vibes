@@ -138,6 +138,24 @@ check_absent "projects/ is never called an intruder" "memory/projects/ is not" "
 check_absent "journal/ is never called an intruder" "memory/journal/ is not" "${out}"
 check_absent "handoff/ is never called an intruder" "memory/handoff/ is not" "${out}"
 
+# --- knowledge/, which the canon carries too --------------------------------
+# Both rules are mechanical, and both run where there is no memory/ at all,
+# because that is what the canon looks like and its entries reach every copy.
+
+kn="${tmp}/knowledge-canon"
+rm -rf "${kn}"; mkdir -p "${kn}/knowledge/tema"
+printf -- '---\ntopic: bien\nverified: se corrio el banco\n---\n' > "${kn}/knowledge/tema/bien.md"
+printf -- '---\ntopic: suelta\n---\n' > "${kn}/knowledge/suelta.md"
+out="$(cd "${kn}" && bash "${here}/hygiene.sh" 2>&1)"
+check "an entry loose at the top of knowledge/ is reported" "sits loose in knowledge/" "${out}"
+check "an entry with no verified: is reported" "carries no" "${out}"
+check_absent "a placed and verified entry is left alone" "tema/bien.md" "${out}"
+
+# The canon has no memory/, and the sensor must not go home before checking.
+[[ -n "${out}" ]] \
+  && echo "ok   the knowledge checks run without memory/" \
+  || { echo "FAIL the knowledge checks run without memory/"; fail=1; }
+
 if (( fail )); then
   echo "tools/hygiene.sh: bench FAILED"
   exit 1
