@@ -2,12 +2,55 @@
 name: orchestrate
 effort: high
 summary: Split a task into planning, doing and judging, give each to a model that fits, and let the judge read the plan instead of the worker.
-description: Run a task through three roles instead of one — a high-cognition model writes the plan, a model with sufficient capacity executes it, and a high-cognition reader that never edited anything checks the result against the plan. Use when a task is large enough that the handoff pays for itself, mechanical enough to specify in writing, and verifiable against something other than the worker's own account of it. Use it especially where the agent would otherwise grade its own work. Do not use it for small tasks, for work whose plan costs more than the work, or where nothing outside the worker can confirm the result — say so instead.
+description: Read every incoming prompt before answering it — restate what it asks, size it, and route it to a model and an effort level that fit, so a small question stops costing what a release costs. That triage is not optional and its verdict rides in the header of the reply. Above a threshold the same skill splits the work into three roles: a high-cognition model writes the plan, a model with sufficient capacity executes it, and a high-cognition reader that never edited anything checks the result against the plan. Use the heavy half where the agent would otherwise grade its own work, and never for a task smaller than its own plan.
 ---
 
 # orchestrate
 
 Rides SYSTEM.md §3: *verify before assert* · *done is earned by verification* · a subagent's brief is a file, never a sentence in a prompt.
+
+**This skill has two gears and they cost opposite amounts.** The first runs on every prompt and exists to *spend less*. The second runs rarely and is expensive on purpose. Reading only the second one and applying it always is the way to burn a window on a one-line question.
+
+---
+
+# Gear one: triage, and it runs every time
+
+**Before answering anything, read the prompt as a thing to be measured.** Three steps, all in this context, no subagent, and the whole thing costs a few sentences of thought.
+
+## 1. Restate it
+
+Say back what the prompt asks for, in one line, in the terms the work will use. This is where a vague request becomes an executable one, and where an ambiguity surfaces while it is still free.
+
+**The improved reading never silently replaces the request.** When the restatement changes the scope, it goes in the reply where the Principal can see it and object. When it only sharpens wording, it stays silent. **The original governs wherever the two differ**, because a prompt improved past what was asked is a prompt answered wrongly with better grammar.
+
+## 2. Size it
+
+| Signal | Pushes down | Pushes up |
+|---|---|---|
+| **Names its target** | paths, files, a command | "somewhere in the system" |
+| **Shape** | a question, a reading, a lookup | a build, a rule, a release |
+| **Blast radius** | this branch, this file | the canon, money, anything public |
+| **Reversibility** | a commit that can be dropped | a merge, a post, a payment |
+| **Ambiguity** | one reading | several, and they diverge |
+
+## 3. Route it
+
+    low     a lookup, a reading, a restatement, a small edit with a named target
+    medium  ordinary work: one file, a bounded change, a bench that already exists
+    high    rules, releases, anything irreversible, anything the Principal will act on
+    three   the roles below, when high is not enough because the agent would grade itself
+
+**The floor overrides the saving.** Anything touching the canon, money, a credential, or something that becomes public **runs high whatever its size**, and a one-line change to a rule is a rule change. Cheapening those is not a saving. It is the one place where being wrong is expensive, so it is the last place to economise.
+
+## 4. Say it in the header
+
+The route goes in the header of every reply (§9), as `model·effort`. That is what makes the step impossible to skip quietly: a reply with no route on it did not run the triage, and anyone can see that without asking.
+
+**A route that turns out wrong is corrected out loud**, mid-task, and the reply says so. Discovering that a *low* was really a *high* is the triage working, not the triage failing.
+
+---
+
+# Gear two: the three roles, and it runs rarely
 
 ## The one thing this exists to fix
 
@@ -120,6 +163,8 @@ run should spend its tokens elsewhere.
 
 ## Provenance
 
-Distilled from the worker-and-monitor pair in `.claude/skills/5s/`, which was the first place
+Gear one comes from the Principal on 13-08-2026: *"que el prompt que ingrese el usuario sea medido y se le asigne un modelo y un nivel de esfuerzo acorde, para que ahorres tokens al usuario"*, with the improvement step first.
+
+Gear two is distilled from the worker-and-monitor pair in `.claude/skills/5s/`, which was the first place
 this system separated doing from judging, and from the 13-08-2026 memory run where that
 separation caught an inflated number, a wrongly closed item, and two deleted facts.
