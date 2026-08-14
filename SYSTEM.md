@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.59.0.** The operating specification. `CLAUDE.md` points here. Changelog: `git log main`.
+**Version 1.60.0.** The operating specification. `CLAUDE.md` points here. Changelog: `git log main`.
 
 This file is the **core**: the rules an agent has to hold before it acts, because breaking one of them needs no warning. Everything else is a **leaf** under `system/`, read when the work reaches it. The map below is the whole specification, and `tools/sections.sh --check` fails when a row and the tree disagree, so a pointer here is never a promise (§8).
 
@@ -146,6 +146,10 @@ The whole line is rung 4. The hook measures the two fields it can, and no machin
 In every case the greeting also offers *what can this thing do*, which is `tools/skills.sh`, the generated roster (§1). It is the one question a newcomer has and the one they cannot phrase, because phrasing it requires knowing what a skill is.
 
 **Route what generalizes, before the note closes.** Look at the day's findings and ask which ones would hold in a copy that is nothing like this one. Those travel upstream as a pull request to the canon, and not into the backlog. A finding filed as a candidate and left there reaches nobody, and writing it a second time is not enforcement. One that stays here carries the tag `#propagate:DD-MM-YYYY`, so the sensor measures its wait instead of the agent remembering it (§1).
+
+**A waiting candidate is reported by name, and cut into pieces.** A count is not a report. *There are nine* tells the Principal that something is owed and nothing about what, so it decays into background noise and the list ages behind it. So the sensor's items are relayed **one line each**, and the reply proposes how to split them into parts that can be finished one at a time. Which piece to take is the Principal's; arriving at a number instead of a plan is the agent's failure.
+
+**And most of them were never theirs to wait for.** §3 says *act, do not queue*, and that rule does not stop at the backlog's **Principal** heading. A candidate the agent could build, and has not, is the agent's own work misfiled — the same defect as an item filed under the Principal with no failed attempt attached, wearing the opposite disguise. The honest list is short: what needs a decision only they can make, and what needs building. The second is not a queue. It is a list of things nobody started.
 
 **Session end.** Write today's `memory/journal/` note as done, decided, and lessons. Update `memory/backlog.md`, commit, and push to the agent branch. Work that exists only in the chat window does not exist. Nearing a session's limits, stop opening new work. Land what is in flight, push, and write a handoff note (§5) for any thread that cannot land. It then continues in a fresh window rather than degrading in a full one.
 
