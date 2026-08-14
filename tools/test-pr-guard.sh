@@ -89,13 +89,17 @@ out="$(run canon-both "${CANON}")"
 check "two failures are both reported, not just the first" "bump SYSTEM.md's version" "${out}"
 check "and the path failure is reported too"               "outside the template"     "${out}"
 
-# knowledge/ belongs to a copy. On the canon it is an ordinary foreign path.
+# knowledge/ is a template path in both repositories since 1.61.0. This case is
+# the reverse of the one it replaced: the canon used to reject the folder, and
+# the guard rejected this very change when the rule moved and the rail did not.
+# What separates the two repositories is what the folder ADMITS, which is a
+# judgment about content and belongs to the reviewer, not to a path pattern.
 build canon-know 1.0.0 "${CANON}"
 mkdir -p "${tmp}/canon-know/knowledge"
 printf 'entry\n' > "${tmp}/canon-know/knowledge/thing.md"
 printf '**Version 1.1.0.** spec\n' > "${tmp}/canon-know/SYSTEM.md"; commit canon-know
 out="$(run canon-know "${CANON}")"
-check "knowledge/ on the canon is rejected" "knowledge/ belongs in a copy" "${out}"
+check_absent "knowledge/ on the canon is allowed" "outside the template" "${out}"
 
 # --- a copy, which holds a superset and issues no versions --------------------
 build copy-nobump 1.0.0 "${CANON}"

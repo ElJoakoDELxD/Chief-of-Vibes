@@ -41,17 +41,15 @@ is_canon=0
 fail=0
 
 # --- 1. only template files reach main ----------------------------------------
-# Agent memory and project output belong on agent branches. knowledge/ (section
-# 5) is where a COPY records what its agents verified; the canon has no agents
-# and therefore nothing to have learned, so there the folder is rejected like
-# any other non-template path.
-allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|CLOCKS|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools|system)/'
-if (( is_canon )); then
-  scope='outside the template — knowledge/ belongs in a copy, not the canon'
-else
-  allow="${allow}|^knowledge/"
-  scope='outside the template'
-fi
+# Agent memory and project output belong on agent branches. knowledge/ is a
+# template path in both repositories since 1.61.0, and the difference between
+# them is no longer WHETHER the folder may exist but WHAT it admits: a copy
+# takes whatever it learned, the canon only what is agnostic (section 5). That
+# distinction is a judgment about content, so it belongs to the reviewer and not
+# to a path pattern. This guard checks the path and says nothing about the
+# entry.
+allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|CLOCKS|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools|system|knowledge)/'
+scope='outside the template'
 
 while IFS= read -r -d '' f; do
   if ! printf '%s' "${f}" | grep -qE "${allow}"; then
