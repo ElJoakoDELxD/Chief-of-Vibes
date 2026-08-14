@@ -13,6 +13,7 @@ able to tell the time on.
 | Platform (`uname -s`) | Origin that answered | First recorded |
 |---|---|---|
 | `MINGW64_NT` | `python-zoneinfo` | 2026-08-11 |
+| `Linux` | `zone-database` | 2026-08-14 |
 
 ## Why a record of clocks at all
 

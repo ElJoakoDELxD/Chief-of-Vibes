@@ -91,6 +91,8 @@ cat <<'ASK'
                       Domains, not URLs. A leading *. covers subdomains.
     Variables       - .env format, copied once at session start. Readable by
                       anyone using the environment, so never a credential.
+                      COV_TZ=<IANA zone> keeps the clock working on branches
+                      that carry no memory/, which is every template branch.
     Setup script    - Bash, as root, before the session. Must exit zero.
                       Its filesystem is cached and reused.
 ASK

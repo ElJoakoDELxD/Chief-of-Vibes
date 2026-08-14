@@ -1,11 +1,21 @@
 #!/usr/bin/env bash
 #
 # Prints the current time as "DD-MM-YYYY HH:MM ±TZ" in the agent's timezone.
-# The zone comes from the `timezone:` field in memory/state.md's frontmatter.
+#
+# The zone is asked for in two places, in this order:
+#   1. the `timezone:` field in memory/state.md   — the agent's own declaration
+#   2. $COV_TZ                                    — the environment it runs in
+#
+# state.md wins because it is the agent saying who it is, and an environment
+# must not quietly relocate an agent that already declared a zone. $COV_TZ is
+# what answers where state.md cannot be read at all, which is not an exotic
+# case: every template branch is a branch without memory/, and a session that
+# checks one out loses its clock for as long as it stands there. That happened
+# on 14-08-2026 and the header came out in UTC on a Principal in -04.
 #
 # Two failures, two different exits, because they are not the same thing:
 #   - a configured zone that does not exist  → exit 1, nothing printed
-#   - no zone configured at all              → exit 2, UTC printed and SAID SO
+#   - no zone configured anywhere            → exit 2, UTC printed and SAID SO
 #
 # The second matters more than it looks. A bare `+00` is indistinguishable from
 # a Principal who really is in UTC, so a caller stamps a default as an answer
@@ -32,6 +42,11 @@ if [[ -f memory/state.md ]]; then
     fence == 1 && $1 == "timezone:" { gsub(/["'\''`]/, "", $2); print $2; exit }
   ' memory/state.md)"
   if [[ -n "${configured}" ]]; then zone="${configured}"; defaulted=0; fi
+fi
+# The environment answers only where the agent's own file did not. Reversing
+# these two would let a machine move an agent that had already said where it is.
+if [[ "${defaulted}" -eq 1 && -n "${COV_TZ:-}" ]]; then
+  zone="${COV_TZ}"; defaulted=0
 fi
 
 # Two origins can answer, and the tool asks both before it gives up. A negative
@@ -86,7 +101,8 @@ if [[ -z "${raw}" ]]; then
     else
       printf "  python3 is not on PATH, so the second origin could not be tried\n"
     fi
-    printf "  or:    set a zone that exists in memory/state.md, such as UTC or America/New_York\n"
+    printf "  or:    set a zone that exists, in memory/state.md or in \$COV_TZ,\n"
+    printf "         such as UTC or America/New_York\n"
   } >&2
   exit 1
 fi
@@ -106,7 +122,7 @@ stamp="$(printf '%s' "${raw}" \
   | sed -E 's/([+-][0-9]{2})([0-9]{2})$/\1:\2/; s/:00$//')"
 
 if [[ "${defaulted}" -eq 1 ]]; then
-  printf '%s (UTC default — no timezone configured in memory/state.md)\n' "${stamp}"
+  printf '%s (UTC default — no timezone in memory/state.md and no $COV_TZ)\n' "${stamp}"
   exit 2
 fi
 printf '%s\n' "${stamp}"

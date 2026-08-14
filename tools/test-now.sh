@@ -118,6 +118,33 @@ out="$(run "${d}")"; code=$?
   && report "no zone configured prints a marked value and exits 2" yes "" \
   || report "no zone configured prints a marked value and exits 2" no "exit=${code} out=${out:-<empty>}"
 
+# --- $COV_TZ: the environment answers where memory/ cannot be read ----------
+# Every template branch is a branch without memory/, so a session standing on
+# one had no clock at all until this. Measured on 14-08-2026: the header came
+# out in UTC for a Principal in -04.
+
+nostate="${tmp}/nostate"
+rm -rf "${nostate}"; mkdir -p "${nostate}"
+cp "${here}/now.sh" "${nostate}/now.sh"
+
+out="$(cd "${nostate}" && COV_TZ=America/Santiago bash ./now.sh 2>&1)"; code=$?
+[[ "${out}" == *"-04"* && "${out}" != *"UTC default"* && ${code} -eq 0 ]] \
+  && report "COV_TZ answers where state.md is absent, unmarked, exit 0" yes "" \
+  || report "COV_TZ answers where state.md is absent, unmarked, exit 0" no "exit=${code} out=${out:-<empty>}"
+
+out="$(cd "${nostate}" && bash ./now.sh 2>&1)"; code=$?
+[[ "${out}" == *"UTC default"* && "${out}" == *"COV_TZ"* && ${code} -eq 2 ]] \
+  && report "with neither source, the default names both places it looked" yes "" \
+  || report "with neither source, the default names both places it looked" no "exit=${code} out=${out:-<empty>}"
+
+# state.md outranks the environment. A machine must not relocate an agent that
+# has already declared where it is.
+both="$(build both America/Santiago)"
+out="$(cd "${both}" && COV_TZ=Asia/Tokyo bash ./now.sh 2>&1)"
+[[ "${out}" == *"-04"* && "${out}" != *"+09"* ]] \
+  && report "state.md outranks COV_TZ" yes "" \
+  || report "state.md outranks COV_TZ" no "out=${out:-<empty>}"
+
 # The hook has to keep that value rather than throw it away with the exit code.
 grep -q 'now_exit' "${here}/../.claude/hooks/anchor.sh" \
   && report "the anchor hook reads the exit code instead of discarding output" yes "" \
