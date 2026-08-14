@@ -12,6 +12,8 @@ tmp="$(mktemp -d)"
 trap 'rm -rf "${tmp}"' EXIT
 
 old="$(date -d '9 days ago' '+%d-%m-%Y')"
+older="$(date -d '20 days ago' '+%d-%m-%Y')"
+older_age=20
 today="$(date '+%d-%m-%Y')"
 
 # Real backlog items are wrapped Markdown bullets, so the tag lands wherever
@@ -27,6 +29,10 @@ cat > "${tmp}/backlog.md" <<EOF
 - **A finding with no date.** #propagate
 - **An ordinary item.** Nothing to send upstream.
 - **A tag with a broken date.** #propagate:99-99-9999
+- **An entry that absorbed a second finding.** #propagate:${old}
+  It grew, and the finding it swallowed brought its own tag with it.
+  Older still, and filed first. #propagate:${older}
+- **~~A finding that landed.~~** It is struck through, so it is done. #propagate:${old}
 - **A wrapped finding.** Its first line says what it is, and the prose runs on
   for a while before the tag turns up somewhere in the middle of a sentence
   #propagate:${old} that keeps going afterwards.
@@ -65,6 +71,20 @@ check want     "…"                           "a title over the width ends in a
 check want-not "writt…"                      "the cut lands between words, never inside one"
 check want     "undated"      "a tag with no date is reported as undated"
 check want     "bad date"     "a tag with a broken date is named, never guessed"
+
+# One item, one line, however many tags it carry. Reporting per tag counted an
+# absorbed finding twice, and the count stopped matching the list under it.
+count="$(printf '%s' "${out}" | grep -c 'absorbed a second finding' || true)"
+[[ "${count}" == "1" ]] \
+  && echo "ok    an entry with two tags is reported once" \
+  || { echo "FAIL  an entry with two tags is reported once (got ${count})"; fail=1; }
+
+# And the age it reports is the OLDEST wait, because a tag is appended wherever
+# there was room and file order is not date order.
+check want     "${older_age} days: An entry that absorbed" "an entry with two tags reports the oldest wait"
+
+# A struck-through entry is closed, and a closed thing is not waiting.
+check want-not "A finding that landed"  "a struck-through entry stops being reported"
 check want-not "ordinary"     "an untagged item is left alone"
 
 out="$(bash "${here}/candidates.sh" 2 "${tmp}/absent.md")"
