@@ -117,6 +117,27 @@ check_absent "the canon says nothing" "backlog" "${out}"
 ( cd "${tmp}/big" && bash "${here}/hygiene.sh" >/dev/null 2>&1 )
 check "reporting still exits 0" "0" "$?"
 
+# --- a sibling folder section 5 never named --------------------------------
+# The projects walk cannot see one, and on 13-08-2026 that cost nine days: a
+# note predicting the session's own failure sat in memory/thinking/ unread.
+
+sib="${tmp}/sibling"
+rm -rf "${sib}"; mkdir -p "${sib}/memory/projects/tema/hilo" "${sib}/memory/journal" "${sib}/memory/thinking"
+: > "${sib}/memory/projects/tema/hilo/nota.md"
+: > "${sib}/memory/thinking/la-pregunta.md"
+out="$(cd "${sib}" && bash "${here}/hygiene.sh" 2>&1)"
+check "a folder section 5 does not name is reported" "memory/thinking/" "${out}"
+check "the report says why it matters" "invisible" "${out}"
+
+# The three folders section 5 does name stay silent, or the sensor becomes noise.
+quiet="${tmp}/quiet"
+rm -rf "${quiet}"; mkdir -p "${quiet}/memory/projects/tema/hilo" "${quiet}/memory/journal" "${quiet}/memory/handoff"
+: > "${quiet}/memory/projects/tema/hilo/nota.md"
+out="$(cd "${quiet}" && bash "${here}/hygiene.sh" 2>&1)"
+check_absent "projects/ is never called an intruder" "memory/projects/ is not" "${out}"
+check_absent "journal/ is never called an intruder" "memory/journal/ is not" "${out}"
+check_absent "handoff/ is never called an intruder" "memory/handoff/ is not" "${out}"
+
 if (( fail )); then
   echo "tools/hygiene.sh: bench FAILED"
   exit 1

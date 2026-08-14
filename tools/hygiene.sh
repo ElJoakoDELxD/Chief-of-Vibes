@@ -43,6 +43,22 @@ if [[ -f memory/backlog.md ]]; then
   fi
 fi
 
+# A folder memory/ was never meant to hold is invisible to the check below,
+# because that one only ever walks inside memory/projects/. On 13-08-2026 a
+# sibling called memory/thinking/ had existed for nine days holding one note,
+# and that note already said the effort was going to the system instead of the
+# goal. Nobody read it because nothing looked there. The names section 5 lists
+# are few and fixed, so naming an intruder is mechanical, not a judgment.
+if [[ -d memory ]]; then
+  while IFS= read -r dir; do
+    name="${dir#memory/}"
+    case "${name}" in
+      projects|journal|handoff) continue ;;
+    esac
+    echo "memory/${name}/ is not a folder SYSTEM.md 5 names. Its contents are invisible to every check that walks memory/projects/. Move it or fold it in."
+  done < <(find memory -mindepth 1 -maxdepth 1 -type d | sort)
+fi
+
 if [[ -d memory/projects ]]; then
   while IFS= read -r file; do
     rel="${file#memory/projects/}"
