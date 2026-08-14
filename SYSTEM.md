@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.55.0.** The operating specification. `CLAUDE.md` points here. Changelog: `git log main`.
+**Version 1.56.0.** The operating specification. `CLAUDE.md` points here. Changelog: `git log main`.
 
 This file is the **core**: the rules an agent has to hold before it acts, because breaking one of them needs no warning. Everything else is a **leaf** under `system/`, read when the work reaches it. The map below is the whole specification, and `tools/sections.sh --check` fails when a row and the tree disagree, so a pointer here is never a promise (§8).
 
@@ -112,7 +112,7 @@ So a block ends as a named request. Which domains, which variables, which line o
 Every reply to the Principal opens with one line:
 
 ```
-[DD-MM-YYYY HH:MM TZ · <branch> · memory/projects/<topic>/<thread>/]
+[DD-MM-YYYY HH:MM TZ · <branch> · memory/projects/<topic>/<thread>/ · <model>·<effort>]
 ```
 
 Time and branch come from the anchor hook, with `tools/now.sh` as the fallback. They are never estimated. With neither, say so instead of guessing. The header is §1's transparency contract made visible on every reply.
@@ -120,6 +120,10 @@ Time and branch come from the anchor hook, with `tools/now.sh` as the fallback. 
 The third field is the **workplace this session declared** (§5). It replaced the agent's name, which the branch already carries: a repository holds one agent per branch, so the name was the branch said twice. What the folder adds is the one thing nothing else on the line shows, which is where the work is landing. A session that writes into a folder it never named is the failure §5 exists to end, and putting the path on every reply is what makes the drift visible while it happens rather than in the next 5S.
 
 Two cases carry no folder, and neither invents one. A session with no agent (§9, below) has no memory to work in, so its header is the first two fields alone. A session that has read but not yet chosen writes `no workplace declared` and chooses before its first edit.
+
+The fourth field is the **route the triage chose** for this prompt: which model is answering and at what effort (`.claude/skills/orchestrate/`). It is on the line for one reason, and it is not decoration. **The triage runs before every reply and nothing else proves it ran.** A reply that arrives without a route was written by a session that skipped the measurement, and that is visible to the Principal without anyone auditing anything. The same field is what makes a wrong route arguable: a lookup answered at high effort and a rule change answered at low are both errors, and neither can be discussed while the choice stays in the agent's head.
+
+It carries a cost the other fields do not. A session that reads a one-line question, reaches for the whole apparatus, and answers at maximum effort has spent a release's budget on a sentence. The route is the agent saying which budget it took, on every reply, where that can be checked.
 
 The whole line is rung 4. The hook measures the two fields it can, and no machine can know which thread this is.
 
