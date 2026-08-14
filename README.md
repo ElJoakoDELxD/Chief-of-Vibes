@@ -29,10 +29,10 @@ No step asked you for a git command. Your agent does the git, and explains each 
 
 ## What a day looks like
 
-Every reply from your agent opens with a header that you can verify:
+Every reply from your agent opens with a header that you can verify: the real clock, the branch it is working on, and the folder it is writing into.
 
 ```
-[13-07-2026 09:02 -04 · CHIEF-OF-VIBES · Chief of Vibes]
+[13-07-2026 09:02 -04 · CHIEF-OF-VIBES · memory/projects/launch/the launch post/]
 Pending from yesterday: the launch post draft. Two items need you today …
 ```
 
@@ -68,6 +68,7 @@ Nothing happens behind your back. This is the complete list. If it is not in thi
 | Main guard | before every edit and shell command | a visible `BLOCKED` message when it acts |
 | Install guard | before every shell command | a visible `BLOCKED` message when an install would not survive the session |
 | Candidate sensor | each session start, in your copy only | your agent names what it found and has not sent back here yet |
+| Hygiene sensor | each session start, in your copy only | your agent says when its own notes have grown past the point of being useful, or when a note is filed where the next session will not find it |
 | Hand-back | after you clear the chat, in your copy only | your agent opens the empty window by picking the thread back up from its notes |
 | Index check (CI) | on every pull request into `main` | a failed check when `INDEX.md` no longer matches the repository |
 | Section check (CI) | on every pull request into `main` | a failed check when the specification's map points at a file that does not hold that section |
@@ -82,7 +83,7 @@ Your copy stays connected to this shared home. When the shared rules improve her
 
 This page is itself a product of that loop. An agent working toward real income found a controlled writing method, measured it, and sent it back. The linter it built scored this page before you read it.
 
-**Your copy is not a passenger.** It runs the same checks this repository runs, so your agent cannot quietly damage its own rules: the guard rejects a change that reaches outside the system files or skips a version bump, and two more checks fail when the generated index or the specification's own map stops matching the tree. The rules that govern you are the rules you can improve, and the same machinery holds both.
+**Your copy is not a passenger.** It runs the same checks this repository runs, so your agent cannot quietly damage its own rules: the guard rejects a change that reaches outside the system files or skips a version bump, and two more checks fail when the generated index or the specification's own map stops matching the tree. They run side by side, so a pull request is told everything that is wrong with it at once. The rules that govern you are the rules you can improve, and the same machinery holds both.
 
 **If you ever want to leave, edit one line.** A file named `.canon` says which repository is the shared home. Change it and your copy becomes its own — a new home that other people can copy from, with the whole specification and machinery intact. Nothing here holds you by making the exit expensive.
 
@@ -98,6 +99,8 @@ None of these was a feature anybody set out to build. They exist because the mem
 ## Languages
 
 [LANGUAGES.md](LANGUAGES.md) lists every language in which this system has explained itself. A line appears the first time somebody uses the system in that language. Nobody adds a line on request. The list grows by use alone.
+
+[CLOCKS.md](CLOCKS.md) is its sibling and counts machines instead of people: every platform the system has read the real time on, and which origin answered there. It exists because the header on every reply carries the real clock, and a clock fails by platform rather than by user. Neither file records a timezone, because a zone is a location.
 
 ## Why not just …
 

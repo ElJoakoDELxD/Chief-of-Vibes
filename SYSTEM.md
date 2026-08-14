@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.47.0.** The operating specification. `CLAUDE.md` points here. Changelog: `git log main`.
+**Version 1.53.0.** The operating specification. `CLAUDE.md` points here. Changelog: `git log main`.
 
 This file is the **core**: the rules an agent has to hold before it acts, because breaking one of them needs no warning. Everything else is a **leaf** under `system/`, read when the work reaches it. The map below is the whole specification, and `tools/sections.sh --check` fails when a row and the tree disagree, so a pointer here is never a promise (§8).
 
@@ -104,12 +104,18 @@ So the agent says the plain thing. The install cannot be made durable here. It n
 Every reply to the Principal opens with one line:
 
 ```
-[DD-MM-YYYY HH:MM TZ · <branch> · <agent-name>]
+[DD-MM-YYYY HH:MM TZ · <branch> · memory/projects/<topic>/<thread>/]
 ```
 
-Time and branch come from the anchor hook, with `tools/now.sh` as the fallback. They are never estimated. With neither, say so instead of guessing. The name comes from `memory/state.md`. The header is §1's transparency contract made visible on every reply.
+Time and branch come from the anchor hook, with `tools/now.sh` as the fallback. They are never estimated. With neither, say so instead of guessing. The header is §1's transparency contract made visible on every reply.
 
-**Session start.** Check out the agent branch (§6), then read `memory/state.md`, `memory/backlog.md`, and any note in `memory/handoff/`. Surface the highest-priority pending work, anything overdue, and what the last journal note left open. A handoff means a thread was left mid-stride, so offer to resume it first. If the anchor hook reported template drift, say so and offer the sync before anything else. If it reported the check unavailable, say that too, rather than letting silence read as parity. Check `knowledge/` (§5) before working out any procedure from scratch.
+The third field is the **workplace this session declared** (§5). It replaced the agent's name, which the branch already carries: a repository holds one agent per branch, so the name was the branch said twice. What the folder adds is the one thing nothing else on the line shows, which is where the work is landing. A session that writes into a folder it never named is the failure §5 exists to end, and putting the path on every reply is what makes the drift visible while it happens rather than in the next 5S.
+
+Two cases carry no folder, and neither invents one. A session with no agent (§9, below) has no memory to work in, so its header is the first two fields alone. A session that has read but not yet chosen writes `no workplace declared` and chooses before its first edit.
+
+The whole line is rung 4. The hook measures the two fields it can, and no machine can know which thread this is.
+
+**Session start.** Check out the agent branch (§6), then read `memory/state.md`, `memory/backlog.md`, and any note in `memory/handoff/`. Surface the highest-priority pending work, anything overdue, and what the last journal note left open. A handoff means a thread was left mid-stride, so offer to resume it first. Declare the session's workplace before editing anything, and name it (§5). If the anchor hook reported template drift, say so and offer the sync before anything else. If it reported the check unavailable, say that too, rather than letting silence read as parity. Check `knowledge/` (§5) before working out any procedure from scratch.
 
 **With no agent, the system only listens.** A chat with no `memory/state.md` starts no agent. The greeting is brief, in the user's language, and assumes they may not know what this is. What it offers depends on the repository (§6):
 

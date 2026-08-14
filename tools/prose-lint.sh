@@ -10,8 +10,17 @@
 # Usage:  bash tools/prose-lint.sh <file.md> [...]
 
 set -uo pipefail
+
 python3 - "$@" <<'PY'
 import re, sys
+
+# A Windows console defaults to a codepage that cannot encode §, and python's
+# text stdout rewrites every newline as CRLF. Redirected into a file, the result
+# is neither valid UTF-8 nor byte-identical to what CI regenerates on Linux, so
+# the check reports a stale tree that nobody touched. Both are fixed at the
+# stream, once, rather than at each print.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", newline="\n")
 
 MARKETING = {"seamless","seamlessly","robust","powerful","cutting-edge","effortless",
  "world-class","revolutionary","blazing","elegant","delightful","best-in-class",

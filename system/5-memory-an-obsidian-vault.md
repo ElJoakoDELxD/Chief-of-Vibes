@@ -12,10 +12,21 @@ memory/
 ├── handoff/
 │   └── <thread title>-handoff.md   # live state of a thread in flight, for resuming in a fresh chat
 └── projects/
-    └── <name>/brief.md   # what a project IS: one page (§7) + its scope-expansions log
+    └── <topic>/          # one line of work — brief.md here when it is a §7 project
+        └── <thread>/     # one chat's workplace, named the way that chat titles itself
 ```
 
-Two folders carry the word *projects*. `memory/projects/<name>/` is the thinking: the brief and its scope log. The deliverables live in a top-level `projects/<name>/` on the agent branch. Memory is what the agent knows, and `projects/` is what it made.
+Two folders carry the word *projects*. `memory/projects/` is the thinking: the brief and its scope log, and the notes of every thread that worked the topic. The deliverables live in a top-level `projects/<name>/` on the agent branch, and that tree stays flat, because session structure is not part of a product. Memory is what the agent knows, and `projects/` is what it made.
+
+### The workplace
+
+A chat titles itself on its first message, and that title is the only thing separating one thread from another. With no folder to match it, one thread's traces scatter under three different names: a handoff note titled for the chat, a loose file named for the subject, and dated lines in the journal.
+
+So **a session declares its workplace before its first substantive edit, and says so in its first reply**. It picks a topic, then either continues a thread folder that exists or opens one, and it names which of the two it did. The thread folder is named the way a handoff note already is, below: three to six ordinary words in the agent's language, with spaces. One convention, used twice.
+
+This tree is the agent's conversation history, and unlike a chat surface's list of auto-titled sessions it outlives the window that produced it.
+
+A topic is a line of work and not always a project. `brief.md` sits at the topic level and is §7's approval gate for a topic that publishes something; a topic whose output never leaves the repository has no brief and does not pretend to. That brief is the only file the topic level holds. Everything else belongs to a thread, and the hygiene sensor reports what sits outside that shape (§1).
 
 Journal notes are appended, never rewritten. Links between notes are relative Markdown, so they render in GitHub and in Obsidian alike. `.obsidian/` is gitignored. Moving this memory to another tool is copying one folder.
 
@@ -72,13 +83,14 @@ Reading it restates the corrected behaviour in the agent's own words before it a
 
 A handoff is working state, not memory of record. It is the answer to a context window filling up. It carries a thread still in flight, with enough that a chat knowing nothing resumes mid-stride instead of replaying the old conversation.
 
-One file per thread: `memory/handoff/<thread title>-handoff.md`, titled the way a chat names itself on its first message. Three to six plain words in the agent's language, saying what the work is: `landing page rewrite-handoff.md`, `precios del plan pro-handoff.md`. Ordinary words and spaces, not identifiers. Only `/` and `:` are off-limits, because filesystems reject them. The folder appears with the first note. The shape is fixed:
+One file per thread: `memory/handoff/<thread title>-handoff.md`, titled the way a chat names itself on its first message. Three to six plain words in the agent's language, saying what the work is: `landing page rewrite-handoff.md`, `precios del plan pro-handoff.md`. Ordinary words and spaces, not identifiers. Only `/` and `:` are off-limits, because filesystems reject them. The folder appears with the first note, and every note stays in it: reading that one folder is what tells a session what is in flight, and filing the notes under their topics loses that sweep. A note lives as long as its thread, while the thread's folder outlives it, so the note carries the path. The shape is fixed:
 
 ```markdown
 ---
 thread: <one line — what this thread is doing>
 updated: DD-MM-YYYY HH:MM TZ    # tools/now.sh, never estimated
 branch: <agent branch>
+folder: memory/projects/<topic>/<thread>/   # where the thread's own notes live
 ---
 
 ## State — what is done, what is half-done

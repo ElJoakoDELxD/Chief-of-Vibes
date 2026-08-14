@@ -38,7 +38,7 @@ In a copy, a knowledge-only pull request needs no version bump. A version is a t
 2. Make the change, bump the version, keep the three documents in sync.
 3. Run whatever tests exist under `tools/` and say in the description what you ran.
 4. Open the pull request. Describe what changed, why, and what you deliberately did not change. If you considered a bigger version bump and chose a smaller one, say why.
-5. Wait for the `guard` workflow. Both of its checks are cheap and both are absolute.
+5. Wait for the `guard` workflow. Its four checks run in parallel, so one rejection never hides another, and `prose-gate` is the only one that reports without blocking.
 
 A good description is not a diff in prose. It names the failure the change closes, and it is honest about the limits of the fix.
 
@@ -72,8 +72,9 @@ A session running behind an egress policy that blocks `api.github.com` — Claud
 |---|---|---|
 | `guard-main.sh` | local, before every edit and shell command | work landing on the default branch by accident |
 | `guard-install.sh` | local, before every shell command | installs that cannot outlive a disposable session |
-| `guard` / `template-only` | CI, on every pull request into `main` or a `claude/**` branch | files outside the template allowlist |
-| `guard` / version bump | CI, same trigger | a merge that would leave the changelog silent |
+| `guard` / `pr-guard` | CI, on every pull request into `main` or a `claude/**` branch | files outside the template allowlist, and a merge that would leave the changelog silent. Both are reported in one run, never one hiding the other. Benched by `tools/test-pr-guard.sh` |
+| `guard` / `index-check` | CI, same trigger | an `INDEX.md` that no longer matches the tree |
+| `guard` / `section-check` | CI, same trigger | a pointer in the specification's map to a file that does not hold that section |
 
 None of them is a lock. The local hook only runs in sessions that wire it, and it matches strings, which is not the same as understanding intent. The server-side lock is branch protection on the default branch plus a human reading the diff. Treat all three as defence in depth and none of them as permission to stop reading.
 

@@ -22,10 +22,19 @@
 #         bash tools/sections.sh --check    # exit 1 on any disagreement
 
 set -uo pipefail
+
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 MODE="${1:-}" python3 - <<'PY'
 import glob, os, re, sys, unicodedata
+
+# A Windows console defaults to a codepage that cannot encode §, and python's
+# text stdout rewrites every newline as CRLF. Redirected into a file, the result
+# is neither valid UTF-8 nor byte-identical to what CI regenerates on Linux, so
+# the check reports a stale tree that nobody touched. Both are fixed at the
+# stream, once, rather than at each print.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", newline="\n")
 
 def slug(title):
     s = unicodedata.normalize("NFKD", title).encode("ascii", "ignore").decode()
@@ -42,7 +51,10 @@ def scan(path):
         found[num] = (title.strip(), path)
 
 scan("SYSTEM.md")
-for leaf in sorted(glob.glob("system/*.md")):
+# glob returns the platform's separator, so on Windows every leaf compares
+# unequal to the map's forward-slash path and the check fails on a healthy tree.
+leaves = sorted(x.replace(os.sep, "/") for x in glob.glob("system/*.md"))
+for leaf in leaves:
     before = set(found)
     scan(leaf)
     held = [n for n in found if n not in before]
@@ -90,7 +102,7 @@ if os.environ.get("MODE") == "--check":
         for p in problems:
             print(f"  {p}")
         sys.exit(1)
-    print(f"The map matches the tree: {len(found)} sections, {len(glob.glob('system/*.md'))} leaves.")
+    print(f"The map matches the tree: {len(found)} sections, {len(leaves)} leaves.")
     sys.exit(0)
 
 for num in sorted(found, key=int):
