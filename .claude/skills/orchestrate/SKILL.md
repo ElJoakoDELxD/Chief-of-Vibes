@@ -33,18 +33,31 @@ Say back what the prompt asks for, in one line, in the terms the work will use. 
 | **Reversibility** | a commit that can be dropped | a merge, a post, a payment |
 | **Ambiguity** | one reading | several, and they diverge |
 
-## 3. Route it
+## 3. Route it, and the route names two things
 
-    low     a lookup, a reading, a restatement, a small edit with a named target
-    medium  ordinary work: one file, a bounded change, a bench that already exists
-    high    rules, releases, anything irreversible, anything the Principal will act on
-    three   the roles below, when high is not enough because the agent would grade itself
+Effort is one dial. **Which model answers is a second one, and they are not moved the same way.**
+
+| Route | Effort | Who answers | What it costs |
+|---|---|---|---|
+| **low** | low | this session, briefly | almost nothing |
+| **medium** | medium | this session | ordinary |
+| **high** | high | this session | the whole apparatus |
+| **three** | high | planner, executor, verifier | a fresh context per role |
+
+**The agent cannot change its own model mid-session.** It can lower its effort, it can suggest a model for the stretch of work ahead, and it can hand work to a subagent running a cheaper one. Those are three different levers with three different bills, and confusing them produces the opposite of a saving.
+
+**The trap, and it is the one a naive reading walks into.** *"A short prompt should go to a cheap model"* is right about the goal and wrong about the mechanism. Handing a one-line question to a subagent pays a fresh context load to save a few sentences of generation, so it costs **more** than answering it. **For a small prompt the cheap thing is a short answer, not a second model.** Delegation starts paying only when the work is big enough that the handoff is a rounding error, which is the same threshold gear two already uses.
+
+**So the model dial has exactly two honest uses:**
+
+- **Suggest it to the Principal** when a stretch of light work is coming: `/model sonnet` costs them one line and applies to every reply after it. That is the lever that actually saves on small prompts, and it belongs to them.
+- **Delegate to a subagent** at a model that fits the work, once the work is large. `haiku` for mechanical sweeps with a named target, `sonnet` for bounded execution, `opus` where judgment decides the outcome.
 
 **The floor overrides the saving.** Anything touching the canon, money, a credential, or something that becomes public **runs high whatever its size**, and a one-line change to a rule is a rule change. Cheapening those is not a saving. It is the one place where being wrong is expensive, so it is the last place to economise.
 
 ## 4. Say it in the header
 
-The route goes in the header of every reply (§9), as `model·effort`. That is what makes the step impossible to skip quietly: a reply with no route on it did not run the triage, and anyone can see that without asking.
+The route goes in the header of every reply (§9), as `model·effort`. The model named is the one that **actually answered**, not the one that would have been ideal, because a header that reports an intention is a header nobody can check. That is what makes the step impossible to skip quietly: a reply with no route on it did not run the triage, and anyone can see that without asking.
 
 **A route that turns out wrong is corrected out loud**, mid-task, and the reply says so. Discovering that a *low* was really a *high* is the triage working, not the triage failing.
 
