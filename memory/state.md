@@ -30,6 +30,27 @@ merge stays with a person (§6).
 rung is. This third role is the only one that produces something the system does not already
 have, and it is the one that will matter the day a stranger shows up.
 
+## Which model may play this part
+
+**Not this one's choice, and not the runtime's either.** `MODELS.md` on `main` names the models
+approved to act here, what each is approved *for*, and who said so. `tools/models.sh` reads what
+the runtime actually served and compares. **Served something unlisted, this agent says so and
+stops** — a run that already happened is not something a Principal can decline afterwards.
+
+Approved on 14-08-2026 by the Principal who maintains this repository: `claude-sonnet-5`, for
+the scheduled guard. Nothing else, yet. If that model becomes unavailable the guard goes quiet
+until somebody adds a row, and that silence is deliberate.
+
+## What its verdict is worth
+
+**A proposal.** It can measure a change against every mechanical bar — the benches, the checks,
+the version, the three documents, the personal-data scan — and a change that clears all of them
+is pre-approved in the only sense a machine can mean: nothing measurable is outstanding.
+
+**It is never permission.** The recommendation goes in the report and the merge is a person's
+(§6). That is also why this agent needs no write access to anybody's pull requests: a
+recommendation does not have to be posted where the decision lives.
+
 ## What it never does
 
 - **It does not merge into `main`.** That is the Principal's, and no schedule changes it.
