@@ -1,6 +1,6 @@
 ---
 topic: What a cloud session actually is, and which parts of it the agent can change
-updated: 13-08-2026 23:1x -04
+updated: 13-08-2026
 verified: read from the official documentation on 13-08-2026, and every reach claim
   measured in-session with `bash tools/environment.sh`. The durable-install claim is
   documentation, not yet run: no setup script has been used from here.

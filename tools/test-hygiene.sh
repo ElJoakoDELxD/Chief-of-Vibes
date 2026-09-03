@@ -96,10 +96,10 @@ check "a handoff with no date is reported" "no \`updated:\` date" "${out}"
 # able to lie: a topic's brief.md and a loose note sit at the same depth, and a
 # rule that cannot tell them apart would fire on every project in the tree.
 build "${tmp}/shape" 2026-08-05
-mkdir -p "${tmp}/shape/memory/projects/rampa/leer para contestar"
-printf 'brief\n' > "${tmp}/shape/memory/projects/rampa/brief.md"
-printf 'note\n'  > "${tmp}/shape/memory/projects/rampa/leer para contestar/what-i-read.md"
-printf 'note\n'  > "${tmp}/shape/memory/projects/rampa/loose-note.md"
+mkdir -p "${tmp}/shape/memory/projects/onboarding ramp/reading before answering"
+printf 'brief\n' > "${tmp}/shape/memory/projects/onboarding ramp/brief.md"
+printf 'note\n'  > "${tmp}/shape/memory/projects/onboarding ramp/reading before answering/what-i-read.md"
+printf 'note\n'  > "${tmp}/shape/memory/projects/onboarding ramp/loose-note.md"
 printf 'note\n'  > "${tmp}/shape/memory/projects/orphan.md"
 out="$(run "${tmp}/shape")"
 check "a note at the topic level is reported" "loose-note.md sits at the topic level" "${out}"
