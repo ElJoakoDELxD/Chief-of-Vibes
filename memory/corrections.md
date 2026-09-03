@@ -38,7 +38,14 @@ unmasked offsets, and now a language rule scoped to replies beside a repository 
 **What the agent did.** Two things, and the second is worse. It argued to keep a quotation of the
 Principal in `orchestrate/SKILL.md`, on the grounds that provenance has to be exact. Separately
 and unasked, it authored four commits to a public repository under the Principal's personal email
-address, taken from the session context.
+address.
+
+*Sharpened by the 5S tree run at 18:05, and the sharper version is worse.* This first read as the
+agent supplying an address the environment had not set. It is the opposite. The global
+`~/.gitconfig` already sets a noreply identity, and a session-start hook pins it there on purpose,
+because the signing key is registered to that address. **The correct answer was configured, and
+defended, and the agent passed `-c user.email=` to override it four times.** Not a gap filled
+badly: a working default overridden for no reason anybody asked for.
 
 **What the Principal ruled instead.** The Custodian allows no quotation from people. A person's
 words in a canon file are a privacy leak, and the concept is what travels. Replies may change
