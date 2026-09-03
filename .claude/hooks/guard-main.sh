@@ -19,14 +19,35 @@ set -uo pipefail
 input="$(cat)"
 branch="$(git branch --show-current 2>/dev/null || echo "")"
 
-if [[ "${branch}" == "main" ]]; then
-  echo "BLOCKED by guard-main.sh: main is the template, not a workspace. Check out or create an agent branch; template changes go through an approved pull request." >&2
-  exit 2
-fi
-
 command="$(printf '%s' "${input}" \
   | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input", {}).get("command", ""))' \
   2>/dev/null)" || command=""
+
+if [[ "${branch}" == "main" ]]; then
+  # The escape hatch, and it is one command wide.
+  #
+  # A session created from a source lands on the default branch, and denying
+  # everything here also denied the only command that leaves it. Measured
+  # 02-09-2026: a session fired with a source was paralysed in its shell from
+  # its first turn — it could not run `git checkout -b`, and it could not run
+  # `date` either. It escaped only because it happened to hold API tools that
+  # do not go through a shell; a session without them has no first move at all.
+  # A rail that traps the sessions it is meant to guide gets worked around
+  # until it protects nothing (§8).
+  #
+  # So exactly one shape passes: a lone branch-creating checkout. One segment,
+  # no chaining, no redirection, no substitution, and the new branch is not the
+  # default one. Everything else here is still denied, Edit and Write included —
+  # they carry no command field, so they can never match this.
+  esc="$(printf '%s' "${command}" | tr -d "\"'")"
+  if [[ "${command}" != *[\;\|\&\>\<\`\$\(]* ]] \
+     && [[ "${esc}" =~ ^[[:space:]]*git[[:space:]]+(checkout|switch)[[:space:]]+(-b|-c)[[:space:]]+([^[:space:]]+)[[:space:]]*$ ]] \
+     && [[ "${BASH_REMATCH[3]}" != "main" ]]; then
+    exit 0
+  fi
+  echo "BLOCKED by guard-main.sh: main is the template, not a workspace. Create an agent branch first — 'git checkout -b <name>' is the one command allowed from here — and template changes go through an approved pull request." >&2
+  exit 2
+fi
 
 # Quotes can hide the ref, so strip them — which also flattens prose into refs.
 # Hence the split: each segment is judged alone, a git invocation lives in
