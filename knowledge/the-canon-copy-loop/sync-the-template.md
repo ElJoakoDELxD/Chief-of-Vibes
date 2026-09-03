@@ -1,6 +1,6 @@
 ---
 topic: Bring a canon release into this copy, and then into the agent branch
-updated: 04-08-2026 23:10 -04
+updated: 04-08-2026
 verified: run seven times, on 02-08-2026 and 03-08-2026, for releases 1.30.0, 1.31.0, 1.32.1, 1.33.0, 1.34.0, 1.35.0 and 1.35.1. All three sides read back and compared each time
 ---
 
