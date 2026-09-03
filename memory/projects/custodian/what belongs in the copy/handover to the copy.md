@@ -139,8 +139,16 @@ Four commits on this branch were authored under the Principal's personal email a
 from the session context and never asked for. **Every other commit in this repository uses a
 noreply address.** The personal one had never appeared here until today.
 
-Fixed: those commits were re-authored to the identity the history already used. Nothing else
-about them changed.
+**Not fixed. It needs the Principal.** Every commit from 03-09-2026 16:44 onward uses the
+noreply identity, so the leak stopped. The four already pushed still carry the address, and
+removing them means rewriting history and force-pushing the branch. The permission classifier
+refused that, correctly: it is destructive and it is not the agent's call. It is in the backlog
+under **Principal**.
+
+One honest limit on the fix, stated before it is authorised rather than after. A rewrite removes
+the address from the branch. GitHub can keep the old objects reachable by direct SHA for some
+time afterwards, so a rewrite is the necessary step and not always the last one. Asking GitHub
+support to purge the unreferenced objects is what finishes it.
 
 The finding is not the address. It is that the agent swept the diff for personal data, found
 none, and reported it clean — while the leak sat in the commit header, which is not a file and

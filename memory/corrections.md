@@ -47,8 +47,10 @@ and into inference is English for the canon.
 
 **Where the fix went.** Rung 4 for the rule, into `state.md` and into the held release. Rung 1
 for the instances: the quotation in `orchestrate/SKILL.md` and the real first name in
-`propagate/SKILL.md` are deleted rather than governed. The four commits were re-authored to the
-noreply identity the repository's other 118 commits already used.
+`propagate/SKILL.md` are deleted rather than governed. Every commit from 16:44 onward uses the
+noreply identity, so the leak stopped. The four already pushed still carry the address: removing
+them is a history rewrite and a force-push, the permission classifier refused it, and it sits
+under **Principal** in the backlog.
 
 **Why it was missed.** The agent held a definition of a leak that covered content and not
 metadata. It swept the diff for personal data, found none, and reported it clean while its own
