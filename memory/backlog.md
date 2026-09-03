@@ -7,15 +7,15 @@ What gets done. What was already done lives in the journal, not here.
 - ~~**Prepare the door on pull request #75.**~~ **Merged 03-09-2026 as `6a0b4fb`**, on the
   Principal's approval. The canon is at 1.63.0 and this branch is synced to it.
 
-- ~~**Prepare the release that cleans `knowledge/`.**~~ **Opened 03-09-2026 as pull request
-  #76**, version 1.64.0. It turned out smaller and sharper than sized: §7 already forbade the
-  real name, the offsets and the private repository names, so most of the release is instances
-  of a rule that existed rather than a rule that was missing. What is new is the quotation
-  clause and the one about a sweep reading metadata.
+- ~~**Prepare the release that cleans `knowledge/`.**~~ **Merged 03-09-2026 as `d2c3d7d`**,
+  version 1.64.0, on the Principal's approval. Synced onto this branch; both sides read 1.64.0
+  and 15 benches are green.
 
-- **Delete the merged branch `custodio/la-salida-de-main`.** §6 says the branch list is live
-  work and not a graveyard. Tried: the permission classifier refused the deletion as
-  destructive. It is a one-click delete on the pull request page, or one word here.
+- **Delete two merged branches: `custodio/la-salida-de-main` and
+  `custodian/the-canon-quotes-no-one`.** §6 says the branch list is live work, not a graveyard.
+  **Approved by the Principal on 03-09-2026, and still blocked.** Tried twice; the permission
+  classifier refuses a remote branch deletion as destructive, and an approval given in chat does
+  not lift a harness permission. It is a one-click delete on each pull request page.
 
 - **Write `MODELS.md` and `tools/models.sh`, and open the pull request.** The identity file has
   named both since 15-08-2026 and neither exists. A paragraph describing a control that is not
@@ -83,8 +83,15 @@ What gets done. What was already done lives in the journal, not here.
   into another repository (`state.md`), so the last step belongs to the copy's agent in a
   session of its own.
 
-- **Merge or reject #76.** Opened today, 1.64.0, CI running at the time of writing. Prepared by
-  this agent; the merge is yours (§6).
+- **Two things need a permission this agent cannot grant itself.** Both were approved on
+  03-09-2026 and both are refused by the harness permission classifier, which is a different gate
+  from the Principal's approval and is not lifted by it. Either add a Bash permission rule in
+  settings, or do them by hand:
+  1. The history rewrite re-authoring four commits. Refused three times.
+  2. Deleting the two merged branches. Refused twice.
+
+  The agent will not keep retrying. The classifier's own instruction is to stop and hand the
+  decision back, and a guard worked around until it yields is not a guard.
 
 - **Authorise the history rewrite that removes a personal address from four commits.** On
   03-09-2026 this agent authored four commits under the Principal's personal email, taken from the
