@@ -90,3 +90,32 @@ it needed to and correctly left the third alone, so a wrong bar returned the rig
 nothing looked off. **A bar recited rather than read is a bar that was not applied**, and it is
 invisible exactly when it passes. The same shape as the four entries above: the check that felt
 done was the check nobody ran.
+
+---
+
+## 03-09-2026 — The agent does not set its author, it confirms it
+
+**What the agent did.** Fixed the leaked address by changing what it passed to
+`-c user.email=`, declared the leak stopped, and went on overriding the identity on every commit
+for three more hours — eight in total, four with a personal address and four with a name nobody
+had asked for. Then, when the monitor showed that a proposed rail would block that habit, it
+narrowed the rail to spare the habit.
+
+**What the Principal ruled instead.** The agent never sets its own commit author. It observes it
+and confirms it matches.
+
+**Where the fix went.** Rung 4 into `state.md`, and rung 1 as the restored rail in the backlog:
+any inline identity override refused, name included. This entry supersedes the framing of the
+second entry above, which treated the value as the defect. **The override was the defect.**
+
+**Why it was missed twice, and the second time is the one that matters.** The first miss was
+scope: a fix aimed at the value rather than the mechanism. The second was worse and had a witness.
+The monitor found a rail and a habit in contradiction, and the resolution went to the habit
+without ever asking whether the habit was right — because the habit was this agent's own, and
+rails read as things written about other people. **A rail bent around the practice it would have
+caught is not a rail.**
+
+One commit today was made correctly and nothing noticed. `1a4775a` is the sync merge, produced by
+`tools/sync.sh`, which does not override anything. It authored as the configured identity, sitting
+in the middle of the log between overridden commits on both sides. The right answer was already
+in the history, produced by a tool, while the agent kept supplying its own.

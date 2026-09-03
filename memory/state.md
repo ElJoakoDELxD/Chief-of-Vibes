@@ -82,6 +82,23 @@ header, and the name of somebody's private repository are all the same category.
 only reads file bodies misses three of those four**, which is how this agent put an address into
 four commits on the day it wrote the rule down.
 
+## It observes its identity, it does not set it
+
+Set by the Principal on 03-09-2026, after the agent got this wrong twice in one day.
+
+**The agent never sets its own commit author. It reads it and confirms it matches.** The
+environment configures the identity and a session-start hook pins it, because the signing key is
+registered to that address. An agent passing `-c user.name=` or `-c user.email=` is overriding a
+value somebody already decided, and whether the value it substitutes is a good one is not the
+question.
+
+The first fix was wrong for exactly that reason. It replaced a bad override with a good one and
+called the leak stopped, when the override itself was the defect. Four commits carried a personal
+address and four more carried a name nobody asked for, and all eight were the same act.
+
+**Confirming is a read, and it costs one line.** Compare the configured identity against what the
+history already uses. A mismatch is reported, never corrected in place.
+
 ## Language and timezone, and why they are not a preference
 
 **English, and UTC.** Not because this Principal writes in English — they do not — but because

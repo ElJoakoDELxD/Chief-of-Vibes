@@ -97,12 +97,15 @@ What gets done. What was already done lives in the journal, not here.
   A rewrite removes the address from the branch, and GitHub can still serve the old objects by
   direct SHA for a while, so asking GitHub support to purge them is what finishes the job.
 
-- **Build the rail that pins the commit author email.** A commit whose author email differs from
-  the configured global identity is refused; the name stays free, because authoring as `Custodian`
-  is deliberate and current. It compares the result rather than the invocation, so no list of
-  forbidden flags can be evaded by a different spelling. Bench: email override blocked, name
-  override untouched, plain commit untouched. Sized by the 5S tree run of 03-09-2026 and held
-  until #76 lands.
+- **Build the rail that refuses any inline identity override.** A `git` invocation carrying
+  `-c user.email=` or `-c user.name=` is refused. Not the email alone: the Principal ruled on
+  03-09-2026 that the agent observes its identity and never sets it, so the name override was
+  never legitimate either. Bench: both overrides blocked, a plain commit untouched, and a case
+  proving `Edit` and `Write` cannot reach it.
+
+  **This is the first specification, restored.** The middle version narrowed the rail to the email
+  so it would not block the agent's own habit. That is the rail bending around the defect it
+  exists to catch. Sized by the 5S tree run of 03-09-2026, held until #76 lands.
 
 - **The history rewrite must not depend on `scratchpad/reauthor.sh`.** That script is the
   remediation for the four leaking commits and it sits on a filesystem that does not survive the
