@@ -24,14 +24,24 @@ What gets done. What was already done lives in the journal, not here.
   schedule that never fired. The five steps are in
   `memory/projects/custodian/the weekly guard/`, with step 4 marked as the fiction it is.
 
-- **Prepare the release that takes the location out of `knowledge/`.** Four entries carry a
-  `-04` offset, which is a longitude, inherited by every copy that ever syncs. `CLOCKS.md`
-  already forbids exactly this about itself. Proposed fix: `updated:` drops to the date alone
-  in the §5 template block and in the four entries, plus the two Spanish folder renames riding
-  along. One line of specification, four of content, a version bump, three documents in step.
-  Sized in `memory/projects/custodian/what belongs in the copy/`. **Held until #75 lands**,
-  by the Principal's decision on 03-09-2026: one proposal in front of them at a time. The
-  offset has been there since 04-08-2026 and a few days do not change its shape.
+- **Prepare the release that cleans `knowledge/`: the location, and the language.** Two
+  findings, one file set, one release.
+
+  *The location.* Four entries carry a `-04` offset, which is a longitude, inherited by every
+  copy that ever syncs. `CLOCKS.md` forbids exactly this about itself. Fix: `updated:` drops to
+  the date alone, in the §5 template block and in the four entries.
+
+  *The language.* The canon writes in English, and the only exception is the README translation
+  (Principal, 03-09-2026 — see `memory/corrections.md`). Fix: rename `knowledge/el-entorno/` and
+  `knowledge/el-lazo-canon-copia/`, rename the Spanish fixture path in `tools/test-hygiene.sh`,
+  and **write the rule down**, because a rename with no rule gets undone by the next entry.
+  Nothing links to either folder, so the rename costs the rename.
+
+  Together: two lines of specification, five of content, two renames, a version bump, three
+  documents in step. Sized in `memory/projects/custodian/what belongs in the copy/`.
+  **Held until #75 lands**, by the Principal's decision on 03-09-2026, and one word reopens
+  that: the language half is a correction and not a finding, and corrections are not usually
+  things to keep waiting.
 
 ## Principal
 
@@ -48,5 +58,15 @@ What gets done. What was already done lives in the journal, not here.
   session of its own.
 
 - **Merge or reject #75.** Prepared and reported today. Everything else waits behind it: the
-  `knowledge/` location fix by your decision, and the guard's own step 4 because the same door
-  is the only one either goes through.
+  `knowledge/` release by your decision, and the guard's own step 4 because the same door is the
+  only one either goes through.
+
+- **Two language calls, one word each.** Both are in section 4 of
+  `memory/projects/custodian/what belongs in the copy/handover to the copy.md`, and this agent
+  has recommended keeping both rather than acting on its own reading of a correction.
+  1. The Spanish quotation of you in `.claude/skills/orchestrate/SKILL.md`, cited as the
+     provenance of gear one. A translated quotation is a paraphrase wearing quotation marks.
+  2. The Spanish example handoff filename in `system/5-memory-an-obsidian-vault.md`, in a
+     sentence that says the name is written in *the agent's language*. It shows what a
+     Spanish-speaking copy will correctly produce. If the rule reaches copies too, the field is
+     what changes, not the example.
