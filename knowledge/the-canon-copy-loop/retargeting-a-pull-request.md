@@ -1,6 +1,6 @@
 ---
 topic: Re-pointing a pull request's base leaves the old check standing
-updated: 09-08-2026 17:4x -04
+updated: 09-08-2026
 verified: 09-08-2026. Read `.github/workflows/guard.yml` in this repository. Its trigger is `on: pull_request:` with no `types:` list, so it uses GitHub's default activity types — opened, synchronize, reopened. A base change emits `edited`, which is not among them
 ---
 

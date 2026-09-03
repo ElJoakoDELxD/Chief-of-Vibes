@@ -1,6 +1,6 @@
 ---
 topic: The main guard reads text, so a message about a command is blocked like the command
-updated: 09-08-2026 17:5x -04
+updated: 09-08-2026
 verified: 09-08-2026. Two attempts to feed `guard-main.sh` a test case were themselves refused, because the test command quoted a push to the protected branch. The refusal is the demonstration. Recorded first on 30-07-2026, and still live
 ---
 
