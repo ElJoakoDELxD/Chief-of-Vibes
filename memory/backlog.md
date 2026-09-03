@@ -4,10 +4,10 @@ What gets done. What was already done lives in the journal, not here.
 
 ## Agent
 
-- **Prepare the door on pull request #75.** `custodio/la-salida-de-main`, opened 03-09-2026,
-  version 1.63.0, one open pull request against `main`. Preparing it means running every bench,
-  `index.sh --check`, `sections.sh --check`, the sensors and the prose gate, then reporting what
-  they said. It does not mean merging: that is the Principal's (§6).
+- ~~**Prepare the door on pull request #75.**~~ **Done 03-09-2026.** Report in
+  `memory/projects/custodian/the weekly guard/report 03-09-2026.md`. Nothing measurable is
+  outstanding and the recommendation is merge. The merge is the Principal's (§6), and the
+  `knowledge/` fix below waits on it.
 
 - **Write `MODELS.md` and `tools/models.sh`, and open the pull request.** The identity file has
   named both since 15-08-2026 and neither exists. A paragraph describing a control that is not
@@ -29,8 +29,9 @@ What gets done. What was already done lives in the journal, not here.
   already forbids exactly this about itself. Proposed fix: `updated:` drops to the date alone
   in the §5 template block and in the four entries, plus the two Spanish folder renames riding
   along. One line of specification, four of content, a version bump, three documents in step.
-  Sized in `memory/projects/custodian/what belongs in the copy/`. Prepared by this agent,
-  approved and merged by the Principal.
+  Sized in `memory/projects/custodian/what belongs in the copy/`. **Held until #75 lands**,
+  by the Principal's decision on 03-09-2026: one proposal in front of them at a time. The
+  offset has been there since 04-08-2026 and a few days do not change its shape.
 
 ## Principal
 
@@ -40,15 +41,12 @@ What gets done. What was already done lives in the journal, not here.
   shape, so it is yours. Tried: nothing — no attempt is owed, because the block is authority and
   not capability.
 
-- **Approve or reject #75.** Prepared by the agent, merged by you.
+- **Hand `animated-octo-enigma` its one file.** Named by the Principal on 03-09-2026. Its
+  agent takes `memory/projects/custodian/what belongs in the copy/handover to the copy.md` as
+  a brief: the funding commitment moves there, and nothing else does. This agent does not write
+  into another repository (`state.md`), so the last step belongs to the copy's agent in a
+  session of its own.
 
-- **Name the copy, and hand it one file.** Three private repositories are visible from here and
-  this agent is not guessing which is the copy of this template. Once named, its agent takes
-  `memory/projects/custodian/what belongs in the copy/handover to the copy.md` as a brief: the
-  funding commitment moves there, and nothing else does. This agent does not write into another
-  repository, so the last step is the copy's agent, not this one. Tried: `list_repos` returned
-  six, three private, and none of them says which is the copy. That is authority and naming,
-  not capability.
-
-- **Approve the `knowledge/` location fix.** The finding is above under **Agent**; the merge is
-  yours, and so is the call on whether the two folder renames ride along.
+- **Merge or reject #75.** Prepared and reported today. Everything else waits behind it: the
+  `knowledge/` location fix by your decision, and the guard's own step 4 because the same door
+  is the only one either goes through.

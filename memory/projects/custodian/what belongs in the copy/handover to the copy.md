@@ -1,8 +1,9 @@
 ---
 thread: What sits in the canon and belongs in the Principal's private copy
 date: 03-09-2026
-state: separated 03-09-2026. Nothing has moved yet. The copy is not named, and this agent
-  does not reach into another repository (state.md). The copy's agent takes it from here.
+state: separated 03-09-2026. The copy is `ElJoakoDELxD/animated-octo-enigma`, named by the
+  Principal the same day. Nothing has moved: this agent does not reach into another repository
+  (state.md), so its agent takes this file as a brief in a session of its own.
 ---
 
 # What belongs in the copy, and why the split falls where it does
@@ -40,8 +41,10 @@ Two claims are welded together and only one of them is agnostic.
   planning against that budget. The canon does not need the number and should not carry the
   quote.
 
-**Where it goes.** The copy's `memory/` as a standing commitment: *funds the canon's Custodian,
-one session a week*. Not `knowledge/` — it is not a procedure.
+**Where it goes.** `ElJoakoDELxD/animated-octo-enigma`, in that agent's `memory/`, as a standing
+commitment: *funds the canon's Custodian, one session a week*. Not `knowledge/` — it is not a
+procedure, and not the canon's `knowledge/` under any circumstances, because an entry there is
+inherited by every copy that ever syncs.
 
 ## 2. Four timezone offsets in `knowledge/` — do not move, remove
 
@@ -87,6 +90,5 @@ fixed: the absorbed note landed under an English path today.
 
 **It does not reach into the copy.** `state.md` says isolation is what keeps this agent
 agnostic, and a Custodian that writes into a Principal's private repository has traded that
-property for a convenience. The Principal names the copy and its agent takes this file as its
-brief. Three private repositories are visible from here and this agent is not guessing which
-one is the copy.
+property for a convenience. The copy is named now, and that does not change the answer: naming
+it removed the ambiguity, not the boundary. Its agent takes this file as a brief.
