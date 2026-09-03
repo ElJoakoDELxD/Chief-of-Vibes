@@ -4,10 +4,18 @@ What gets done. What was already done lives in the journal, not here.
 
 ## Agent
 
-- ~~**Prepare the door on pull request #75.**~~ **Done 03-09-2026.** Report in
-  `memory/projects/custodian/the weekly guard/report 03-09-2026.md`. Nothing measurable is
-  outstanding and the recommendation is merge. The merge is the Principal's (§6), and the
-  `knowledge/` fix below waits on it.
+- ~~**Prepare the door on pull request #75.**~~ **Merged 03-09-2026 as `6a0b4fb`**, on the
+  Principal's approval. The canon is at 1.63.0 and this branch is synced to it.
+
+- ~~**Prepare the release that cleans `knowledge/`.**~~ **Opened 03-09-2026 as pull request
+  #76**, version 1.64.0. It turned out smaller and sharper than sized: §7 already forbade the
+  real name, the offsets and the private repository names, so most of the release is instances
+  of a rule that existed rather than a rule that was missing. What is new is the quotation
+  clause and the one about a sweep reading metadata.
+
+- **Delete the merged branch `custodio/la-salida-de-main`.** §6 says the branch list is live
+  work and not a graveyard. Tried: the permission classifier refused the deletion as
+  destructive. It is a one-click delete on the pull request page, or one word here.
 
 - **Write `MODELS.md` and `tools/models.sh`, and open the pull request.** The identity file has
   named both since 15-08-2026 and neither exists. A paragraph describing a control that is not
@@ -18,6 +26,11 @@ What gets done. What was already done lives in the journal, not here.
   `Chief-of-Vibes-Agent` gives it a step of its own — read the attempt log, move the difficulty
   on the record. The tool does not exist. Either it gets built or step 4 of that guard is
   fiction.
+
+- **Run the weekly guard once, end to end, and publish the report.** It has been wired since
+  14-08-2026 and has never produced one. A schedule with no output is indistinguishable from a
+  schedule that never fired. The five steps are in
+  `memory/projects/custodian/the weekly guard/`, with step 4 marked as the fiction it is.
 
 - **Run the weekly guard once, end to end, and publish the report.** It has been wired since
   14-08-2026 and has never produced one. A schedule with no output is indistinguishable from a
@@ -70,9 +83,8 @@ What gets done. What was already done lives in the journal, not here.
   into another repository (`state.md`), so the last step belongs to the copy's agent in a
   session of its own.
 
-- **Merge or reject #75.** Prepared and reported today. Everything else waits behind it: the
-  `knowledge/` release by your decision, and the guard's own step 4 because the same door is the
-  only one either goes through.
+- **Merge or reject #76.** Opened today, 1.64.0, CI running at the time of writing. Prepared by
+  this agent; the merge is yours (§6).
 
 - **Authorise the history rewrite that removes a personal address from four commits.** On
   03-09-2026 this agent authored four commits under the Principal's personal email, taken from the
@@ -85,14 +97,9 @@ What gets done. What was already done lives in the journal, not here.
   A rewrite removes the address from the branch, and GitHub can still serve the old objects by
   direct SHA for a while, so asking GitHub support to purge them is what finishes the job.
 
-- **Decide the three handle sites this agent will not touch.** Section 5 of
-  `memory/projects/custodian/what belongs in the copy/handover to the copy.md` has the reasoning.
-  1. `.canon` holds `owner/repo` and the drift check compares `origin` against it. Removing it
-     breaks the mechanism that tells every session which repository it stands in.
-  2. `LICENSE` names the copyright holder. That is a legal identity, and §4 keeps this agent out
-     of it entirely.
-  3. The onboarding URL in `README.md` and the release notes contains the owner because the
-     repository's address does. The only real fix is moving the repository under an
-     organisation, which is a one-time migration and yours.
-
-  Tried: nothing, and none is owed. Each is authority or law, not capability.
+- ~~**Decide the three handle sites.**~~ **Withdrawn 03-09-2026 — this was never yours to
+  decide.** §7 already states the exception: a public handle and the licence copyright are
+  already public and identify ownership. `.canon`, `LICENSE` and the onboarding URL are the rule
+  working, not three gaps in it. This agent read §7 an hour after raising them and found the
+  answer already written. Moving the repository under an organisation remains an option, and it
+  is a preference rather than a defect.

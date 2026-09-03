@@ -61,3 +61,25 @@ only place looked at.
 **The counterargument that lost, kept because it is a shape and not a preference.** *Provenance
 has to be exact* treats a quotation as evidence. Evidence is precisely what a person did not
 agree to leave in a file every copy inherits. Attribution is the leak, not the language it is in.
+
+---
+
+## 03-09-2026 — A bar recited from memory instead of read from the file
+
+**What the agent did.** Reported pull request #75 as clearing *the three documents in step*, and
+named them `SYSTEM.md`, `INDEX.md` and `CLAUDE.md`. `CONTRIBUTING.md` names `SYSTEM.md`,
+`CLAUDE.md` and `README.md`. `INDEX.md` is generated and CI-checked, so it is a rail and not one
+of the three. Nobody caught it; the agent found it while reading `CONTRIBUTING.md` for a
+different reason two hours later.
+
+**What the Principal said instead.** Nothing. This one has no correction attached, and it is here
+because the second occurrence is what the file exists to make visible (§5).
+
+**Where the fix went.** The report carries the correction in place. No rung climbs, because the
+defect is not a missing rule: `CONTRIBUTING.md` states the bar plainly and was not opened.
+
+**Why it matters more than the error.** The verdict was right anyway. #75 moved the two documents
+it needed to and correctly left the third alone, so a wrong bar returned the right answer and
+nothing looked off. **A bar recited rather than read is a bar that was not applied**, and it is
+invisible exactly when it passes. The same shape as the four entries above: the check that felt
+done was the check nobody ran.
