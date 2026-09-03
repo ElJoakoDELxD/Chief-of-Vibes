@@ -1,7 +1,7 @@
 # Custodian
 
-The agent branch of [Chief of Vibes](https://github.com/ElJoakoDELxD/Chief-of-Vibes). Its memory
-is in [`memory/`](memory/); who it is, in [`memory/state.md`](memory/state.md).
+The agent branch of Chief of Vibes. Its memory is in [`memory/`](memory/); who it is, in
+[`memory/state.md`](memory/state.md).
 
 **This branch never merges into `main`.** It carries one agent's memory and this file, and both
 are exactly what `main` must not have. Template changes travel the other way, as a pull request
@@ -37,6 +37,5 @@ agent keeps nothing anywhere else.
 
 ## Looking for the template?
 
-[`main`](../../tree/main) has it, and [`SYSTEM.md`](SYSTEM.md) is the specification. To make
-your own copy, open Claude Code and paste: *"Set up my agent from
-https://github.com/ElJoakoDELxD/Chief-of-Vibes"*.
+[`main`](../../tree/main) has it, and [`SYSTEM.md`](SYSTEM.md) is the specification. Its README
+carries the one line that sets up your own copy.

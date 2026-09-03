@@ -31,11 +31,23 @@ What gets done. What was already done lives in the journal, not here.
   copy that ever syncs. `CLOCKS.md` forbids exactly this about itself. Fix: `updated:` drops to
   the date alone, in the §5 template block and in the four entries.
 
-  *The language.* The canon writes in English, and the only exception is the README translation
-  (Principal, 03-09-2026 — see `memory/corrections.md`). Fix: rename `knowledge/el-entorno/` and
-  `knowledge/el-lazo-canon-copia/`, rename the Spanish fixture path in `tools/test-hygiene.sh`,
-  and **write the rule down**, because a rename with no rule gets undone by the next entry.
-  Nothing links to either folder, so the rename costs the rename.
+  *The language.* The canon writes in English, everywhere, with the README translation the one
+  exception (Principal, 03-09-2026 — see `memory/corrections.md`). Fix: rename
+  `knowledge/el-entorno/` and `knowledge/el-lazo-canon-copia/`, rename the Spanish fixture path
+  in `tools/test-hygiene.sh`, and **write the rule down**, because a rename with no rule gets
+  undone by the next entry. Nothing links to either folder.
+
+  *The quotation, and it is the urgent one.* `.claude/skills/propagate/SKILL.md` carries the
+  **Principal's real first name** as its example of identity, inside the rule that says to drop
+  identity, inherited by every copy that ever syncs. `.claude/skills/orchestrate/SKILL.md`
+  carries a dated quotation of the Principal. Both are deleted, not rewritten, and the rule goes
+  in with them: the Custodian allows no quotation from people, and a person's words in a canon
+  file are a privacy leak.
+
+  *The handle.* `CONTRIBUTING.md` uses the full `owner/repo` path in a shell example and in a
+  pull-request link. Both become a placeholder and a relative link. `.canon` and `LICENSE` are
+  not this agent's to change, and the README's onboarding URL cannot lose the owner while the
+  repository lives where it does. All three are under **Principal** below.
 
   Together: two lines of specification, five of content, two renames, a version bump, three
   documents in step. Sized in `memory/projects/custodian/what belongs in the copy/`.
@@ -51,7 +63,8 @@ What gets done. What was already done lives in the journal, not here.
   shape, so it is yours. Tried: nothing — no attempt is owed, because the block is authority and
   not capability.
 
-- **Hand `animated-octo-enigma` its one file.** Named by the Principal on 03-09-2026. Its
+- **Hand the copy its one file.** The Principal named it privately on 03-09-2026, and this is a
+  public repository, so it is not written down here. Its
   agent takes `memory/projects/custodian/what belongs in the copy/handover to the copy.md` as
   a brief: the funding commitment moves there, and nothing else does. This agent does not write
   into another repository (`state.md`), so the last step belongs to the copy's agent in a
@@ -61,12 +74,14 @@ What gets done. What was already done lives in the journal, not here.
   `knowledge/` release by your decision, and the guard's own step 4 because the same door is the
   only one either goes through.
 
-- **Two language calls, one word each.** Both are in section 4 of
-  `memory/projects/custodian/what belongs in the copy/handover to the copy.md`, and this agent
-  has recommended keeping both rather than acting on its own reading of a correction.
-  1. The Spanish quotation of you in `.claude/skills/orchestrate/SKILL.md`, cited as the
-     provenance of gear one. A translated quotation is a paraphrase wearing quotation marks.
-  2. The Spanish example handoff filename in `system/5-memory-an-obsidian-vault.md`, in a
-     sentence that says the name is written in *the agent's language*. It shows what a
-     Spanish-speaking copy will correctly produce. If the rule reaches copies too, the field is
-     what changes, not the example.
+- **Decide the three handle sites this agent will not touch.** Section 5 of
+  `memory/projects/custodian/what belongs in the copy/handover to the copy.md` has the reasoning.
+  1. `.canon` holds `owner/repo` and the drift check compares `origin` against it. Removing it
+     breaks the mechanism that tells every session which repository it stands in.
+  2. `LICENSE` names the copyright holder. That is a legal identity, and §4 keeps this agent out
+     of it entirely.
+  3. The onboarding URL in `README.md` and the release notes contains the owner because the
+     repository's address does. The only real fix is moving the repository under an
+     organisation, which is a one-time migration and yours.
+
+  Tried: nothing, and none is owed. Each is authority or law, not capability.
