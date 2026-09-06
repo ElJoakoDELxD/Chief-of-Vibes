@@ -62,7 +62,8 @@ The distinction is what the writing is *for*. The journal records that a thing h
 ```markdown
 ---
 topic: <one line — the task this covers>
-updated: DD-MM-YYYY HH:MM TZ    # tools/now.sh, never estimated
+updated: DD-MM-YYYY            # the day, and no finer. A clock time carries a zone,
+                               # a zone is a location, and every copy inherits this (§7)
 verified: <what was actually run or checked to know this works>
 ---
 
@@ -90,7 +91,7 @@ Reading it restates the corrected behaviour in the agent's own words before it a
 
 A handoff is working state, not memory of record. It is the answer to a context window filling up. It carries a thread still in flight, with enough that a chat knowing nothing resumes mid-stride instead of replaying the old conversation.
 
-One file per thread: `memory/handoff/<thread title>-handoff.md`, titled the way a chat names itself on its first message. Three to six plain words in the agent's language, saying what the work is: `landing page rewrite-handoff.md`, `precios del plan pro-handoff.md`. Ordinary words and spaces, not identifiers. Only `/` and `:` are off-limits, because filesystems reject them. The folder appears with the first note, and every note stays in it: reading that one folder is what tells a session what is in flight, and filing the notes under their topics loses that sweep. A note lives as long as its thread, while the thread's folder outlives it, so the note carries the path. The shape is fixed:
+One file per thread: `memory/handoff/<thread title>-handoff.md`, titled the way a chat names itself on its first message. Three to six plain words in the agent's language, saying what the work is: `landing page rewrite-handoff.md`, `pro plan pricing-handoff.md`. Ordinary words and spaces, not identifiers. Only `/` and `:` are off-limits, because filesystems reject them. The folder appears with the first note, and every note stays in it: reading that one folder is what tells a session what is in flight, and filing the notes under their topics loses that sweep. A note lives as long as its thread, while the thread's folder outlives it, so the note carries the path. The shape is fixed:
 
 ```markdown
 ---

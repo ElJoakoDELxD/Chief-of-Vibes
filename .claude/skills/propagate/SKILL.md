@@ -64,7 +64,7 @@ A *no* anywhere is a routing answer, not a rejection: `knowledge/`, the backlog,
 
 §7 governs this and it is the **precondition** for the whole loop. What leaves is the mechanism and the situation, never the person: no name, employer, client, file path that identifies them, excerpt of their work, or repository name that is not the canon's own.
 
-Keep the provenance, drop the identity. *"A session behind an egress policy could not reach the API"* is provenance. *"Joaquín's session"* is identity. The canon should be able to say what a rule cost without saying who paid it. If removing the Principal removes the evidence, the proposal was too specific to be template — which is question 2 answering itself.
+Keep the provenance, drop the identity. *A session behind an egress policy could not reach the API* is provenance. *The Principal's own session, named* is identity. Neither example names anybody, and the rule is the reason: an illustration that spends a real name to warn against spending real names is inherited by every copy that ever syncs. The canon should be able to say what a rule cost without saying who paid it. If removing the Principal removes the evidence, the proposal was too specific to be template — which is question 2 answering itself.
 
 ## The three directions
 

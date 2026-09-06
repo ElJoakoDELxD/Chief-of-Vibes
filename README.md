@@ -13,6 +13,7 @@ It is also the harness you build your next thing on. The agent runs its own memo
 - **Discipline by machinery, not promises.** Every reply opens with a header that shows the real clock and the real workspace. Automatic guards protect the rules. A broken rule is visible at a glance.
 - **An honest measure of success.** The system only counts a result when a real outsider responds: a reader, a user, a payment. Your agent cannot grade its own homework.
 - **Safety gates.** Your agent never spends money, signs anything, or changes its own rules. Those actions need you.
+- **Nothing of yours travels.** What the agent publishes carries the work and never you: no name, location, timezone, private repository, and no quotation of anything you said. Your copy keeps whatever it likes; the shared template gets the idea and not the person.
 - **A colleague that teaches as it works.** The first time a mechanism appears, your agent explains it in plain language. You keep the skills, and the output too.
 
 ## Start
@@ -32,7 +33,7 @@ No step asked you for a git command. Your agent does the git, and explains each 
 Every reply from your agent opens with a header that you can verify: the real clock, the branch it is working on, and the folder it is writing into.
 
 ```
-[13-07-2026 09:02 -04 · CHIEF-OF-VIBES · memory/projects/launch/the launch post/]
+[13-07-2026 09:02 +00 · CHIEF-OF-VIBES · memory/projects/launch/the launch post/]
 Pending from yesterday: the launch post draft. Two items need you today …
 ```
 
