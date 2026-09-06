@@ -46,7 +46,8 @@ critical path** because `.canon` stays one line.
 
 ## The Principal's correction, and where it lands
 
-> The README does not change one line. It describes itself. That is what onboarding is for.
+The Principal's correction: the README describes the mechanism rather than being it, and
+onboarding is where identity is written.
 
 Taken. **Identity is written by onboarding and by nothing else.** The README stops teaching a
 manual edit and describes the mechanism instead. Becoming your own home is a step of the skill,
@@ -98,8 +99,12 @@ Nothing here is implemented. Every path is a file the executor edits.
 5. **`system/6-repositories-and-branches.md`** — the *Which repository am I in?* paragraph splits
    into the two facts and the `.upstream`-present rule. Add the generation paragraph: a copy of a
    copy syncs from its parent and proposes to the root. State the first-hop constraint below.
-6. **`SYSTEM.md`** — version to **1.63.0**, plus the §6 summary line and any §1 wording that
-   describes the drift check as a comparison against the canon.
+6. **`SYSTEM.md`** — version to **the next unused minor, read from `main` at the moment of
+   release and never hardcoded here**. This plan was first written targeting 1.63.0, which had
+   already shipped: the branch it was written on was two releases stale and nothing said so. A
+   version written into a plan is a reading taken early, and `create-release.yml` already refuses
+   a tag that outran the specification for the same reason. Also the §6 summary line and any §1
+   wording describing the drift check as a comparison against the canon.
 7. **`README.md`** — the *edit one line* paragraph is replaced by the mechanism: onboarding
    records where your copy came from, and a step makes your copy its own home. Description, not
    instruction.
@@ -160,6 +165,14 @@ bash tools/prose-gate.sh
 Then, by reading rather than by command, the one thing no bench covers: a fresh copy with no
 `.upstream` produces byte-identical hook output to the current version. If it does not, the
 change is not inert for existing copies and it ships a regression to every one of them.
+
+## Preconditions
+
+- The branch is synced with `main` before the executor starts. This plan was written on a branch
+  two releases behind, and the only reason that surfaced was an unrelated question. See the
+  backlog item on the missing sensor for the second hop.
+- Every bench green. `tools/test-now.sh` was red on 06-09-2026 and is fixed on the agent branch,
+  where it does not belong; that fix lands on `main` first.
 
 ## Roles
 

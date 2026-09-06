@@ -22,8 +22,43 @@ What gets done. What was already done lives in the journal, not here.
   shipped by the canon, while `.canon` keeps the root unchanged. Full plan in
   `memory/projects/universal-core/canon-identity/plan-lineage.md`. Waiting on the Principal's go.
   Candidate for upstream.
+- **The role is declared where nothing reads it.** §5 closes `state.md`'s frontmatter — *all of
+  it* — at agent, principal, language, timezone, goal, branch, created. There is no `role`. So
+  every constraint in the Custodian's own identity file (never merge, never touch another
+  repository, never improve itself unprompted, never publish outward, only approved models) is
+  held by the agent remembering to read its own prose. Rung 5. Proposed: a `role:` field with a
+  closed set, written by onboarding, so the door rules attach to something a hook can read. This
+  is the prerequisite for an instance generating its own custodian, and it is a second plan, not
+  part of `plan-lineage.md`. Candidate for upstream.
+- **Nothing detects an unsynced agent branch.** The session-start drift check covers hop one,
+  canon into a copy's `main`. On the canon it is skipped by construction — the canon cannot drift
+  from itself — so this repository has no version sensor on the branch where all its work happens.
+  §6 says drift on hop two *cannot happen* because the hop is a merge, which is only true once
+  somebody runs `tools/sync.sh`. On 06-09-2026 this branch was at 1.62.0 against main's 1.64.0,
+  four commits behind, and a whole plan was written against the stale tree before an unrelated
+  question surfaced it. Synced. The sensor is still missing. Candidate for upstream.
+- **`tools/test-now.sh` pinned a wall-clock offset and expired.** It asserted `-04` for
+  `America/Santiago`, which is right in winter and wrong under daylight saving. Chile moved its
+  clocks on 06-09-2026 and the bench went red with `now.sh` behaving correctly throughout. Fixed
+  by resolving the offset at run time from `date`, the independent oracle. **The fix is committed
+  on this agent branch, where a template file does not belong**, so the next sync will overwrite
+  it and the canon stays red. It needs a pull request into `main` with a version bump. Waiting on
+  the Principal.
 
 ## Principal
 
-- **Nothing waiting.** Items land here only when the guard hits a limit that needs a person:
-  a merge into `main`, a decision about scope, anything in the physical world (§2, §4).
+- **An unlisted model is acting as the Custodian, and the gate that should have caught it was
+  never built.** `memory/state.md` says `MODELS.md` on `main` names the approved models and
+  `tools/models.sh` compares them against what the runtime served, and that *served something
+  unlisted, this agent says so and stops*. Neither file exists — not on this branch, not on
+  `main`. The only model approved in that prose is `claude-sonnet-5`, for the scheduled guard.
+  The session of 06-09-2026 ran `claude-opus-5` and reviewed a proposal, wrote a plan, and fixed
+  a bench. Nothing detected it; it surfaced because the Principal asked an unrelated
+  question. Decide: build the gate, or amend `state.md` to stop promising one. A rule that reads
+  as a mechanism and is prose is worse than an absent rule, because it is trusted.
+- **`tools/challenge.sh` does not exist either.** `memory/projects/guardia/la guardia semanal/`
+  describes it as the doorman whose difficulty rotates with the ISO week and which the weekly
+  guard tunes on the attempt log. Same class as the item above: memory describing machinery that
+  was never built.
+- **The bench fix needs a pull request.** See the last Agent item. A template file is sitting on
+  the agent branch and will be lost on the next sync.
