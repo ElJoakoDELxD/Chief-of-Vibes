@@ -1,98 +1,115 @@
 ---
 thread: Canon identity
 date: 06-09-2026
-state: verdict issued on 06-09-2026. The contract is rejected as stated. Two findings kept.
+state: revised 06-09-2026 after the Principal's push-back. The lab's contract stays rejected;
+  its instinct is upheld and a defect that exists today, with no proposal applied, was found.
 reads: proposal-from-lab.md
 ---
 
-# Verdict on the laboratory proposal: `.canon` is not what the proposal thinks it is
+# Verdict on the laboratory proposal, second reading
 
-## The contract, and why it fails
+The first reading measured the proposal against §6 and rejected it. §6 describes **one canon and
+N copies**. The Principal's push-back is that the system is not that shape: the template
+reproduces, a copy can be copied, and each generation needs to name its parent without claiming
+to be the root. Measured against a tree instead of a star, the answer changes.
 
-The proposal asks the custodian to accept:
+## What the first reading got right, and it still holds
 
-> `.canon` is custodian-only. `Chief-of-Vibes/main` does not ship it. Onboarding generates an
-> instance-scoped identity record from actual Git origin and current branch, under another name.
+`.canon` is a **pointer upstream**, not a claim of custody. One line, `owner/repo`, meaning *the
+canon is over there*. A copy that inherits it does not inherit a false claim; it inherits one
+side of a comparison whose other side is its own `origin`. The proposal's stated failure — *a
+copied canonical marker becomes misleading* — is still an inversion of the mechanism.
 
-**Rejected.** The premise is a misreading of the file.
+Two costs of withholding it from `main` are also unchanged, and both are measurable.
 
-`.canon` holds one line — `ElJoakoDELxD/Chief-of-Vibes` — and it is a **pointer to upstream**,
-not a claim of custody. Its semantics are *the canon is over there*, so a copy that inherits it
-does not inherit a false claim. It inherits the only thing that lets the copy learn it is a
-copy: one side of a comparison whose other side is its own `origin`. §6 states it and the README
-states the exit — *if you ever want to leave, edit one line*. Editing it is how a hard fork
-declares a new canon. That is a pointer's behaviour, not an identity card's.
+- **A blind window before onboarding.** The pointer arrives today with the files. Generated at
+  onboarding, it does not exist for any session that opens before onboarding runs, and the
+  canon-or-copy menu answers *undetermined* in the one place it is read.
+- **`pr-guard.sh` fails open on the canon.** `guard.yml` checks out the pull request, so the
+  guard reads `.canon` from that tree. Absent file gives `is_canon=0`, and the guard then prints
+  *a copy does not carry the master version; no bump required* — on the canon. The release rail
+  disappears with a green check. The proposal permits adjusting consumers, so this is a cost on
+  its bill rather than a blocker, but it is the cost its own acceptance tests 5 and 7 forbid.
 
-So the proposal's "observed failure" — *a copied canonical marker becomes misleading* — inverts
-the mechanism. Copying it is what makes the answer true.
+## What the first reading missed
 
-## What removing it from `main` actually does
+**Inheriting the pointer unchanged is correct for one generation and stale by one hop for every
+generation after it.** §6 says *copies inherit `.canon` unchanged, which keeps the answer stable
+through every sync*. Stable, and wrong from the second copy onward.
 
-Traced through the consumers the proposal names.
+Ana copies the canon. Bruno copies **Ana**. Bruno's `main` carries the root's slug, inherited,
+so Bruno's template came from Ana and every mechanism believes it came from the root:
 
-1. **`.claude/hooks/anchor.sh`, canon-or-copy.** Empty `canon_slug` takes the *undetermined*
-   branch. Every fresh copy would open every agentless session asking which repository it is
-   in — the question the file exists to answer. Onboard step 0 loses its input.
-2. **The same hook, drift check.** Empty `canon_slug` reports UNAVAILABLE, permanently, in every
-   copy. That check is the only thing that tells a copy it is running superseded rules on old
-   rails (§6). The proposal lists one-way propagation as a non-goal while deleting the sensor
-   that watches it.
-3. **`tools/pr-guard.sh`.** Empty `.canon` gives `is_canon=0`, and the guard then prints *a copy
-   does not carry the master version; no bump required* — **on the canon**. The release-version
-   rail disappears silently. That is a fail-**open**, and it contradicts the proposal's own
-   acceptance tests 5 and 7.
+- The drift check compares Bruno against the root. Ana is ahead of the root, which §6 calls the
+  system working, so Bruno is told he is AHEAD with nothing to sync while Ana ships releases he
+  never receives.
+- `propagate` opens Bruno's proposal against the root, skipping Ana, built on a superset the
+  root has never seen.
 
-The lab evidence does not reach this. Removing the file and confirming through GitHub that it is
-gone tests the deletion, not the system without it. The acceptance test that would matter —
-*a fresh copy with no `.canon` still knows it is a copy* — cannot pass, by construction.
+## And the exit costs more than the README says
 
-## The proposed replacement duplicates what already exists
+The README offers the hard fork: *edit one line and your copy becomes its own home*. Trace it.
 
-The record it wants written is `role`, `repository`, `branch`, `upstream`.
+Ana edits `.canon` to her own slug. Her `origin` now matches it, so `anchor.sh` takes the branch
+at line 112 that skips the drift check entirely — *the canon cannot drift from itself*. Ana is
+silently reported current against the root, forever, and §1 promises that silence means parity.
+By §3's own standard that is a fabricated reading. On a fresh chat with no `state.md` she is
+also told *no agent is created here and no work lands here*, in her own repository.
 
-- `repository` and `branch` are ground truth in git. §6: *`git branch --show-current` is ground
-  truth, and a document naming a different branch is stale.* The proposal writes to a file the
-  two facts the specification names as the ones never to write down. It goes stale on a rename,
-  a transfer, or a second branch.
-- `upstream` is `.canon`, renamed.
-- `role` is `memory/state.md`, which already carries agent, branch, goal and language.
+The file conflates two facts and one line cannot hold both:
 
-Three fields already held, one of them held better.
+| Fact | Changes at every copy | Consumers |
+|---|---|---|
+| **Where do I sync from** — my parent | yes | drift check, first sync hop |
+| **Where do proposals go** — the root | no, until a deliberate fork | `propagate`, canon-or-copy, `pr-guard` |
 
-## What survives
+`propagate/references/propose.md` already anticipates *a copy that hard-forked edited it*. The
+design saw the fork and did not see that editing the one line is what blinds the fork.
 
-One thing, and it is smaller than the proposal but real.
+## The synthesis
 
-**The name misleads a careful reader.** A file called `.canon` reads as *this is the canon* to
-someone who has not read §6, and that is exactly the error the lab made. That is a naming
-defect, not an architecture defect. A rename is not the remedy: the string is wired into the
-hook, the guard, two benches, §6, the README, CONTRIBUTING and `repomix.config.json`, and it is
-inherited by every existing copy, so renaming it is a migration for repositories this repository
-does not own. The cheap fix is to make the file say what it points at.
+The lab is right that something must be generated at onboarding from real state. It named the
+wrong fact. **Repository and branch are already in git**, and §6 says a document naming a branch
+is stale, so writing them down is the one thing the specification forbids. **The parent is not
+in git** — a *Use this template* copy has no shared history and no fork record anywhere — so the
+parent is the single identity fact that genuinely has to be written at onboarding.
 
-Which surfaced the second finding, below.
+Right moment, wrong fact. The remedy is therefore not to withhold the file but to widen it and
+rewrite it:
 
-## Finding: two consumers parse `.canon` differently
+```
+root=ElJoakoDELxD/Chief-of-Vibes    # where proposals go; inherited, never rewritten by a copy
+upstream=<actual source repo>       # where syncs come from; rewritten at every onboarding
+```
 
-- `anchor.sh` reads `head -n1`.
-- `pr-guard.sh` reads `tr -d '[:space:]' < .canon` — the **whole file**.
+- Generation 1 behaves exactly as today; both keys hold the same slug.
+- Generation 2 syncs from Ana and still knows the root.
+- A hard fork sets `root` to itself and **keeps** `upstream` pointing at the real canon, so the
+  exit stops costing upstream blindness. That is what the README already promises.
+- *Am I the canon?* stays one comparison against `root`, and still fails closed when either side
+  is missing.
+- Nothing is withheld from `main`: no blind window, and `pr-guard` keeps a local file read with
+  no branch fetch and no custodian branch name hardcoded into a template that copies rename.
 
-They agree today only because the file is one line. Add a comment line to make the pointer
-self-describing, which is the fix the paragraph above asks for, and `pr-guard` concatenates both
-lines, matches nothing, sets `is_canon=0`, and drops the version rail on the canon without a
-word. The safe fix is not available until the parsers agree.
+**The Principal's naming point holds and gets easier.** A file whose content changes shape can
+change its name in the same release, and every copy needs migrating either way. `.lineage`
+retires the word *canon* as a filename for everybody, root included, instead of keeping one name
+for the root and inventing a second for derived repositories.
 
-This is the finding worth keeping from the whole exchange, and the proposal did not contain it.
-It was found by tracing the consumers the proposal asked to be traced.
+## The blocker, and it is now on the critical path
 
-## Answer to the question the proposal asked well
+`anchor.sh` reads `head -n1`. `pr-guard.sh` reads the whole file through `tr -d '[:space:]'`.
+A two-key file makes `pr-guard` concatenate both lines, match nothing, set `is_canon=0`, and drop
+the version rail silently. **The parsers must agree before the file gains a second line.**
+Backward compatibility is cheap in the same fix: a bare slug on line one means both keys, which
+is exactly today's semantics, so existing copies migrate lazily and nothing breaks on sync.
 
-> Does each consumer need canonical identity, or only the current instance's repository/branch
-> and role?
+## Kept separate on purpose
 
-Neither. Every consumer needs the **comparison**. The local side already comes from git, so the
-file must carry the remote side and nothing else. That is what it does, in one line.
+*Each instance generates its own custodian.* Plausible, and larger than identity. It does not
+need to ship with this and bundling it makes the change unreviewable. Backlog, not this release.
 
 ## Standing
 
-A verdict is a recommendation and never permission (§6). Nothing here merges anything.
+A verdict is a recommendation and never permission (§6). Nothing here merges anything, and
+nothing above has been implemented.
