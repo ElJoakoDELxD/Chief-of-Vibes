@@ -1,9 +1,10 @@
 ---
 thread: Canon identity
 date: 06-09-2026
-state: revised 06-09-2026 after the Principal's push-back. The lab's contract stays rejected;
-  its instinct is upheld and a defect that exists today, with no proposal applied, was found.
+state: revised twice on 06-09-2026. The lab's contract stays rejected, its instinct is upheld,
+  two defects that exist today were found, and the remedy now lives in plan-lineage.md.
 reads: proposal-from-lab.md
+produces: plan-lineage.md
 ---
 
 # Verdict on the laboratory proposal, second reading
@@ -74,35 +75,28 @@ is stale, so writing them down is the one thing the specification forbids. **The
 in git** — a *Use this template* copy has no shared history and no fork record anywhere — so the
 parent is the single identity fact that genuinely has to be written at onboarding.
 
-Right moment, wrong fact. The remedy is therefore not to withhold the file but to widen it and
-rewrite it:
+Right moment, wrong fact.
 
-```
-root=ElJoakoDELxD/Chief-of-Vibes    # where proposals go; inherited, never rewritten by a copy
-upstream=<actual source repo>       # where syncs come from; rewritten at every onboarding
-```
+**The remedy first written here was wrong and `plan-lineage.md` replaces it.** It put two keys,
+`root` and `upstream`, inside `.canon`. The first hop takes the canon's version of every template
+file, so a copy-local key inside a template file is overwritten by the first sync after it is
+written. **The fact that must not be inherited cannot live in a file the template ships.**
 
-- Generation 1 behaves exactly as today; both keys hold the same slug.
-- Generation 2 syncs from Ana and still knows the root.
-- A hard fork sets `root` to itself and **keeps** `upstream` pointing at the real canon, so the
-  exit stops costing upstream blindness. That is what the README already promises.
-- *Am I the canon?* stays one comparison against `root`, and still fails closed when either side
-  is missing.
-- Nothing is withheld from `main`: no blind window, and `pr-guard` keeps a local file read with
-  no branch fetch and no custodian branch name hardcoded into a template that copies rename.
+The plan adds a second file instead. `.canon` keeps the root and is inherited unchanged, so no
+copy migrates and no parser changes. `.upstream` holds the parent, is written once by onboarding
+from real state, and the canon never ships one. One rule carries it: **`.upstream` present means
+derived, whatever `.canon` says.**
 
-**The Principal's naming point holds and gets easier.** A file whose content changes shape can
-change its name in the same release, and every copy needs migrating either way. `.lineage`
-retires the word *canon* as a filename for everybody, root included, instead of keeping one name
-for the root and inventing a second for derived repositories.
+That also settles the Principal's naming point in the form they put it — the derived marker is
+not called `.canon`, and `.canon` stays reserved for the root.
 
-## The blocker, and it is now on the critical path
+## The parser split, no longer a blocker
 
 `anchor.sh` reads `head -n1`. `pr-guard.sh` reads the whole file through `tr -d '[:space:]'`.
-A two-key file makes `pr-guard` concatenate both lines, match nothing, set `is_canon=0`, and drop
-the version rail silently. **The parsers must agree before the file gains a second line.**
-Backward compatibility is cheap in the same fix: a bare slug on line one means both keys, which
-is exactly today's semantics, so existing copies migrate lazily and nothing breaks on sync.
+They agree only while `.canon` is one line, and a second line would make `pr-guard` match nothing,
+set `is_canon=0`, and drop the version rail silently. Under the two-key design this blocked the
+change. Under the plan `.canon` stays one line, so the defect is real, still worth fixing, and
+**off the critical path**.
 
 ## Kept separate on purpose
 
