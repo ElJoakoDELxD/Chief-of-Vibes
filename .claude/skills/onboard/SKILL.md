@@ -32,6 +32,7 @@ Creates the agent: one short conversation, then a branch and a memory vault. Tot
    - `memory/state.md` — the SYSTEM.md §5 frontmatter, filled from the answers; `created` from `tools/now.sh`, reordered to `YYYY-MM-DD` (date only).
    - `memory/backlog.md` — `## Agent` and `## Principal` sections, both empty.
    - `memory/journal/<today>.md` — first note: agent created, goal recorded.
+   - `memory/projects/<topic>/<thread>/` for this session, with a note in it. §5 requires a session to stand in a thread folder before its first edit, so the one that creates the agent opens its own instead of leaving the next session to invent the convention.
    - `README.md` — rewritten to describe THIS agent (name, goal, branch), replacing the template sales page.
 
    `memory/handoff/` is not created here: it appears with the first handoff note (SYSTEM.md §5).

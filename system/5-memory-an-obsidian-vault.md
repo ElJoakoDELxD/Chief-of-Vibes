@@ -24,6 +24,8 @@ A chat titles itself on its first message, and that title is the only thing sepa
 
 So **a session declares its workplace before its first substantive edit, and says so in its first reply**. It picks a topic, then either continues a thread folder that exists or opens one, and it names which of the two it did. The thread folder is named the way a handoff note already is, below: three to six ordinary words in the agent's language, with spaces. One convention, used twice.
 
+**Onboarding opens the first one, and that is not a courtesy.** The rule above requires a session to stand in a thread folder before its first edit, and §9 puts that path in the header of every reply, so an agent created without one is required from its first minute to be somewhere nobody made. The session that creates the agent is itself a thread: it writes its own folder and its own note there, and the convention arrives demonstrated rather than described.
+
 This tree is the agent's conversation history, and unlike a chat surface's list of auto-titled sessions it outlives the window that produced it.
 
 A topic is a line of work and not always a project. `brief.md` sits at the topic level and is §7's approval gate for a topic that publishes something; a topic whose output never leaves the repository has no brief and does not pretend to. That brief is the only file the topic level holds. Everything else belongs to a thread, and the hygiene sensor reports what sits outside that shape (§1).
@@ -86,6 +88,8 @@ One file, appended and never rewritten, and **read before a correction is routed
 Its point is not the record of having been wrong. It is that **the second occurrence of a correction is a different event from the first, and nothing else makes that visible.** The first time, the fix goes wherever it belongs. The second time the entry is already there. That proves the address was wrong, and that the fix sat at a rung too low to hold. The answer is to climb, not to promise harder. Without the file every correction looks like the first one. An agent's memory of its own conduct is exactly what a fresh session does not have.
 
 Reading it restates the corrected behaviour in the agent's own words before it acts. That is the nearest thing a system with no training loop has to reinforcement. It is why the file earns its place open rather than closed. It stays short by construction. An entry whose fix climbed to rung 1 or 2 is deleted, because the machinery holds it now. A thing nobody can do wrong does not need remembering.
+
+**It appears with the first correction, and never before.** An empty one created in advance tells the next session there is nothing to read, which is a different claim from *nobody has written one down yet*. The absence needs naming rather than filling, so `tools/hygiene.sh` says the path out loud while the file is missing (§1): this section is otherwise the only place it is written, and a rule found by remembering is rung 5.
 
 ### Handoff notes
 

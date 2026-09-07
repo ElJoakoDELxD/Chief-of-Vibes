@@ -9,6 +9,23 @@
 # A backlog line carries the tag #propagate:DD-MM-YYYY. The date is in the tag,
 # not in git, so an edit to the entry does not reset its age.
 #
+# The colon is required, and it is what separates a tag from the tag's name.
+# Matching the bare word made any sentence *about* this tool into an item: on
+# 07-09-2026 the sensor reported exactly one candidate waiting, and it was a
+# line of prose naming the tag, while eleven real candidates carried no tag and
+# were invisible. Backticks cannot make that distinction, because a real tag is
+# often written inside them.
+#
+# A tag whose date is missing or malformed keeps the colon, so it still reaches
+# the undated path. What the colon rule gives up is a bare `#propagate` on an
+# item that never says it is a candidate, and the check below covers the case
+# that matters.
+#
+# The mirror of that failure is checked too: an item that calls itself a
+# candidate for upstream and carries no dated tag is a candidate nothing is
+# measuring. Reporting the tagged ones while the untagged sit beside them is a
+# sensor answering a question nobody asked.
+#
 # One item, one line, however many tags it carries. An entry that absorbed a
 # second finding carries that finding's tag too, and reporting per tag counted
 # it twice: on 14-08-2026 the report said eleven where nine were open. A count
@@ -79,7 +96,7 @@ tidy() {  # tidy <text> [tag-to-remove]
 # One pass gathers, per item, the line its bullet starts on and the oldest tag
 # under it. Reporting then walks items instead of tags.
 gathered="$(
-  grep -n '#propagate' "${file}" 2>/dev/null | while IFS= read -r hit; do
+  grep -n '#propagate:' "${file}" 2>/dev/null | while IFS= read -r hit; do
     lineno="${hit%%:*}"
     raw="${hit#*:}"
     tag="$(printf '%s' "${raw}" | grep -oE '#propagate:[0-9]{2}-[0-9]{2}-[0-9]{4}' || true)"
@@ -94,6 +111,32 @@ gathered="$(
     fi
   done | sort -t"$(printf '\t')" -k1,1n -k2,2 | awk -F'\t' '!seen[$1]++'
 )"
+
+# Untagged candidates: an item that says it is one and carries no dated tag.
+# Walked per item, because the phrase and the tag rarely share a line.
+untagged="$(
+  awk '
+    /^[[:space:]]*[-*][[:space:]]/ { flush(); start = NR; text = $0; next }
+    start { text = text " " $0 }
+    END { flush() }
+    function flush(   lower) {
+      if (!start) return
+      lower = tolower(text)
+      if (index(lower, "candidate for upstream") && !index(text, "#propagate:") \
+          && !index(text, "~~"))
+        print start
+      start = 0; text = ""
+    }
+  ' "${file}"
+)"
+if [[ -n "${untagged}" ]]; then
+  while IFS= read -r lineno; do
+    [[ -n "${lineno}" ]] || continue
+    item="$(title_of "${lineno}")"
+    printf '  untagged: %s\n' "$(tidy "${item}" '#propagate')"
+  done <<< "${untagged}"
+  echo "  Those carry no #propagate:DD-MM-YYYY, so nothing is measuring how long they have waited."
+fi
 
 [[ -n "${gathered}" ]] || exit 0
 
