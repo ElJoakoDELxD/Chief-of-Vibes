@@ -111,6 +111,14 @@ What gets done. What was already done lives in the journal, not here.
   agent may open one on finding a fault. Proposal in
   `memory/projects/universal-core/posts and functions/proposal.md`. One release, not small. Two
   decisions are the Principal's. Candidate for upstream.
+- **Put the membership test and the upward flow into §6.** The test — *does a fresh copy need
+  this to become itself* — is written nowhere, so the rule survives as a path list that cannot
+  answer for a path nobody has proposed yet. And it is a rule about **every** `main`, not the
+  canon's, because any `main` can be copied. With it: everything is proven outside its own `main`
+  and then proposed upward; a change that lands in a copy gets a verdict out loud rather than a
+  default; the gate upward binds on all three of agnostic, an improvement, and verified. Written
+  up in `memory/projects/universal-core/what main is for/the membership test.md`. Candidate for
+  upstream.
 - **Write the knowledge entry: a cloud session cannot delete a ref, and a runner is the route.**
   §5 says an entry gets written the first time a procedure is worked out, not later. This session
   spent hours rediscovering something `stacks.yml` and `create-release.yml` had already solved,

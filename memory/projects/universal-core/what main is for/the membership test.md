@@ -90,3 +90,70 @@ answer for a path nobody has proposed yet.
 
 Proposed: the test goes into §6, in the paragraph that introduces the two tiers, before the
 allowlist is ever mentioned.
+
+---
+
+# The same machine, at every level
+
+Extended by the Principal on 07-09-2026. The test is not a rule about the canon. **It is a rule
+about every `main`**, because any `main` can be copied, and a copy of a copy inherits whatever
+sits on the one it came from.
+
+## Everything is tested outside its own `main`
+
+```
+work branch  ──judged by the post──▶  this repository's main  ──if it generalizes──▶  upward
+```
+
+The same shape twice, and the canon is only the level with nothing above it.
+
+| | In a copy | On the canon |
+|---|---|---|
+| where the work happens | a disposable branch | a disposable branch |
+| where it is proven | outside `main`, on that branch | outside `main`, on that branch |
+| who prepares the door | the **steward** | the **custodian** |
+| who decides | that copy's Principal | the canon's Principal |
+| what happens next | proposed upward when it generalizes | nothing above it |
+
+§6 already says why the copy is the right place to run the test: it is the only place a rule can
+be run against real work before anybody else inherits it. So a copy is not a lesser canon. **It
+is where a change earns the right to travel.**
+
+## A copy does not end the journey
+
+A change landing in a copy's `main` is not finished. It gets a verdict, out loud: it travels, or
+it stays and says why. **Neither answer may be the default**, because a default is what lets a
+finding die where it was found.
+
+The machinery for that half exists. §9 says a finding that generalizes goes upstream as a pull
+request and never into the backlog, and one that stays carries `#propagate:DD-MM-YYYY` so
+`tools/candidates.sh` measures the wait instead of the agent remembering it. What is missing is
+only the framing: the sensor watches *findings*, and the unit that needs a verdict is any change
+that **landed**.
+
+## The gate upward has three parts, and all three bind
+
+1. **Agnostic.** It describes nobody in particular: not one Principal, one agent, one project,
+   one machine. This is `knowledge/`'s rule and it transfers unchanged.
+2. **An improvement to the template.** Somebody else is better off holding it. Generic and
+   useless is clutter in a place every copy inherits.
+3. **Verified.** It was run here, against real work, and the entry says what was run. A guess
+   that every copy inherits is worse than an absence, because it will be trusted.
+
+A change failing any one of the three stays in the copy, and saying which one it failed is the
+whole content of the verdict.
+
+## Why the door has a keeper and not only a lock
+
+A filled form is identity, and **no path pattern can see identity**. `tools/pr-guard.sh` can
+prove a file is allowed to be on `main`. It cannot prove the file names nobody. That reading is a
+judgment, and a judgment is what a post exists to authorize.
+
+So the lock and the keeper answer different questions and neither replaces the other:
+
+- The lock asks **may this path be here**, and it is mechanical, cheap, and never tired.
+- The keeper asks **does this content belong to everybody**, and only a reader can.
+
+That is why a proposal goes to a custodian rather than to a check, and why the custodian's verdict
+is a recommendation rather than permission: the reading is the work, and the decision stays with a
+person.
