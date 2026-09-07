@@ -97,7 +97,12 @@ What gets done. What was already done lives in the journal, not here.
   and nothing ships in the template**: §5 already says nothing about the agent is stored anywhere
   else, `sync.sh` would otherwise push the canon's post into every copy, and shipping them would
   have meant widening the `pr-guard.sh` allowlist that keeps agent material off `main`. The
-  specification carries the schema; onboarding writes the baseline. The Custodian post authorizes projects aimed at the template and the canon, and the
+  specification carries the blank form, as a fenced block beside the ones for `state.md`, a
+  handoff and a `knowledge/` entry. **The default post is custodian of your own copy**: every
+  agent gets it at onboarding, it guards that repository's `main` and sends proposals to the
+  canon's agent, and the canon needs no special post because *receive a proposal* is the same
+  function everywhere. §6 already says a copy's `main` changes only by an approved pull request
+  and never says whose job that is. The Custodian post authorizes projects aimed at the template and the canon, and the
   agent may open one on finding a fault. Proposal in
   `memory/projects/universal-core/posts and functions/proposal.md`. One release, not small. Two
   decisions are the Principal's. Candidate for upstream.

@@ -53,13 +53,41 @@ reason is mechanical rather than tidiness:
 - `tools/pr-guard.sh` allows only template paths into `main`. Shipping `posts/` meant widening
   that allowlist — loosening the guard whose whole job is keeping agent material off `main`.
 
-**What ships is the schema, not the instances.** §5 defines `state.md`'s frontmatter and nobody
-ships a `state.md`. Posts and functions work the same way: the specification says what they are
-and the agent branch holds the ones that exist.
+**What ships is the form, not the instances.** No filled-in post reaches a copy. The blank does,
+as a fenced block in §5, which is exactly how `state.md`'s frontmatter, a handoff note and a
+`knowledge/` entry are already specified. One convention, used five times instead of four, and no
+new file on `main`.
 
-**The one real cost, and it has a cheap fix.** With nothing shipped, a new agent starts with no
-posts and no functions. Onboarding writes the baseline from the specification, the way it already
-writes `state.md` and `backlog.md` from §5. Generated at creation, never inherited by a sync.
+## The default post: custodian of your own copy
+
+Set by the Principal on 07-09-2026. **What onboarding builds by default is the agent that holds
+custody of its own copy and sends proposals to the canon's agent.**
+
+That is one post, uniform, in every repository:
+
+| | Canon | A copy |
+|---|---|---|
+| post | custodian | **custodian** |
+| what it guards | the canon's `main` | **that copy's `main`** |
+| where proposals go | nowhere above it | **the canon's agent** |
+
+**The post is identical. What differs is which repository it stands in.** That is what makes it a
+default rather than a canon arrangement somebody has to reproduce by hand.
+
+Baseline functions it authorizes: keep the benches green, prepare the door on a change to `main`
+and never merge it, sync the template from upstream, propose upstream what generalizes, sweep the
+repository.
+
+**The canon needs no special post.** *Receive a proposal* is the same function everywhere; a copy
+simply never has one arrive. Giving the canon a post of its own would break the uniformity the
+blueprint is for, and buy nothing.
+
+**And proposals travel agent to agent.** The canon's agent is the recipient, not the repository.
+That is who the charter's *duty to the contributor* is owed by: somebody is at the door.
+
+§6 already describes a copy's `main` as read-only, changed only by a pull request the Principal
+approves, with the guard hook blocking work on it. It never says whose job that is. This names it,
+and the answer is the copy's own agent, from the moment it is created.
 
 **And `main` stays clean**, which is what makes it worth copying.
 
@@ -121,8 +149,9 @@ not never.
 
 One release, and smaller than the first draft. `system/5` for the frontmatter and the vault
 shape, `system/9` for the header and the session declaration, `system/7` for the post-scoped
-project rule, `.claude/hooks/anchor.sh`, the onboard skill, `CLAUDE.md` rule 2 which quotes the
-header format, and the benches.
+project rule and the two fenced forms, `.claude/hooks/anchor.sh`, the onboard skill writing the
+default custodian post and its baseline functions, `CLAUDE.md` rule 2 which quotes the header
+format, and the benches.
 
 **Nothing in `tools/pr-guard.sh`, `tools/index.sh` or `tools/sections.sh`, and no new template
 directory.** Keeping the instances off `main` removed a third of the change.
