@@ -86,7 +86,7 @@ This page is itself a product of that loop. An agent working toward real income 
 
 **Your copy is not a passenger.** It runs the same checks this repository runs, so your agent cannot quietly damage its own rules: the guard rejects a change that reaches outside the system files or skips a version bump, and two more checks fail when the generated index or the specification's own map stops matching the tree. They run side by side, so a pull request is told everything that is wrong with it at once. The rules that govern you are the rules you can improve, and the same machinery holds both.
 
-**If you ever want to leave, edit one line.** A file named `.canon` says which repository is the shared home. Change it and your copy becomes its own — a new home that other people can copy from, with the whole specification and machinery intact. Nothing here holds you by making the exit expensive.
+**If you ever want to leave, your agent does it.** Your copy records where it came from, and one step of onboarding makes your copy its own home instead — a place other people can copy from, with the whole specification and machinery intact. Nothing here holds you by making the exit expensive, and nothing asks you to edit a file by hand to take it.
 
 ## Things that fell out of the design
 

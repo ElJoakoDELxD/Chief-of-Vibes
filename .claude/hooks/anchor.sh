@@ -5,6 +5,11 @@
 # agent memory it also injects the start menu — which menu depends on whether
 # this repository is the canon named in .canon or a copy of it.
 #
+# Custody lives with the post, so neither marker ships in the template (section
+# 6). The canon's role branch carries .canon; a copy's carries .blueprint, naming
+# the blueprint it came from. A copy of a copy still names the blueprint: every
+# generation proposes to the same place and none proxies through its parent.
+#
 # At session start it additionally compares this copy's SYSTEM.md version
 # against the canon's and reports drift. One network call, SessionStart only,
 # and it reports itself unavailable rather than guessing when the canon cannot
@@ -66,6 +71,10 @@ if [[ ! -f memory/state.md ]]; then
     | sed -E 's#^[a-z+]+://##; s#^[^/@]*@##; s#^[^/:]*[:/]##; s#\.git$##; s#/+$##')" || true
   canon_slug="$(head -n1 .canon 2>/dev/null \
     | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]' | sed -E 's#\.git$##; s#^/+##; s#/+$##')" || true
+  # .blueprint present means derived, whatever else is on disk. Absence of
+  # provenance is what makes a repository the root, so nothing has to assert it.
+  blueprint_slug="$(head -n1 .blueprint 2>/dev/null \
+    | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]' | sed -E 's#\.git$##; s#^/+##; s#/+$##')" || true
 
   # Agent branches: every remote head that is not main or a chat surface.
   candidates="$(git ls-remote --heads origin 2>/dev/null \
@@ -73,16 +82,26 @@ if [[ ! -f memory/state.md ]]; then
     | grep -vE '^(main$|claude/|HEAD$)' \
     | paste -sd ',' - | sed 's/,/, /g')" || true
 
-  if [[ -z "${canon_slug}" || -z "${origin_url}" ]]; then
-    menu=" No agent lives here (no memory/state.md), and whether this repository is the canon or the user's own copy could not be determined (no .canon file, or no origin remote): say so and ask which it is before creating an agent — never guess. Greet briefly in the user's language, assuming they may not know what this is."
+  if [[ -n "${blueprint_slug}" ]]; then
+    menu=" No agent lives on this branch (no memory/state.md), and this repository is derived: .blueprint names ${blueprint_slug} as the blueprint it came from. Greet briefly in the user's language, assuming they may not know what this is, and offer: create their agent (.claude/skills/onboard/), or maintain the template through a pull request into this copy's main."
+  elif [[ -z "${canon_slug}" || -z "${origin_url}" ]]; then
+    menu=" No agent lives here (no memory/state.md), and whether this repository is the canon or the user's own copy could not be determined (no marker on this branch, or no origin remote): say so and ask which it is before creating an agent — never guess. Greet briefly in the user's language, assuming they may not know what this is."
   elif [[ "/${origin_url}" == *"/${canon_slug}" ]]; then
     menu=" This session runs on the canon (origin matches .canon): no agent is created here and no work lands here. Greet briefly in the user's language, assuming they may not know what this is, and offer the two legitimate reasons to be on the canon: create their own copy of the template (the session makes the repository for them when a tool allows it, .claude/skills/onboard/ step 0, with GitHub's 'Use this template' as the fallback), or contribute a template change through a pull request."
   else
     menu=" No agent lives here yet (no memory/state.md), and this repository is the user's own copy of the template (origin does not match .canon) — this is where their agent belongs. Greet briefly in the user's language, assuming they may not know what this is, and offer: create their agent (.claude/skills/onboard/), or maintain the template through a pull request into this copy's main."
   fi
 
+  # The continuation offer belongs to a copy, where the Principal is returning to
+  # their own agent. On the canon the person standing here is a visitor and the
+  # agent they can see is the demonstration: meeting it is the point, being handed
+  # it is not, and "act on evident intent" is what used to carry them into it.
   if [[ -n "${candidates}" ]]; then
-    menu="${menu} Existing agent branches to offer continuing first: ${candidates}."
+    if [[ -z "${blueprint_slug}" && -n "${canon_slug}" && "/${origin_url}" == *"/${canon_slug}" ]]; then
+      menu="${menu} An agent already lives here and it is the demonstration, on: ${candidates}. Name it and let them read it. Never offer to continue it — a visitor is offered their own copy or a pull request."
+    else
+      menu="${menu} Existing agent branches to offer continuing first: ${candidates}."
+    fi
   fi
   menu="${menu} Act on evident intent without re-asking."
 fi
@@ -97,7 +116,10 @@ fi
 # fabricating a reading, and a silent "probably fine" is exactly that.
 drift=""
 if [[ "${event}" == "SessionStart" ]]; then
-  canon_slug="$(head -n1 .canon 2>/dev/null | tr -d '[:space:]' | sed -E 's#\.git$##; s#^/+##; s#/+$##')" || true
+  canon_slug="$(head -n1 .blueprint 2>/dev/null | tr -d '[:space:]' | sed -E 's#\.git$##; s#^/+##; s#/+$##')" || true
+  # .blueprint names where the template comes from. Without one this is the root,
+  # and .canon is read only to confirm that rather than to find a source.
+  [[ -n "${canon_slug}" ]] || canon_slug="$(head -n1 .canon 2>/dev/null | tr -d '[:space:]' | sed -E 's#\.git$##; s#^/+##; s#/+$##')" || true
   origin_url="$(git remote get-url origin 2>/dev/null | tr '[:upper:]' '[:lower:]' \
     | sed -E 's#^[a-z+]+://##; s#^[^/@]*@##; s#^[^/:]*[:/]##; s#\.git$##; s#/+$##')" || true
 
@@ -106,7 +128,7 @@ if [[ "${event}" == "SessionStart" ]]; then
   # run at all, and saying nothing would read as "current" (§3 never fabricate
   # a reading). Say the check did not run instead.
   if [[ -z "${canon_slug}" || -z "${origin_url}" ]]; then
-    drift=" Template drift check: UNAVAILABLE (no .canon file, or no origin remote, so this copy cannot be compared against anything). Say the check did not run rather than assuming this copy is current."
+    drift=" Template drift check: UNAVAILABLE (no .blueprint or .canon on this branch, or no origin remote, so this copy cannot be compared against anything). Say the check did not run rather than assuming this copy is current."
 
   # The canon cannot drift from itself.
   elif [[ "/${origin_url}" != *"/$(printf '%s' "${canon_slug}" | tr '[:upper:]' '[:lower:]')" ]]; then

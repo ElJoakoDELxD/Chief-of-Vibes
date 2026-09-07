@@ -10,13 +10,13 @@ The canon holds exactly two things: the spec, and the rails that enforce it. A p
 
 ```
 SYSTEM.md  CLAUDE.md  README.md  CONTRIBUTING.md  LICENSE
-repomix.config.json  .gitignore  .canon
+repomix.config.json  .gitignore
 .claude/   .github/   tools/
 ```
 
 Agent memory (`memory/`), project output (`projects/`), and `knowledge/` never belong here. They live inside somebody's own copy — the first two on agent branches, `knowledge/` on that copy's `main`. A pull request that carries them is not a template change, and the `template-only` check will say so by name.
 
-`knowledge/` is worth spelling out because the rule differs by repository and the check knows it. A copy records there the procedures its agents verified, so the next agent runs them instead of working them out again; the check reads `.canon`, sees it is not standing in the canon, and accepts the folder. Here it rejects it. The canon has no agents and so has learned nothing, and the *shape* of an entry is specification, which belongs in `SYSTEM.md` §5 rather than in a second file that would drift from it.
+`knowledge/` is worth spelling out because the rule differs by repository and the check knows it. A copy records there the procedures its agents verified, so the next agent runs them instead of working them out again; the check sees it is not standing in the canon and accepts the folder. Here it rejects it. The canon has no agents and so has learned nothing, and the *shape* of an entry is specification, which belongs in `SYSTEM.md` §5 rather than in a second file that would drift from it.
 
 In a copy, a knowledge-only pull request needs no version bump. A version is a template release; recording what a repository learned is not one, and demanding a bump for it would fill the changelog with noise.
 
