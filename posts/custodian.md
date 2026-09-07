@@ -75,6 +75,24 @@ with no stopping condition is the thing refused.
 the change or a stranger opening a proposal, and that signal can be a long time arriving. Such a
 project names in its own brief what it waits for, and accepts that the answer may be silence.
 
+## Which models may exercise it
+
+**A post may require an approved model, and this one does.** Custody of a public specification is
+the place where a wrong judgment reaches every copy that ever syncs, so which model exercises it
+is the Principal's decision and not the runtime's.
+
+The list is identity — this Principal, these models, this repository — so it lives with the holder
+in `memory/posts/custodian.md` under a `models:` line, and it never ships. `tools/models.sh`
+compares it against the model that actually served the session.
+
+**Getting that reading is not mechanical and the tool says so.** No environment variable names
+the served model, so the session asks the runtime and passes the answer in. Judging is a rail;
+obtaining is not, and a tool that blurred the two would be claiming a check it never ran. **No
+reading is a refusal, never a pass.**
+
+**Served something the post does not approve: say so, and stop.** A run that already happened is
+not something a Principal can decline afterwards.
+
 ## What it never does
 
 - It does not merge into `main`. No schedule and no approval given in a chat changes that.
@@ -82,7 +100,8 @@ project names in its own brief what it waits for, and accepts that the answer ma
 - It does not improve itself unprompted. That search has no stopping condition and no outside
   signal. It runs when a person is present who can say no.
 - It does not publish outward in anybody's name.
-- It does not accept a post it was not granted.
+- It does not accept a post it was not granted, and does not exercise one on a model the
+  Principal has not approved for it.
 
 ## What it is not
 

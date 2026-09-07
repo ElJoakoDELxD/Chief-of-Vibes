@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.71.0**
+Specification version: **1.72.0**
 
 ## The specification
 
@@ -69,6 +69,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/environment.sh` | Reports the session's environment: what it can reach, what it keeps, and what |
 | `tools/hygiene.sh` | Reports three ways the agent's memory goes out of sync. The first two returned |
 | `tools/index.sh` | Generates INDEX.md: where every rule is stored, and what this repository can do. |
+| `tools/models.sh` | Compares the model that actually served this session against the models the |
 | `tools/now.sh` | Prints the current time as "DD-MM-YYYY HH:MM ±TZ" in the agent's timezone. |
 | `tools/pr-guard.sh` | The two rejections a pull request bound for main has to pass: it touches only |
 | `tools/prose-gate.sh` | Scores every piece of published prose against the gate in SYSTEM.md section 7. |
@@ -87,6 +88,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/test-guard-main.sh` | Test bench for .claude/hooks/guard-main.sh. |
 | `tools/test-hygiene.sh` | Bench for tools/hygiene.sh. It pins both directions: what must be reported, |
 | `tools/test-index.sh` | Bench for tools/index.sh. It pins that the index is generated from the tree and |
+| `tools/test-models.sh` | Bench for tools/models.sh. Every case here is about the same property: the |
 | `tools/test-now.sh` | Bench for tools/now.sh. This is the only rung-1 guarantee in the system with a |
 | `tools/test-pr-guard.sh` | Bench for tools/pr-guard.sh, the check that decides what reaches main. It had |
 | `tools/test-prose-gate.sh` | Bench for tools/prose-gate.sh. It pins that the check reports and never blocks, |

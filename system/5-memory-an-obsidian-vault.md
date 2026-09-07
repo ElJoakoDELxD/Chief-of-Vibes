@@ -61,6 +61,13 @@ the moment it is created and cannot hold one nothing defines. Which posts *this*
 the `posts:` line above, and that never travels. A copy carries the definition of a post it does
 not hold, and that claims nothing.
 
+**A post may require an approved model, and the list is identity.** `memory/posts/<post>.md`
+carries a `models:` line naming what the Principal approved for that post here, and
+`tools/models.sh` compares it against what the runtime served. The rule ships and the list never
+does. The reading is the half no tool can take: nothing in the environment names the served
+model, so the session asks the runtime and passes the answer in, and **no reading is a refusal
+rather than a pass**.
+
 **An agent may write its own.** A post or a function it needs and the catalogue lacks goes in
 `memory/posts/` or `memory/functions/`, where it is this agent's and travels nowhere. Proposing it
 into the catalogue is the same gate as `knowledge/`: only what is agnostic, and `verified:` means
