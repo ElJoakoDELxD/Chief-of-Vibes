@@ -82,6 +82,14 @@ What gets done. What was already done lives in the journal, not here.
   workspace and everyone reaches it through the same door, so a visitor is given the two ways in
   rather than the keys to the agent standing there. Found 07-09-2026. Candidate for upstream.
 
+- **Write the knowledge entry: a cloud session cannot delete a ref, and a runner is the route.**
+  §5 says an entry gets written the first time a procedure is worked out, not later. This session
+  spent hours rediscovering something `stacks.yml` and `create-release.yml` had already solved,
+  and their header comments were the only record. An entry in `knowledge/` on the canon makes the
+  pattern findable instead of archaeological: what the git proxy refuses, how it was measured, and
+  the runner shape as the answer. Held out of pull request #78 deliberately, because widening a
+  pull request under review costs the review. Candidate for upstream.
+
 ## Principal
 
 - **An unlisted model is acting as the Custodian, and the gate that should have caught it was
