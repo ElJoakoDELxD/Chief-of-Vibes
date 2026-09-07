@@ -105,7 +105,8 @@ What gets done. What was already done lives in the journal, not here.
 - **A copy's `main` README is the canon's sales page, addressed to a reader who already left.**
   It says *your first act is making your own copy* to somebody standing inside one. The agent
   rebuilds it with its Principal's specifications — whose repository, what for, which agent, and
-  where it came from, which is where provenance belongs. `README.md` is the one template file that
+  where it came from. Provenance is recorded twice for two readers: that README line for a person,
+  and `.blueprint` on the role's branch for the drift check. `README.md` is the one template file that
   becomes identity the moment a copy exists. The second hop already carves it out of the sync and
   **the first hop does not**, so a rebuilt README is overwritten by the next template pull request.
   Written up in `memory/projects/universal-core/what main is for/the readme is the filled form.md`.

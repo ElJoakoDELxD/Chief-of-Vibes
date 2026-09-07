@@ -68,9 +68,38 @@ that is what covers the smaller conflict.
 **What does not travel:** this role's occupant, its funding arrangement, its model approvals. A
 copy inherits the slot, not what sits in it.
 
+## The naming, settled 07-09-2026
+
+`.canon` **is not on `main`**. It sits with the role, on the branch where custody is held, so it
+never travels. A copy writes **its own** marker, and it is not called `.canon`, so the two never
+mean the same thing in two places.
+
+| Repository | File, on the role's branch | What it says |
+|---|---|---|
+| the canon | `.canon` | custody sits here |
+| a copy | **`.blueprint`** | the blueprint is at `owner/repo` |
+
+`.blueprint` is the name the Principal has been using for the canon all day, and it reads
+correctly from inside a copy: the file names where the blueprint is. The pair matches the post
+pair exactly — `custodian` holds `.canon`, `steward` holds `.blueprint`.
+
+**And the rule that reads them is the one already settled: `.blueprint` present means derived.**
+Absence of provenance is what makes a repository the root. Nothing has to assert it.
+
+**This corrects a sentence written an hour earlier.** The README note said provenance belongs in
+prose rather than in a file a machine follows. Half wrong: the README line is what a **person**
+reads, and `.blueprint` is what the **drift check** reads. Two readers, two records, and neither
+substitutes for the other.
+
 ## Open
 
-- The branch-name dependency in `pr-guard.sh`, above.
+- **`tools/pr-guard.sh` still has no answer, and this is the unresolved cost.** It runs in CI on a
+  checkout of the pull request's head, which is template content and carries no marker of either
+  name. Its question is whether this repository issues the master version, and with `.canon` off
+  `main` it cannot ask. `actions/checkout` already fetches with `fetch-depth: 0`, so reading the
+  marker from the role's branch is possible — at the price of the guard knowing that branch's
+  name. Flagged this morning, restated at 14:56, still open.
+- The branch-name dependency that fix introduces.
 - `plan-lineage.md`'s file layout is superseded. `.canon` no longer ships on `main`; the design is
   `.upstream` generated at onboarding, plus custody held with the role. The defects it traced —
   a copy of a copy syncing against the root, a fork blinding itself — are unchanged and still real.

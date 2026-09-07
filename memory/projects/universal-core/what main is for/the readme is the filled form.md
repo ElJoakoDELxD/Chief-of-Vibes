@@ -24,8 +24,10 @@ is ahead of the canon, it is holding changes it has not proposed — its own deb
 its copies inherit. **Sideways propagation is what would split the canon into dialects, and
 refusing it is the system working.**
 
-So `.upstream` as a *route* is unnecessary. What remains worth recording is the provenance
-itself, and prose is the right place for it.
+So a second pointer as a *route* is unnecessary. The provenance itself is still worth recording,
+and it is recorded twice for two different readers: **`.blueprint` on the copy's role branch**,
+which the drift check reads, and **a line in the copy's `main` README**, which a person reads.
+See `../canon-identity/custody-is-the-roles.md` for the naming.
 
 ## The two READMEs, and only one of them exists today
 
