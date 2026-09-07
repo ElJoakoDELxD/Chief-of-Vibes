@@ -88,8 +88,15 @@ What gets done. What was already done lives in the journal, not here.
   `memory/corrections.md` is absent by a sound argument whose hole is that nothing tells a session
   the file may exist. And the custodian charter sits in memory, where a copy cannot inherit it.
   Proposal, measured and unimplemented, in
-  `memory/projects/universal-core/the vault that is not there/proposal.md`. Two releases, and
-  three decisions are the Principal's. Candidate for upstream.
+  `memory/projects/universal-core/the vault that is not there/proposal.md`. Candidate for upstream.
+- **Posts authorize functions, and the header carries both.** The Principal's correction of
+  07-09-2026 splits the word *role*: an agent **holds a post**, a post **authorizes functions**,
+  and a session exercises one. What it buys is a sentence a hook can enforce — a function no post
+  authorizes cannot be exercised. `posts/<post>.md` beside `knowledge/`, `posts:` in `state.md`,
+  and the header gains agent and post/function. The Custodian post authorizes projects aimed at
+  the template and the canon, and the agent may open one on finding a fault. Proposal in
+  `memory/projects/universal-core/posts and functions/proposal.md`. One release, not small. Two
+  decisions are the Principal's. Candidate for upstream.
 - **Write the knowledge entry: a cloud session cannot delete a ref, and a runner is the route.**
   §5 says an entry gets written the first time a procedure is worked out, not later. This session
   spent hours rediscovering something `stacks.yml` and `create-release.yml` had already solved,

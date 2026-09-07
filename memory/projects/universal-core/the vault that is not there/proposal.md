@@ -59,24 +59,10 @@ So the answer splits by kind:
 
 ## And the part that is about being an agent rather than remembering
 
-The role work settled on 07-09-2026 has no home either.
-
-`Custodian` is a **role**, Chief of Vibes is the agent, and the agent is the only one with access
-to that role. Role facts — agnostic, guardian, teacher, what it never does, which model may
-exercise it — were pulled out of `state.md` into a charter
-(`memory/projects/universal-core/canon-identity/the-custodian-role.md`). That charter sits in
-memory today, which is wrong twice: it is not what this agent *learned*, and a copy inherits the
-slot, so the location has to be template-shaped.
-
-**Proposed: `roles/<role>.md`, a template directory beside `knowledge/`.**
-
-- `knowledge/` is what a repository knows. `roles/` is what an agent may be.
-- The canon ships `roles/custodian.md`. A copy inherits the file and fills the slot with its own
-  occupant, exactly as §6 already describes for the template.
-- `state.md` gains `roles:`, the set this agent may assume, and a session declares which one it
-  acts in the way it already declares its workplace.
-- Then *what a custodian never does* is readable by something other than the agent's memory of
-  its own prose, which is the defect recorded in the backlog.
+**Superseded on 07-09-2026 by `../posts and functions/proposal.md`.** This section proposed a
+`roles/` directory. The Principal's correction split the word: an agent holds a **post**, and a
+post authorizes **functions**. The location, the frontmatter field, the header and the rule that
+the Custodian holds projects are all settled there, not here.
 
 ## Sizing, honestly
 
@@ -85,18 +71,11 @@ Two releases, not one.
 **First: the vault.** `system/5`, `system/7`, the onboard skill, `tools/hygiene.sh` and its bench.
 Small, and it stands on its own.
 
-**Second: the role.** `roles/`, the `roles:` field in §5's frontmatter, the session declaration in
-§9, the header, onboarding, `tools/pr-guard.sh` for the new template path, `tools/index.sh` and
-`tools/sections.sh` if they enumerate template directories, and the charter moving out of memory.
-Larger, and it touches the header every reply carries in every copy.
+**Second: the post and its functions.** Sized in `../posts and functions/proposal.md`.
 
 The second depends on nothing in the first. Order is a preference, not a constraint.
 
 ## What is the Principal's
 
-- Whether `roles/` is the right name and the right level. It is a new top-level template
-  directory and the canon has four.
-- Whether a session's declared role belongs in the header, which every copy pays for on every
-  reply, or somewhere cheaper.
-- Whether `projects/` staying absent is right, or whether the deliverables tree should be created
-  with the first project by the §7 gate itself.
+- Answered 07-09-2026: the naming, the header and the projects question all moved to
+  `../posts and functions/proposal.md`. What is left here is the vault alone.
