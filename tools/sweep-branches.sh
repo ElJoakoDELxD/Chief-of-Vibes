@@ -30,9 +30,21 @@
 # Reports by default and deletes only when told, because a sweep that deletes
 # on its first run gives nobody a chance to read what it chose.
 #
+# Retiring one named branch is the other half, and it is a different act. A
+# superseded vault is not contained in the default branch and never will be: its
+# notes were folded into another branch by hand, so nothing proves the move by
+# commit ancestry. What can be proved is content. This mode reports, per file,
+# whether the same bytes exist somewhere in the current branch's tree, and it
+# deletes only when somebody has read that list and asked again.
+#
+# It is deliberately not a general branch-deletion tool. The report is the point:
+# a file it cannot find elsewhere is a file the fold missed.
+#
 # Usage:  bash tools/sweep-branches.sh <remote> [--delete]
 #         bash tools/sweep-branches.sh origin            # what would go
 #         bash tools/sweep-branches.sh origin --delete   # let it go
+#         bash tools/sweep-branches.sh origin --retire <branch>            # what it would lose
+#         bash tools/sweep-branches.sh origin --retire <branch> --delete   # retire it
 
 set -uo pipefail
 
@@ -40,6 +52,72 @@ remote="${1:?usage: sweep-branches.sh <remote> [--delete]}"
 mode="${2:-}"
 doit=0
 [[ "${mode}" == "--delete" ]] && doit=1
+
+if [[ "${mode}" == "--retire" ]]; then
+  target="${3:?usage: sweep-branches.sh <remote> --retire <branch> [--delete]}"
+  doit=0
+  [[ "${4:-}" == "--delete" ]] && doit=1
+
+  current="$(git rev-parse --abbrev-ref HEAD)"
+  if [[ "${target}" == "${current}" ]]; then
+    echo "sweep-branches.sh: ${target} is the branch you are standing on." >&2
+    exit 1
+  fi
+  ref="${remote}/${target}"
+  if ! git rev-parse --verify --quiet "${ref}" >/dev/null; then
+    echo "sweep-branches.sh: no ${ref}." >&2
+    exit 1
+  fi
+
+  # Every blob reachable from HEAD, by content. A file is preserved when its
+  # bytes exist here under any path: a fold may rename, and renaming loses
+  # nothing.
+  here="$(git ls-tree -r HEAD --format='%(objectname)' | sort -u)"
+
+  # Template files are skipped, and that is not a shortcut. A branch's copy of a
+  # template file is a stale mirror of main by construction: the branch being
+  # retired sits at an older release, so most of them differ and none of those
+  # differences is a loss. What a fold can actually lose is the branch's own
+  # content, which is everything outside the template's paths.
+  template='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|CLOCKS|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon|\.blueprint)$|^(\.claude|\.github|tools|system|knowledge|posts|functions)/'
+
+  echo "Retiring ${ref}, measured against ${current}."
+  echo "Template paths are skipped: a retired branch mirrors an older release of them."
+  echo
+  missing=0
+  skipped=0
+  while IFS=$'\t' read -r blob path; do
+    [[ -n "${path}" ]] || continue
+    if printf '%s' "${path}" | grep -qE "${template}"; then
+      skipped=$(( skipped + 1 ))
+      continue
+    fi
+    if grep -qxF "${blob}" <<< "${here}"; then
+      printf 'kept      %s\n' "${path}"
+    else
+      printf 'NOT HERE  %s\n' "${path}"
+      missing=$(( missing + 1 ))
+    fi
+  done < <(git ls-tree -r "${ref}" --format='%(objectname)%x09%(path)')
+
+  echo
+  echo "${skipped} template file(s) skipped."
+  if (( missing )); then
+    echo "${missing} file(s) on ${target} have no copy of their bytes on ${current}."
+    echo "A rename is fine and is reported as kept. A file listed above is either"
+    echo "changed by the fold, which a person must confirm, or missed by it."
+  else
+    echo "Every file on ${target} exists byte for byte on ${current}."
+  fi
+
+  if (( ! doit )); then
+    echo "Reported only. Re-run with --delete once the list above has been read."
+    exit 0
+  fi
+
+  git push "${remote}" --delete "${target}" && echo "Retired ${target}."
+  exit $?
+fi
 
 default_branch="$(git symbolic-ref --quiet --short "refs/remotes/${remote}/HEAD" 2>/dev/null \
   | sed "s#^${remote}/##")"
