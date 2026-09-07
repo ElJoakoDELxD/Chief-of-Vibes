@@ -111,8 +111,32 @@ What gets done. What was already done lives in the journal, not here.
   learns about holding it is what would earn a change to the definition. Nothing to do until then.
   #propagate:07-09-2026
 
+- **Build the rail that refuses an inline identity override.** A `git` invocation carrying
+  `-c user.email=` or `-c user.name=` is refused. Not the email alone: the Principal ruled on
+  03-09-2026 that the agent observes its identity and never sets it, so the name override was
+  never legitimate either. Bench: both overrides blocked, a plain commit untouched, and a case
+  proving `Edit` and `Write` cannot reach it. **This is the first specification, restored** — a
+  middle version narrowed it to the email so it would not block the agent's own habit, which is
+  the rail bending around the defect it exists to catch. Folded from the second vault
+  07-09-2026. Candidate for upstream. #propagate:03-09-2026
+- **Run the weekly guard once, end to end, and publish the report.** Wired since 14-08-2026 and it
+  has never produced one. A schedule with no output is indistinguishable from a schedule that
+  never fired. The five steps are in `memory/projects/custodian/the weekly guard/`, with step 4
+  marked as the fiction it is until `tools/challenge.sh` exists or the step goes.
+
 ## Principal
 
+- **Hand the copy its one file.** The Principal named it privately on 03-09-2026 and this is a
+  public repository, so it is not written here. The copy's agent takes
+  `memory/projects/custodian/what belongs in the copy/handover to the copy.md` as a brief: the
+  funding commitment moves there and nothing else does. This agent does not write into another
+  repository, so the last step belongs to that agent in a session of its own.
+- ~~**Authorise the history rewrite.**~~ **No longer needed, and the reason is worth reading.**
+  Four commits carrying a personal address live **only** on the `Custodian` branch — verified
+  07-09-2026: none of them is an ancestor of this branch, and this branch's own 49 commits carry
+  the noreply identity. **Deleting that branch removes the only ref pointing at them**, which is
+  the deletion already asked for. No rewrite and no force-push. GitHub can still serve unreachable
+  objects by direct SHA for a while, so asking support to purge them is what finishes the job.
 - **An unlisted model is acting as the Custodian, and the gate that should have caught it was
   never built.** `memory/state.md` says `MODELS.md` on `main` names the approved models and
   `tools/models.sh` compares them against what the runtime served, and that *served something
