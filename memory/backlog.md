@@ -41,7 +41,7 @@ What gets done. What was already done lives in the journal, not here.
   evident intent without re-asking*. The agent standing there is the demo: meeting it is the
   point, being handed it is not. Fix: name it as the demo, offer the copy and the pull request,
   never continuation. Candidate for upstream. #propagate:07-09-2026
-- **Complete the vault** — *the hygiene half landed in 1.67.0; what is left is the tree.* §5 draws
+- **Complete the vault** — *hygiene landed in 1.67.0 and `memory/posts/` and `memory/functions/` in 1.69.0; what is left is `projects/` and the tree's own rule.* §5 draws
   a tree onboarding only partly builds: `memory/projects/` is
   required before anything creates it, `projects/` is named twice and built by nothing, and
   `memory/corrections.md` is absent by an argument whose hole is that nothing says the file may
@@ -49,14 +49,15 @@ What gets done. What was already done lives in the journal, not here.
   is what cost this session six hours. Measured in
   `memory/projects/universal-core/the vault that is not there/proposal.md`.
   Candidate for upstream. #propagate:07-09-2026
-- **Posts authorize functions, and the header carries both.** An agent holds a post, a post
+- ~~**Posts authorize functions, and the header carries both.**~~ **Landed 07-09-2026 in 1.69.0.** An agent holds a post, a post
   authorizes functions, a session exercises one — so *a function no post authorizes cannot be
   exercised* becomes a sentence a hook can enforce. `custodian` on the canon, `steward` in a copy,
   and they are not one post: agnosticism is the custodian's claim to judge a proposal and a copy's
   agent properly has an interest. Definitions ship, grants do not. Full design in
   `memory/projects/universal-core/posts and functions/proposal.md`.
   Candidate for upstream. #propagate:07-09-2026
-- **Rebuild a copy's `main` README** — *§6 now names the rule; the onboarding step is release C.*
+- ~~**Rebuild a copy's `main` README.**~~ **Landed 07-09-2026**: §6 in 1.68.0, the onboarding step
+  in 1.69.0.
   Original finding:
   It says *your first act is making your own copy* to somebody standing inside one. The agent
   rebuilds it with its Principal's specifications — whose repository, what for, which agent, and

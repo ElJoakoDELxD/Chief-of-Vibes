@@ -5,6 +5,7 @@ language: en
 timezone: UTC
 goal: Keep this template correct, and teach whoever wants to change it.
 branch: Chief-of-Vibes-Agent
+posts: [custodian]
 created: 2026-08-14
 ---
 
