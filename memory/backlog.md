@@ -105,6 +105,12 @@ What gets done. What was already done lives in the journal, not here.
   *candidate for upstream* with no dated tag is itself a finding**, because that is the state
   every one of these was in for a day. Candidate for upstream. #propagate:07-09-2026
 
+- **The catalogue is a form now, and the second post has never been filled.** `posts/steward.md`
+  reads `verified: not yet held anywhere`, which is true and is the honest state: no copy exists.
+  The first copy that adopts it fills its own `memory/posts/steward.md`, and what that agent
+  learns about holding it is what would earn a change to the definition. Nothing to do until then.
+  #propagate:07-09-2026
+
 ## Principal
 
 - **An unlisted model is acting as the Custodian, and the gate that should have caught it was
