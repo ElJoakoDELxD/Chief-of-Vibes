@@ -119,6 +119,17 @@ What gets done. What was already done lives in the journal, not here.
   the runner shape as the answer. Held out of pull request #78 deliberately, because widening a
   pull request under review costs the review. Candidate for upstream.
 
+- **A proposal does not stop where it is accepted, and nothing watches for it.** Set by the
+  Principal on 07-09-2026: work is tested outside its own `main`, proposed upward, and a copy does
+  not stop the proposal at its own main — it goes on to the canon's custodian. The merge into a
+  copy's `main` **creates** the obligation rather than discharging it, and local success is what
+  hides it: the backlog item closes and the journal says landed. `tools/candidates.sh` reads
+  `#propagate` tags in the backlog, so a change already merged is invisible to it. Proposed
+  sensor: `git log <canon>/main..origin/main` on a copy, the exact outstanding set, reported and
+  never blocking, silent on the canon. Written up in
+  `memory/projects/universal-core/what main is for/the proposal does not stop.md`.
+  Candidate for upstream.
+
 ## Principal
 
 - **An unlisted model is acting as the Custodian, and the gate that should have caught it was
