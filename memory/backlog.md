@@ -63,6 +63,16 @@ What gets done. What was already done lives in the journal, not here.
   it and the canon stays red. It needs a pull request into `main` with a version bump. Waiting on
   the Principal.
 
+- **A stranger on the canon is offered the canon's own agent.** In `.claude/hooks/anchor.sh` the
+  continuation line is appended after all three menu branches without regard to which one fired,
+  so the canon menu reads *no agent is created here and no work lands here* and then *existing
+  agent branches to offer continuing first: `Chief-of-Vibes-Agent`, `Custodian`*, closing with
+  *act on evident intent without re-asking* — which tells the session to check one out. The list
+  is right for a copy, where the Principal is returning to their own agent. On the canon the
+  person standing there is a visitor, and the two legitimate offers are a copy or a pull request.
+  Fix: on the canon, name the existing agent as the canon's rather than offering it, and let the
+  Principal who maintains it ask by name. Found 07-09-2026. Candidate for upstream.
+
 ## Principal
 
 - **An unlisted model is acting as the Custodian, and the gate that should have caught it was
