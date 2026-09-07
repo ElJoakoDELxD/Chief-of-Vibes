@@ -1,9 +1,10 @@
 ---
 thread: The branch graveyard
 date: 07-09-2026
-state: backup taken 07-09-2026. Deletion refused by GitHub with 403, so nothing was removed.
-verified: every SHA below read from `git ls-remote --heads origin` and tested with
-  `git merge-base --is-ancestor <sha> origin/main` in the same session.
+state: backup taken 07-09-2026. Deletion refused by the git proxy with 403, so nothing was removed.
+verified: every SHA read from `git ls-remote --heads origin` and tested with
+  `git merge-base --is-ancestor <sha> origin/main`. The deletion limit was tested from two
+  different checked-out branches, and read against Anthropic's published documentation.
 ---
 
 # Restore manifest for every branch on the canon
@@ -59,19 +60,57 @@ under other commits. That is a guess and it is marked as one. Read them before d
 
 ## Why nothing was deleted
 
-`git push origin --delete custodian/the-bench-that-expired` returned:
+`git push origin --delete <branch>` returns, every time:
 
 ```
 error: RPC failed; HTTP 403 curl 22 The requested URL returned error: 403
 ```
 
-The 403 came from GitHub and not from the agent proxy. The proxy's own
-`recentRelayFailures` stayed empty across the attempt, and its README says the proxy records
-its refusals there. An ordinary push in the same session succeeded immediately afterwards, and
-`git ls-remote` shows none of the three branches is protected. So the host, the network and the
-write credential all work. **Deleting a ref is what is refused.**
+**The refusal comes from the git proxy, and the earlier diagnosis in this file was wrong.**
+There are two proxies in a cloud session and they are not the same component.
 
-This corrects the diagnosis carried on the `Custodian` branch since 03-09-2026, which named the
-harness permission classifier. The block is at the remote, not local. It is the same class as
-the force-push refusal recorded there: **push allowed, force-push refused, ref delete refused**,
-which is a deliberate restriction on destructive ref updates rather than a misconfiguration.
+| Proxy | What it is | Reports failures where |
+|---|---|---|
+| agent egress proxy | HTTPS policy proxy on `127.0.0.1:40607`, CA bundle in `/root/.ccr/` | `/__agentproxy/status`, key `recentRelayFailures` |
+| **git proxy** | holds the git credentials **outside** the sandbox and authenticates on the session's behalf with scoped credentials | nowhere the session can read |
+
+The first reading here checked `recentRelayFailures`, found it empty, and concluded GitHub had
+refused. That checked the wrong proxy. The git proxy is the one in the path of a push and it
+does not report into that endpoint.
+
+Anthropic's own documentation states the credential arrangement and one half of the restriction:
+
+- *"git credentials and signing keys stay outside the sandbox, and a proxy authenticates on the
+  session's behalf with scoped credentials"* (Claude Code on the web, Security and isolation).
+- *"**Push protection**: `git push` works only against the session's current working branch;
+  cloning, fetching, and PR operations work normally"* (Configure cloud environments).
+
+## What was measured here, and it is the other half
+
+The branch-scoping rule above does not explain this refusal. Tested in this session:
+
+| Operation | Result |
+|---|---|
+| push a new branch, standing on it | allowed — `custodian/the-bench-that-expired` was created this way |
+| push an update to the working branch | allowed, repeatedly |
+| `--delete`, standing on another branch | **403** |
+| `--delete`, standing on the branch itself | **403** |
+| `--force` (recorded 03-09-2026, three attempts) | refused |
+
+Checking the branch out first was the test that separates the two explanations, and it failed
+the same way. So the limit is not which branch the push names. **The git proxy permits ref
+updates that create or advance a ref, and refuses ref updates that destroy one.** That half is
+not written on the documentation page that carries the branch rule.
+
+## What cannot fix it
+
+`Allow unrestricted git push`, the environment setting that lets a session push to any branch
+including the default one, is about **which branch** and not **which operation**. Nothing found
+in the documentation or the tracker grants ref deletion to a cloud session. A Bash permission
+rule in `settings.json` cannot reach it either, because the refusal is at the remote end of the
+push and not at a local prompt.
+
+## What does
+
+1. GitHub's own interface. *Delete branch* on each merged pull request, or the branch list.
+2. A local session using the Principal's own git credentials. The git proxy is not in that path.

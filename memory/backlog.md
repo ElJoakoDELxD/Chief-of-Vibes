@@ -97,8 +97,11 @@ What gets done. What was already done lives in the journal, not here.
   describes it as the doorman whose difficulty rotates with the ISO week and which the weekly
   guard tunes on the attempt log. Same class as the item above: memory describing machinery that
   was never built.
-- **Delete three merged work branches:** `custodian/the-bench-that-expired`,
-  `custodian/the-canon-quotes-no-one` and `custodio/la-salida-de-main`. §6 says the branch list is
-  live work, not a graveyard. Tried once on 07-09-2026 for the first of them and refused by the
-  harness permission classifier, the same block recorded for the other two. The agent does not
-  retry a guard until it yields. It is a one-click delete on each pull request page.
+- **Delete thirteen merged branches.** §6 says the branch list is live work, not a graveyard, and
+  thirteen branches are contained in `origin/main`, not the three the record named. Every SHA and
+  the restore command are in `memory/projects/custodian/the branch graveyard/restore manifest.md`.
+  **This agent cannot do it and no setting changes that.** The 403 comes from the git proxy, which
+  holds the git credentials outside the sandbox, and it refuses a ref deletion whichever branch is
+  checked out. Tested both ways on 07-09-2026. Push and branch creation work in the same session,
+  so it is the destructive ref update that is refused, not the credential and not the branch name.
+  The remedy is GitHub's own interface or a local session. **Principal's, and only by capability.**
