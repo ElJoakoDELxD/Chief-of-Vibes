@@ -40,3 +40,25 @@ commits carry a personal address in a public repository. Measured before touchin
 permission it needed, and the note about not depending on a scratchpad script all collapse into
 the deletion that was already asked for. What deletion does not do is reach objects GitHub may
 still serve by direct SHA, so asking support to purge them is what finishes it.
+
+## Retired 07-09-2026
+
+`Custodian` is gone. The retire report ran on a runner and matched the local one: **seven files
+kept byte for byte, two named** — `memory/backlog.md` and `memory/state.md`, the two merged by
+hand and confirmed. `tools/hygiene.sh` is silent: one agent, one vault.
+
+The five merged `custodian/*` work branches went with the ordinary sweep in the same pass. The
+branch list is six: this branch, `main`, and the four unmerged `claude/*` that carry commits
+`main` does not have.
+
+## What cost ten minutes, and it is not the tool
+
+The first two dispatches ran the **ordinary** sweep while reporting success. The workflow checks
+out the branch named in `against` and runs **that branch's** copy of the tool, and this branch had
+been synced but not pushed, so the runner read the pre-release version, which ignores an argument
+it does not know.
+
+**A workflow that runs a tool from a branch runs the pushed version of it.** Nothing in the
+output said so: the old tool accepted the extra argument silently and did the other thing. Worth a
+line in the workflow, and worth remembering that a green check on a run that did the wrong work
+is the failure mode this repository keeps finding.

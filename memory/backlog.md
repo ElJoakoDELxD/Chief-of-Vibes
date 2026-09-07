@@ -124,8 +124,18 @@ What gets done. What was already done lives in the journal, not here.
   never fired. The five steps are in `memory/projects/custodian/the weekly guard/`, with step 4
   marked as the fiction it is until `tools/challenge.sh` exists or the step goes.
 
+- **`sweep-branches.yml` should say that it runs the pushed tool.** Its retire mode checks out the
+  branch named in `against` and runs that branch's copy of `tools/sweep-branches.sh`. On 07-09-2026
+  two dispatches ran the ordinary sweep and reported success, because the branch had been synced
+  and not pushed and the older tool ignored an argument it did not know. A green check on a run
+  that did the wrong work. One comment in the workflow, batched into the next release.
+  Candidate for upstream. #propagate:07-09-2026
+
 ## Principal
 
+- ~~**Retire the second vault.**~~ **Done 07-09-2026.** Folded, reported, retired; the sensor is
+  silent. The history rewrite it was waiting on is no longer needed: the four commits carrying a
+  personal address lived only on that branch.
 - **Hand the copy its one file.** The Principal named it privately on 03-09-2026 and this is a
   public repository, so it is not written here. The copy's agent takes
   `memory/projects/custodian/what belongs in the copy/handover to the copy.md` as a brief: the
