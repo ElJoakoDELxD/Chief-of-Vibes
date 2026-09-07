@@ -68,10 +68,17 @@ What gets done. What was already done lives in the journal, not here.
   so the canon menu reads *no agent is created here and no work lands here* and then *existing
   agent branches to offer continuing first: `Chief-of-Vibes-Agent`, `Custodian`*, closing with
   *act on evident intent without re-asking* — which tells the session to check one out. The list
-  is right for a copy, where the Principal is returning to their own agent. On the canon the
-  person standing there is a visitor, and the two legitimate offers are a copy or a pull request.
-  Fix: on the canon, name the existing agent as the canon's rather than offering it, and let the
-  Principal who maintains it ask by name. Found 07-09-2026. Candidate for upstream.
+  is right for a copy, where the Principal is returning to their own agent.
+
+  On the canon it is wrong for a reason the identity file already states: **the agent there is the
+  demo**. It is what a newcomer meets, and it runs at the full capability of anything built on this
+  template, which is the whole point of showing it. Meeting it is correct. Being offered it *for
+  continuation* is not — that turns an exhibit into a stranger's workspace, and *act on evident
+  intent without re-asking* is what carries the session across. Nothing is created on the canon;
+  one agent already stands there, holding the custodian role and serving as the demonstration.
+
+  Fix: on the canon, name the agent as the demo and leave it readable, offer the copy and the pull
+  request, and never offer continuation. Found 07-09-2026. Candidate for upstream.
 
 ## Principal
 
