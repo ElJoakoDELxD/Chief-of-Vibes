@@ -1,6 +1,6 @@
 ---
 function: Sync the template
-verified: run on the canon's agent branch through releases 1.63.0 to 1.68.0
+verified: exercised through a run of releases
 ---
 
 # Sync the template

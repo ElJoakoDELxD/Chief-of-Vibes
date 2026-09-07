@@ -1,6 +1,6 @@
 ---
 function: Propose upstream
-verified: the canon's own releases were proposed this way; no copy has yet sent one back
+verified: exercised. Its receiving half has not run anywhere yet.
 ---
 
 # Propose upstream
