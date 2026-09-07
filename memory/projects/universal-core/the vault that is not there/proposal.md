@@ -56,6 +56,7 @@ So the answer splits by kind:
 | `projects/` | **leave absent, and say so in §7** | It appears when the first project passes its brief gate. An empty deliverables tree is a promise, not a product. What is missing is one sentence saying the absence is normal. |
 | `memory/corrections.md` | **a sensor, not a file** | `tools/hygiene.sh` already reports memory shape. It should know the file may be absent and say so where a session will read it, rather than leaving the path discoverable only through §5. |
 | `memory/handoff/` | **nothing** | The handoff skill owns its creation and does it correctly. |
+| a second vault for one agent | **a fourth check in `tools/hygiene.sh`** | Two branches carrying `memory/state.md` is what cost this session six hours, and each branch read correctly on its own, so only a check that looks across branches can see it. One `git ls-remote` and a `git cat-file -e` per head. Reports, never blocks. |
 
 ## And the part that is about being an agent rather than remembering
 
@@ -68,8 +69,9 @@ the Custodian holds projects are all settled there, not here.
 
 Two releases, not one.
 
-**First: the vault.** `system/5`, `system/7`, the onboard skill, `tools/hygiene.sh` and its bench.
-Small, and it stands on its own.
+**First: the vault.** `system/5`, `system/7`, the onboard skill, `tools/hygiene.sh` and its bench —
+the corrections sensor, the duplicate-vault check, and the stale comment claiming the canon has no
+`memory/` to measure, which is false now that it has two. Small, and it stands on its own.
 
 **Second: the post and its functions.** Sized in `../posts and functions/proposal.md`.
 

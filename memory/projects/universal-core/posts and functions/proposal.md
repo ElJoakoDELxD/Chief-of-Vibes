@@ -111,8 +111,54 @@ enumerates template directories, and `CLAUDE.md` rule 2, which quotes the header
 
 The vault proposal in the sibling folder is independent and can go first or second.
 
-## What is still the Principal's
+## Both open decisions, resolved 07-09-2026
 
-- `posts/` as one directory, against `posts/` and `functions/` as two.
-- Whether the agent's name earns its place in the header on the argument above, or whether the
-  branch field goes instead and the agent replaces it.
+### One directory, with a written trigger for the second
+
+**`posts/` alone.** The objection worth answering is drift: two posts describing the same
+function in two files is the defect §5 names about two memories. It does not bite yet. The canon
+ships one post file and a copy inherits **that file**, not a transcription of it, so nothing is
+written twice until a copy defines a post of its own with an overlapping function. Splitting then
+is a mechanical move of bodies out and references in, and starting with one directory makes it no
+harder.
+
+So the trigger goes in writing, and the decision does not get re-argued from taste:
+
+> Split `functions/` out of `posts/` the day a second post authorizes a function the first
+> already defines.
+
+### The header keeps the branch, adds the agent, and the agent is not the check
+
+**Keep the branch.** `CLAUDE.md` rule 1 makes it operational: a session on `main` must leave, and
+the header is what shows where it stands. Replacing it with the agent removes a rail.
+
+**Add the agent, on honest grounds.** The claim made earlier the same day — that an agent field
+would have caught this session reading a superseded vault — **is wrong, and it is withdrawn.**
+Both `state.md` files were internally consistent. The stale one on `Chief-of-Vibes-Agent` names
+`branch: Chief-of-Vibes-Agent`, the live one on `Custodian` names `branch: Custodian`, and no
+field contradicted another. A header printing agent beside branch would have shown
+`Custodian · Chief-of-Vibes-Agent`, which reads as wrong only to somebody who already knows
+*Custodian* is a post and not an agent. It would not have shown the second vault at all.
+
+What the field is actually worth is smaller and still worth one short column: a reply that says
+which agent wrote it is readable by somebody who does not know which branch belongs to whom.
+
+**The post and function field carries the real weight.** It is the only proof a session declared
+what it was authorized to do, exactly as `model·effort` is the only proof the triage ran. A reply
+with no function on it was written by a session that never asked whether its post allowed the
+work.
+
+### And the thing that actually catches a duplicated vault is a sensor
+
+Two branches carrying a `memory/state.md` for one agent is what happened, and no header field
+sees it, because each branch reads correctly on its own. `tools/hygiene.sh` is where it belongs:
+it already reports three ways memory goes out of sync, the anchor hook already runs it at session
+start, and §5 already calls a second memory drifting out of sync a defect.
+
+**Proposed fourth check: more than one remote branch carries `memory/state.md`.** One line of
+`git ls-remote` and a `git cat-file -e` per head. It reports and never blocks, like the other
+three. It belongs in the vault release rather than this one, because it is a sensor and not a
+post.
+
+Its comment also needs a correction while somebody is in the file: it says the sensor prints
+nothing outside a copy *because the canon has no `memory/` to measure*. The canon has two.
