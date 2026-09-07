@@ -1,7 +1,8 @@
 ---
 thread: Canon identity
 date: 06-09-2026
-state: plan written 06-09-2026, unimplemented. Awaiting the Principal's go.
+state: file layout SUPERSEDED 07-09-2026 by custody-is-the-roles.md. The defects it traces hold;
+  its .canon-stays-on-main premise does not. Do not execute as written.
 reads: proposal-from-lab.md, custodian-verdict.md
 role: planner (orchestrate gear two). The executor reads this file, not the conversation.
 ---
