@@ -30,13 +30,23 @@ if [[ -z "${repo}" ]]; then
     | sed -E 's#^.*[:/]([^/]+/[^/]+?)(\.git)?/?$#\1#')" || repo=""
 fi
 
-# `.canon` names the canon as owner/repo, and the comparison is case-insensitive
-# because GitHub treats owner/repo that way.
+# Custody is held with the post, not shipped in the template, so `.canon` lives
+# on the branch that holds it and never reaches main (section 6). A checkout of
+# a pull request's head is template content, so this tool cannot read it here.
+#
+# That is the point rather than a gap. The version question below is a judgment
+# about whether a change is a release, made by whoever is writing it, on a branch
+# where the marker is on disk. What this guard must never do is answer it anyway:
+# a missing marker used to mean `is_canon=0`, which printed *no bump required* and
+# went green, reporting a check that had not run (section 3).
 lower() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }
 canon="$(lower "$(tr -d '[:space:]' < .canon 2>/dev/null)")"
 here="$(lower "${repo}")"
+have_marker=0
+[[ -n "${canon}" ]] && have_marker=1
 is_canon=0
-[[ -n "${canon}" && "${canon}" == "${here}" ]] && is_canon=1
+[[ "${have_marker}" == 1 && "${canon}" == "${here}" ]] && is_canon=1
+
 
 fail=0
 
@@ -48,7 +58,7 @@ fail=0
 # distinction is a judgment about content, so it belongs to the reviewer and not
 # to a path pattern. This guard checks the path and says nothing about the
 # entry.
-allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|CLOCKS|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools|system|knowledge)/'
+allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|CLOCKS|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore)$|^(\.claude|\.github|tools|system|knowledge)/'
 scope='outside the template'
 
 while IFS= read -r -d '' f; do
@@ -64,6 +74,13 @@ done < <(git diff -z --name-only "${base}...${head}")
 # improves itself first and proposes upstream in a batch, so its own main moves
 # while the version stays where the canon put it. Asking a copy for a bump would
 # make it invent numbers the canon never issued.
+if (( ! have_marker )); then
+  echo "Version: NOT ASKED HERE. Custody lives with the post, so this checkout carries no marker"
+  echo "         and cannot tell the canon from a copy. The question is answered on the branch"
+  echo "         the change was written on, before the pull request exists (SYSTEM.md section 6)."
+  exit "${fail}"
+fi
+
 if (( ! is_canon )); then
   echo "Version: a copy does not carry the master version; no bump required."
   exit "${fail}"

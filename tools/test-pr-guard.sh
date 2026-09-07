@@ -43,7 +43,9 @@ build() {
   git init -q .
   git config user.email bench@example.com
   git config user.name bench
-  printf '%s\n' "${canon}" > .canon
+  # An empty slug builds a repository with no marker, which is what a checkout of
+  # a pull request's head looks like now that custody lives with the post.
+  [[ -n "${canon}" ]] && printf '%s\n' "${canon}" > .canon
   printf '**Version %s.** spec\n' "${version}" > SYSTEM.md
   git add -A && git commit -q -m base && git tag base
   cd - >/dev/null
@@ -142,6 +144,27 @@ build canon-noline 1.0.0 "${CANON}"
 printf 'no version here\n' > "${tmp}/canon-noline/SYSTEM.md"; commit canon-noline
 out="$(run canon-noline "${CANON}")"
 check "a missing version line is named, not ignored" "carries no '**Version X.Y.Z.**' line" "${out}"
+
+# --- no marker: the question is not asked here -------------------------------
+# Custody lives with the post, so a checkout of a pull request's head carries no
+# marker. The guard used to read that as "not the canon" and print *no bump
+# required*, which reported a check that had not run (SYSTEM.md section 3). This
+# is the case that matters most, because its old failure was a green check.
+build nomarker 1.0.0 ""
+printf 'a line\n' >> "${tmp}/nomarker/SYSTEM.md"; commit nomarker
+out="$(run nomarker "${CANON}")"
+check        "with no marker the version question says it did not run" "NOT ASKED HERE" "${out}"
+check_absent "and never answers as though it were a copy" "no bump required" "${out}"
+check        "the path half still runs, needing no identity" "every changed file is a template file" "${out}"
+check_code   "and a clean-path change still exits 0" 0 "$(code nomarker "${CANON}")"
+
+# .canon is not a template path any more, so a pull request putting it back is
+# rejected like any other file that does not belong on main.
+build canonback 1.0.0 ""
+printf '**Version 1.1.0.** spec\n' > "${tmp}/canonback/SYSTEM.md"
+printf 'Owner/Canon\n' > "${tmp}/canonback/.canon"; commit canonback
+out="$(run canonback "${CANON}")"
+check "putting .canon back on main is rejected" ".canon is outside the template" "${out}"
 
 if (( fail )); then
   echo "tools/pr-guard.sh: bench FAILED"
