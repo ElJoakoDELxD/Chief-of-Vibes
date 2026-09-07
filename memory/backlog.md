@@ -13,15 +13,6 @@ What gets done. What was already done lives in the journal, not here.
   version rail on the canon silently — a fail-open. No longer blocking: the lineage plan keeps
   `.canon` at one line. Found 06-09-2026 while tracing the laboratory proposal
   (`memory/projects/universal-core/canon-identity/custodian-verdict.md`). Candidate for upstream. #propagate:06-09-2026
-- ~~**A fork blinds itself.**~~ **Landed 07-09-2026 in 1.68.0.** `.blueprint` names where the
-  template comes from and the drift check reads it, so a fork editing a marker no longer silences
-  the comparison. Kept one line because the reasoning behind it is worth finding: `.canon` was read as
-  holding two facts, so a copy of a copy was said to sync against the wrong repository. The
-  Principal settled it on 07-09-2026: **every generation proposes to the blueprint and none proxies
-  through its parent**, so syncing from the root is correct and an intermediate that is ahead is
-  holding its own unproposed debt. What survives is the fork: editing `.canon` to your own slug
-  makes `origin` match it, `anchor.sh` skips the drift check entirely, and §1's promise that
-  silence means parity turns into a fabricated reading. Candidate for upstream. #propagate:06-09-2026
 - **The role is declared where nothing reads it.** §5 closes `state.md`'s frontmatter at seven
   fields and none names what the branch is for, so every constraint the custodian states about
   itself is prose no hook reads. Settled by the Principal on 07-09-2026 into posts and functions;
@@ -34,13 +25,6 @@ What gets done. What was already done lives in the journal, not here.
   somebody runs `tools/sync.sh`. On 06-09-2026 this branch was at 1.62.0 against main's 1.64.0,
   four commits behind, and a whole plan was written against the stale tree before an unrelated
   question surfaced it. Synced. The sensor is still missing. Candidate for upstream. #propagate:07-09-2026
-- ~~**A stranger on the canon is offered the canon's own agent.**~~ **Landed 07-09-2026 in
-  1.68.0.** Original finding: `.claude/hooks/anchor.sh` appends
-  the continuation line after all three menu branches without regard to which fired, so the canon
-  menu says no agent is created here and then offers its own agent branches, closing with *act on
-  evident intent without re-asking*. The agent standing there is the demo: meeting it is the
-  point, being handed it is not. Fix: name it as the demo, offer the copy and the pull request,
-  never continuation. Candidate for upstream. #propagate:07-09-2026
 - **Complete the vault** — *hygiene landed in 1.67.0 and `memory/posts/` and `memory/functions/` in 1.69.0; what is left is `projects/` and the tree's own rule.* §5 draws
   a tree onboarding only partly builds: `memory/projects/` is
   required before anything creates it, `projects/` is named twice and built by nothing, and
@@ -49,33 +33,6 @@ What gets done. What was already done lives in the journal, not here.
   is what cost this session six hours. Measured in
   `memory/projects/universal-core/the vault that is not there/proposal.md`.
   Candidate for upstream. #propagate:07-09-2026
-- ~~**Posts authorize functions, and the header carries both.**~~ **Landed 07-09-2026 in 1.69.0.** An agent holds a post, a post
-  authorizes functions, a session exercises one — so *a function no post authorizes cannot be
-  exercised* becomes a sentence a hook can enforce. `custodian` on the canon, `steward` in a copy,
-  and they are not one post: agnosticism is the custodian's claim to judge a proposal and a copy's
-  agent properly has an interest. Definitions ship, grants do not. Full design in
-  `memory/projects/universal-core/posts and functions/proposal.md`.
-  Candidate for upstream. #propagate:07-09-2026
-- ~~**Rebuild a copy's `main` README.**~~ **Landed 07-09-2026**: §6 in 1.68.0, the onboarding step
-  in 1.69.0.
-  Original finding:
-  It says *your first act is making your own copy* to somebody standing inside one. The agent
-  rebuilds it with its Principal's specifications — whose repository, what for, which agent, and
-  where it came from. Provenance is recorded twice for two readers: that README line for a person,
-  and `.blueprint` on the role's branch for the drift check. `README.md` is the one template file that
-  becomes identity the moment a copy exists. The second hop already carves it out of the sync and
-  **the first hop does not**, so a rebuilt README is overwritten by the next template pull request.
-  Written up in `memory/projects/universal-core/what main is for/the readme is the filled form.md`.
-  Candidate for upstream. #propagate:07-09-2026
-- ~~**Put the membership test and the upward flow into §6.**~~ **Landed 07-09-2026 in 1.68.0**,
-  with the three-part gate and the README rule. Original entry: The test — *does a fresh copy need
-  this to become itself* — is written nowhere, so the rule survives as a path list that cannot
-  answer for a path nobody has proposed yet. And it is a rule about **every** `main`, not the
-  canon's, because any `main` can be copied. With it: everything is proven outside its own `main`
-  and then proposed upward; a change that lands in a copy gets a verdict out loud rather than a
-  default; the gate upward binds on all three of agnostic, an improvement, and verified. Written
-  up in `memory/projects/universal-core/what main is for/the membership test.md`. Candidate for
-  upstream. #propagate:07-09-2026
 - **Write the knowledge entry: a cloud session cannot delete a ref, and a runner is the route.**
   §5 says an entry gets written the first time a procedure is worked out, not later. This session
   spent hours rediscovering something `stacks.yml` and `create-release.yml` had already solved,
@@ -94,16 +51,6 @@ What gets done. What was already done lives in the journal, not here.
   never blocking, silent on the canon. Written up in
   `memory/projects/universal-core/what main is for/the proposal does not stop.md`.
   Candidate for upstream. #propagate:07-09-2026
-
-- ~~**An untagged candidate is invisible, and prose about the tag is not.**~~ **Landed 07-09-2026
-  in 1.67.0.** Kept one line because the sibling item below still points at it: On 07-09-2026
-  `tools/candidates.sh` reported exactly one item waiting, undated. The truth was **eleven**
-  waiting and **none** tagged: the one it found was a sentence describing the sensor, because it
-  greps the bare tag name rather than the dated form. Both directions are wrong — a real candidate
-  with no tag never appears, and a mention of the tag becomes an item. Fixed here by tagging all
-  eleven. The tool still needs the narrower match, and a second check: **a backlog item saying
-  *candidate for upstream* with no dated tag is itself a finding**, because that is the state
-  every one of these was in for a day. Candidate for upstream. #propagate:07-09-2026
 
 - **The catalogue is a form now, and the second post has never been filled.** `posts/steward.md`
   reads `verified: not yet held anywhere`, which is true and is the honest state: no copy exists.
@@ -133,22 +80,14 @@ What gets done. What was already done lives in the journal, not here.
 
 ## Principal
 
-- ~~**Retire the second vault.**~~ **Done 07-09-2026.** Folded, reported, retired; the sensor is
-  silent. The history rewrite it was waiting on is no longer needed: the four commits carrying a
-  personal address lived only on that branch.
 - **Hand the copy its one file.** The Principal named it privately on 03-09-2026 and this is a
   public repository, so it is not written here. The copy's agent takes
   `memory/projects/custodian/what belongs in the copy/handover to the copy.md` as a brief: the
   funding commitment moves there and nothing else does. This agent does not write into another
   repository, so the last step belongs to that agent in a session of its own.
-- ~~**Authorise the history rewrite.**~~ **No longer needed, and the reason is worth reading.**
-  Four commits carrying a personal address live **only** on the `Custodian` branch — verified
-  07-09-2026: none of them is an ancestor of this branch, and this branch's own 49 commits carry
-  the noreply identity. **Deleting that branch removes the only ref pointing at them**, which is
-  the deletion already asked for. No rewrite and no force-push. GitHub can still serve unreachable
-  objects by direct SHA for a while, so asking support to purge them is what finishes the job.
-- **An unlisted model is acting as the Custodian, and the gate that should have caught it was
-  never built.** `memory/state.md` says `MODELS.md` on `main` names the approved models and
+- ~~**An unlisted model is acting as the Custodian.**~~ **Decided and built 07-09-2026.** Opus
+  holds this post, by the Principal's approval, and `tools/models.sh` shipped in 1.72.0. Original
+  finding: `memory/state.md` says `MODELS.md` on `main` names the approved models and
   `tools/models.sh` compares them against what the runtime served, and that *served something
   unlisted, this agent says so and stops*. Neither file exists — not on this branch, not on
   `main`. The only model approved in that prose is `claude-sonnet-5`, for the scheduled guard.
