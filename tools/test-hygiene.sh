@@ -156,6 +156,19 @@ check_absent "a placed and verified entry is left alone" "tema/bien.md" "${out}"
   && echo "ok   the knowledge checks run without memory/" \
   || { echo "FAIL the knowledge checks run without memory/"; fail=1; }
 
+# --- the agent's own posts and functions are not intruders --------------------
+# Section 5 names memory/posts/ and memory/functions/: a post this agent wrote and
+# has not proposed into the catalogue yet. An intruder check that did not know
+# them would report the vault's own shape.
+build "${tmp}/ownposts" 2026-08-01
+printf 'x\n' > "${tmp}/ownposts/memory/backlog.md"
+mkdir -p "${tmp}/ownposts/memory/posts" "${tmp}/ownposts/memory/functions"
+printf -- '---\npost: Reviewer\n---\n' > "${tmp}/ownposts/memory/posts/reviewer.md"
+printf -- '---\nfunction: Read a diff\n---\n' > "${tmp}/ownposts/memory/functions/read.md"
+out="$(run "${tmp}/ownposts")"
+check_absent "memory/posts/ is not an intruder" "memory/posts/ is not a folder" "${out}"
+check_absent "memory/functions/ is not an intruder" "memory/functions/ is not a folder" "${out}"
+
 # --- corrections.md, named rather than created -------------------------------
 # Section 5 refuses to create it in advance and is right. What the absence needs
 # is for the path to be said out loud, because section 9 says to read the file

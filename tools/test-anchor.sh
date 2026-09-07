@@ -17,7 +17,7 @@ trap 'rm -rf "${tmp}"' EXIT
 
 mkdir -p "${tmp}/tools" "${tmp}/memory/handoff"
 cp "${here}/now.sh" "${tmp}/tools/now.sh"
-printf -- '---\ntimezone: UTC\n---\n' > "${tmp}/memory/state.md"
+printf -- '---\nagent: Bench Agent\ntimezone: UTC\nposts: [steward]\n---\n' > "${tmp}/memory/state.md"
 printf '# a thread\n' > "${tmp}/memory/handoff/landing page rewrite-handoff.md"
 
 fails=0
@@ -72,6 +72,15 @@ rm -f "${tmp}/memory/handoff/"*.md
 out="$(run SessionStart '{"hook_event_name":"SessionStart","source":"clear"}')"
 check want     "initialUserMessage"                 "a cleared start with no note still hands back"
 check want     "no note"                            "the hand-back says no thread was in flight"
+
+# --- the agent and its posts reach the header --------------------------------
+# The header names the agent beside the branch. Section 9 dropped that field once
+# on the reasoning that the branch carried it, and 07-09-2026 falsified it: a
+# session worked a day from a superseded vault while every file read correctly.
+out="$(run UserPromptSubmit '{}')"
+check want "Agent: Bench Agent"      "the agent is read from the vault, never remembered"
+check want "Posts held: [steward]"   "and the posts it holds ride with it"
+check want "post/function"           "with the instruction to declare which one is exercised"
 
 rm -f "${tmp}/memory/state.md"
 out="$(run SessionStart '{"hook_event_name":"SessionStart","source":"clear"}')"
