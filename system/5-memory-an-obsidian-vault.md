@@ -67,6 +67,15 @@ into the catalogue is the same gate as `knowledge/`: only what is agnostic, and 
 an agent has **held the post and exercised its functions**, never that somebody judged it useful.
 A catalogue of professional titles nobody has done is prose wearing capability's format.
 
+**A filled form is identity. An empty form is direction.** That is the rule the two of them
+answer to, and it decides more than posts. Only an empty form may live on `main`, and only when a
+fresh copy needs it to become itself (§6). A form that has been filled belongs to the agent, and
+when the empty one is needed on `main` as well, the form stays there and **the filling moves**.
+
+So a `verified:` line in the catalogue says what was run and never whose repository ran it, on
+which day, or under which number. The evidence is the gate (§5); the account of it is identity,
+and identity goes in the agent's own `memory/posts/` beside the work it describes.
+
 The two shapes are fixed:
 
 ```markdown

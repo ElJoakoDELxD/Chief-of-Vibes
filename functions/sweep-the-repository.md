@@ -1,6 +1,6 @@
 ---
 function: Sweep the repository
-verified: twenty branches became seven on the canon, 07-09-2026
+verified: exercised, reducing a branch list to what was still live
 ---
 
 # Sweep the repository

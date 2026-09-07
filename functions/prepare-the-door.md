@@ -1,6 +1,6 @@
 ---
 function: Prepare the door
-verified: exercised on pull requests 77 to 80 of the canon, 07-09-2026
+verified: exercised through a run of releases
 ---
 
 # Prepare the door
