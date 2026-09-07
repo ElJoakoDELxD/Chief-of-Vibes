@@ -41,6 +41,11 @@ What gets done. What was already done lives in the journal, not here.
   PreToolUse warning catches it before the loss; it warns rather than blocks, since the agent's
   own `README.md` is a legitimate exception `sync.sh` already carves out.
 
+  **Superseded in shape by the Principal's correction of 07-09-2026**: Custodian is a role, not
+  an agent, and Chief of Vibes is the only agent with access to it. So the field is `roles:`, the
+  set an agent may assume, and a session declares which one it acts in — not `role:` as a property
+  of a branch. See `memory/projects/universal-core/canon-identity/role-is-not-agent.md`.
+
   Prerequisite for an instance generating its own custodian. A second plan, not part of
   `plan-lineage.md`. Candidate for upstream.
 - **Nothing detects an unsynced agent branch.** The session-start drift check covers hop one,
