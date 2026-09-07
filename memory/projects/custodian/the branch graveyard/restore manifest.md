@@ -114,3 +114,26 @@ push and not at a local prompt.
 
 1. GitHub's own interface. *Delete branch* on each merged pull request, or the branch list.
 2. A local session using the Principal's own git credentials. The git proxy is not in that path.
+
+## The sweep, ready to paste in a local session
+
+Run from a clone of this repository, on a machine whose git credentials are the Principal's own.
+It refuses to touch anything `main` does not already contain, so the safety check runs again at
+the moment of deletion rather than resting on this file being current.
+
+```bash
+git fetch origin --prune
+for b in $(git ls-remote --heads origin | sed 's#.*refs/heads/##' \
+           | grep -vE '^(main|Custodian|Chief-of-Vibes-Agent)$'); do
+  sha=$(git rev-parse "origin/$b")
+  if git merge-base --is-ancestor "$sha" origin/main; then
+    echo "deleting $b  $sha"
+    git push origin --delete "$b"
+  else
+    echo "keeping  $b  (not contained in main)"
+  fi
+done
+```
+
+Expected: thirteen deleted, four kept. The four kept are the unmerged `claude/*` branches listed
+above, and they stay for a person to read.
