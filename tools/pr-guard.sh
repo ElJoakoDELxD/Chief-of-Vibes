@@ -30,13 +30,30 @@ if [[ -z "${repo}" ]]; then
     | sed -E 's#^.*[:/]([^/]+/[^/]+?)(\.git)?/?$#\1#')" || repo=""
 fi
 
-# `.canon` names the canon as owner/repo, and the comparison is case-insensitive
-# because GitHub treats owner/repo that way.
+# Custody is held with the post, not shipped in the template, so `.canon` lives
+# on the branch that holds it and never reaches main (section 6). A checkout of
+# a pull request's head is template content, so this tool cannot read it here.
+#
+# That is the point rather than a gap. The version question below is a judgment
+# about whether a change is a release, made by whoever is writing it, and it is
+# asked by running this tool **from the branch that holds the post**, against the
+# two refs:
+#
+#     bash tools/pr-guard.sh origin/main <work-branch> <owner/repo>
+#
+# The marker is then on disk, where identity is read, while the refs being
+# diffed carry none — which is also why no branch name is hard-coded anywhere. What this guard must never do is answer it anyway:
+# a missing marker used to mean `is_canon=0`, which printed *no bump required* and
+# went green, reporting a check that had not run (section 3).
 lower() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }
-canon="$(lower "$(tr -d '[:space:]' < .canon 2>/dev/null)")"
+canon=""
+[[ -f .canon ]] && canon="$(lower "$(tr -d '[:space:]' < .canon)")"
 here="$(lower "${repo}")"
+have_marker=0
+[[ -n "${canon}" ]] && have_marker=1
 is_canon=0
-[[ -n "${canon}" && "${canon}" == "${here}" ]] && is_canon=1
+[[ "${have_marker}" == 1 && "${canon}" == "${here}" ]] && is_canon=1
+
 
 fail=0
 
@@ -59,11 +76,28 @@ while IFS= read -r -d '' f; do
 done < <(git diff -z --name-only "${base}...${head}")
 (( fail )) || echo "Paths: every changed file is a template file."
 
+# `.canon` stays an allowed *path* so the release that removed it could remove
+# it. What is forbidden is the file existing on main: custody belongs to the post
+# that holds it and never ships in the template (section 6). Stating the rule as
+# presence rather than as an omission from the list above is what lets the error
+# say why.
+if git cat-file -e "${head}:.canon" 2>/dev/null; then
+  echo "REJECT: .canon is on main. Custody lives with the post, on the branch that holds it, and never ships (SYSTEM.md section 6)."
+  fail=1
+fi
+
 # --- 2. a template change is a release ----------------------------------------
 # The canon holds the master version, and a copy holds a superset of it. A copy
 # improves itself first and proposes upstream in a batch, so its own main moves
 # while the version stays where the canon put it. Asking a copy for a bump would
 # make it invent numbers the canon never issued.
+if (( ! have_marker )); then
+  echo "Version: NOT ASKED HERE. Custody lives with the post, so this checkout carries no marker"
+  echo "         and cannot tell the canon from a copy. The question is answered on the branch"
+  echo "         the change was written on, before the pull request exists (SYSTEM.md section 6)."
+  exit "${fail}"
+fi
+
 if (( ! is_canon )); then
   echo "Version: a copy does not carry the master version; no bump required."
   exit "${fail}"

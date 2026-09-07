@@ -5,7 +5,7 @@
 # fires on the wrong start talks over work in flight, which is worse than
 # never firing at all (SYSTEM.md section 8).
 #
-# The fixture carries no .canon, so the drift check does not run and the bench
+# The fixture carries neither marker, so the drift check does not run and the bench
 # makes no network call.
 #
 # Usage:  bash tools/test-anchor.sh
@@ -62,11 +62,11 @@ out="$(run SessionStart '{"hook_event_name":"SessionStart"}')"
 check want-not "initialUserMessage"                 "a runtime that sends no source is not read as a clear"
 
 # §1 promises that silence from the drift check means parity. A fixture with
-# no .canon cannot be compared against anything, so silence there would be the
+# no marker cannot be compared against anything, so silence there would be the
 # table lying. It says the check did not run instead.
 out="$(run SessionStart '{"hook_event_name":"SessionStart","source":"startup"}')"
-check want "drift check: UNAVAILABLE"               "no .canon says the check did not run, never nothing"
-check want "no .canon file, or no origin remote"    "the unavailable line names why it could not run"
+check want "drift check: UNAVAILABLE"               "no marker says the check did not run, never nothing"
+check want "no .blueprint or .canon on this branch" "the unavailable line names why it could not run"
 
 rm -f "${tmp}/memory/handoff/"*.md
 out="$(run SessionStart '{"hook_event_name":"SessionStart","source":"clear"}')"
@@ -96,7 +96,7 @@ copy_at() {
   cp "${here}/clocks.sh" "${copy_dir}/tools/clocks.sh"
   ( cd "${copy_dir}" && git init -q .     && git remote add origin https://github.com/someone/their-copy ) >/dev/null 2>&1
   printf 'Owner/Canon
-' > "${copy_dir}/.canon"
+' > "${copy_dir}/.blueprint"
   printf '**Version %s.** spec
 ' "$1" > "${copy_dir}/SYSTEM.md"
   printf -- '---
@@ -118,6 +118,34 @@ copy_at 1.40.0
 out="$(drift_run 2>/dev/null)"
 check want     "this copy is BEHIND"  "a copy behind the canon is told it is behind"
 check want     "offer to sync"        "and the sync is offered"
+
+# --- the menu, where no agent lives on this branch ----------------------------
+# The canon has an agent and it is the demonstration. A visitor meeting it is the
+# point; being offered it for continuation is not, and "act on evident intent"
+# used to carry a stranger straight into somebody else's vault.
+menu_dir="${tmp}/menu"
+menu_at() {  # menu_at <marker-file> <slug> <origin-url>
+  rm -rf "${menu_dir}"; mkdir -p "${menu_dir}/tools"
+  cp "${here}/now.sh" "${menu_dir}/tools/now.sh"
+  cp "${here}/clocks.sh" "${menu_dir}/tools/clocks.sh"
+  ( cd "${menu_dir}" && git init -q . && git remote add origin "$3" ) >/dev/null 2>&1
+  [[ -n "$1" ]] && printf '%s\n' "$2" > "${menu_dir}/$1"
+  printf -- '---\ntimezone: UTC\n---\n' > "${menu_dir}/state-not-here.md"
+}
+
+menu_at .canon "Owner/Canon" "https://github.com/Owner/Canon"
+out="$( CLAUDE_PROJECT_DIR="${menu_dir}" bash "${here}/../.claude/hooks/anchor.sh" UserPromptSubmit </dev/null )"
+check want     "runs on the canon"          "the canon is recognised from its own marker"
+check want-not "offer continuing first"     "and a visitor is never offered the agent standing there"
+
+menu_at .blueprint "Owner/Canon" "https://github.com/Someone/Their-Copy"
+out="$( CLAUDE_PROJECT_DIR="${menu_dir}" bash "${here}/../.claude/hooks/anchor.sh" UserPromptSubmit </dev/null )"
+check want "this repository is derived"     "a .blueprint says the repository is derived"
+check want "owner/canon"                    "and names the blueprint it came from"
+
+menu_at "" "" "https://github.com/Someone/Their-Copy"
+out="$( CLAUDE_PROJECT_DIR="${menu_dir}" bash "${here}/../.claude/hooks/anchor.sh" UserPromptSubmit </dev/null )"
+check want "could not be determined"        "neither marker leaves the question open, never guessed"
 
 if (( fails )); then
   printf '\n%d failed\n' "${fails}"; exit 1
