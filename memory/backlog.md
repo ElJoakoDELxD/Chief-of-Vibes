@@ -22,14 +22,27 @@ What gets done. What was already done lives in the journal, not here.
   shipped by the canon, while `.canon` keeps the root unchanged. Full plan in
   `memory/projects/universal-core/canon-identity/plan-lineage.md`. Waiting on the Principal's go.
   Candidate for upstream.
-- **The role is declared where nothing reads it.** §5 closes `state.md`'s frontmatter — *all of
-  it* — at agent, principal, language, timezone, goal, branch, created. There is no `role`. So
-  every constraint in the Custodian's own identity file (never merge, never touch another
-  repository, never improve itself unprompted, never publish outward, only approved models) is
-  held by the agent remembering to read its own prose. Rung 5. Proposed: a `role:` field with a
-  closed set, written by onboarding, so the door rules attach to something a hook can read. This
-  is the prerequisite for an instance generating its own custodian, and it is a second plan, not
-  part of `plan-lineage.md`. Candidate for upstream.
+- **The role is declared where nothing reads it, and a branch does not say what kind it is.**
+  §5 closes `state.md`'s frontmatter — *all of it* — at agent, principal, language, timezone,
+  goal, branch, created. There is no `role`, so every constraint in the Custodian's identity file
+  (never merge, never touch another repository, never publish outward, only approved models) is
+  held by the agent remembering to read its own prose. Rung 5.
+
+  The Principal's question of 07-09-2026 — *where does the Custodian work* — sharpened it. There
+  are **three kinds of branch**, not two: `main`, the template; a **memory** branch, permanent,
+  carrying `memory/`; and a **work** branch, disposable, carrying one change to template files
+  and deleted when its pull request lands (§6). The Custodian's memory is `Custodian`; its work
+  was `custodio/la-salida-de-main` and `custodian/the-canon-quotes-no-one`.
+
+  Two things follow. The `role:` field should say what the **branch** is for, not only which
+  agent sits on it. And a cheap rail falls out: **editing a template file on a branch that
+  carries `state.md` is almost always a mistake**, because the next `tools/sync.sh` reverses it
+  and only says so afterwards. This session did exactly that with the `test-now.sh` fix. A
+  PreToolUse warning catches it before the loss; it warns rather than blocks, since the agent's
+  own `README.md` is a legitimate exception `sync.sh` already carves out.
+
+  Prerequisite for an instance generating its own custodian. A second plan, not part of
+  `plan-lineage.md`. Candidate for upstream.
 - **Nothing detects an unsynced agent branch.** The session-start drift check covers hop one,
   canon into a copy's `main`. On the canon it is skipped by construction — the canon cannot drift
   from itself — so this repository has no version sensor on the branch where all its work happens.
