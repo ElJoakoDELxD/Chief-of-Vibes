@@ -82,6 +82,14 @@ What gets done. What was already done lives in the journal, not here.
   workspace and everyone reaches it through the same door, so a visitor is given the two ways in
   rather than the keys to the agent standing there. Found 07-09-2026. Candidate for upstream.
 
+- **Complete the vault, and give the role a home.** §5 draws a tree that onboarding only partly
+  builds. `memory/projects/` is required by §5 and §9 before anything creates it; `projects/`,
+  the deliverables tree, is named twice in the specification and built by nothing;
+  `memory/corrections.md` is absent by a sound argument whose hole is that nothing tells a session
+  the file may exist. And the custodian charter sits in memory, where a copy cannot inherit it.
+  Proposal, measured and unimplemented, in
+  `memory/projects/universal-core/the vault that is not there/proposal.md`. Two releases, and
+  three decisions are the Principal's. Candidate for upstream.
 - **Write the knowledge entry: a cloud session cannot delete a ref, and a runner is the route.**
   §5 says an entry gets written the first time a procedure is worked out, not later. This session
   spent hours rediscovering something `stacks.yml` and `create-release.yml` had already solved,
@@ -114,5 +122,8 @@ What gets done. What was already done lives in the journal, not here.
   so it is the destructive ref update that is refused, not the credential and not the branch name.
   ~~The remedy is GitHub's own interface or a local session.~~ **A runner is the route**, the same
   shape `stacks.yml` and `create-release.yml` already use. Door prepared 07-09-2026 as pull
-  request #78, version 1.66.0. Once it lands: dispatch in `report` mode, read the log, then
-  `delete`. Expected thirteen deleted, four kept.
+  request #78. ~~Once it lands, dispatch it.~~ **Done 07-09-2026 on the Principal's approval.**
+  #78 merged as `f11afa4`, version 1.66.0. Dispatched in `report` mode, log read, then `delete`.
+  Fourteen deleted and six kept, verified against `git ls-remote`: twenty branches became seven.
+  The prediction said thirteen and four; the difference is the sweep's own branch, merged in
+  between, and the two memory branches which the count had described separately.
