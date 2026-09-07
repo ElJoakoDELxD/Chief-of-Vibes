@@ -93,10 +93,11 @@ What gets done. What was already done lives in the journal, not here.
   07-09-2026 splits the word *role*: an agent **holds a post**, a post **authorizes functions**,
   and a session exercises one. What it buys is a sentence a hook can enforce — a function no post
   authorizes cannot be exercised. `posts/<post>.md` beside `knowledge/`, `posts:` in `state.md`,
-  and the header gains agent and post/function. **Two directories**: `functions/` holds the
-  bodies, written once for everybody, and `posts/` references them and carries what is true of
-  the holder. A post never names an agent — `state.md` does — because a post file is inherited by
-  every copy. The Custodian post authorizes projects aimed at the template and the canon, and the
+  and the header gains agent and post/function. **Both live under `memory/` on the agent branch
+  and nothing ships in the template**: §5 already says nothing about the agent is stored anywhere
+  else, `sync.sh` would otherwise push the canon's post into every copy, and shipping them would
+  have meant widening the `pr-guard.sh` allowlist that keeps agent material off `main`. The
+  specification carries the schema; onboarding writes the baseline. The Custodian post authorizes projects aimed at the template and the canon, and the
   agent may open one on finding a fault. Proposal in
   `memory/projects/universal-core/posts and functions/proposal.md`. One release, not small. Two
   decisions are the Principal's. Candidate for upstream.

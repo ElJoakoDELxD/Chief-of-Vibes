@@ -32,17 +32,36 @@ a room.
 
 ## Where they live
 
-**`posts/<post>.md` and `functions/<function>.md`, two template directories beside `knowledge/`.**
+**On the agent branch, under `memory/`. Nothing ships in the template.**
 
-`knowledge/` is what a repository knows. `posts/` is what an agent may be. The canon ships
-`posts/custodian.md`, and a copy inherits the file and fills the post with its own occupant,
-which is what §6 already describes for everything else in the template.
+Set by the Principal on 07-09-2026, and §5 had already decided it: *everything the agent knows is
+there. **Nothing about the agent is stored anywhere else.*** A post is what this agent may do and
+a function is what that means. Both are about the agent.
 
-A post file lists the functions it authorizes **by reference**. The bodies live in `functions/`,
-written once. The reasoning is below, under the decision it reverses.
+```
+memory/posts/<post>.md            what it authorizes, and what holding it obliges
+memory/functions/<function>.md    what the work is
+memory/state.md   posts: [...]    which posts this agent holds
+```
 
-`memory/state.md` gains **`posts:`**, the set this agent holds. The charter already drafted at
-`../canon-identity/the-custodian-role.md` moves out of memory and becomes `posts/custodian.md`.
+The earlier draft put both in the template as new top-level directories. **Withdrawn**, and the
+reason is mechanical rather than tidiness:
+
+- `tools/sync.sh` takes `main`'s version of every template file. A template `posts/` would land
+  the canon's custodian post in every copy on every sync, describing a post that copy's agent may
+  not hold. That is `.canon` copied into instances, diagnosed this morning and rebuilt by lunch.
+- `tools/pr-guard.sh` allows only template paths into `main`. Shipping `posts/` meant widening
+  that allowlist — loosening the guard whose whole job is keeping agent material off `main`.
+
+**What ships is the schema, not the instances.** §5 defines `state.md`'s frontmatter and nobody
+ships a `state.md`. Posts and functions work the same way: the specification says what they are
+and the agent branch holds the ones that exist.
+
+**The one real cost, and it has a cheap fix.** With nothing shipped, a new agent starts with no
+posts and no functions. Onboarding writes the baseline from the specification, the way it already
+writes `state.md` and `backlog.md` from §5. Generated at creation, never inherited by a sync.
+
+**And `main` stays clean**, which is what makes it worth copying.
 
 ## The header
 
@@ -100,11 +119,13 @@ not never.
 
 ## Sizing
 
-One release, and it is not small. `system/5` for the frontmatter and the vault shape, `system/9`
-for the header and the session declaration, `system/7` for the post-scoped project rule, the
-`posts/` directory and its first file, `.claude/hooks/anchor.sh`, the onboard skill,
-`tools/pr-guard.sh` for the new template path, `tools/index.sh` and `tools/sections.sh` if either
-enumerates template directories, and `CLAUDE.md` rule 2, which quotes the header format.
+One release, and smaller than the first draft. `system/5` for the frontmatter and the vault
+shape, `system/9` for the header and the session declaration, `system/7` for the post-scoped
+project rule, `.claude/hooks/anchor.sh`, the onboard skill, `CLAUDE.md` rule 2 which quotes the
+header format, and the benches.
+
+**Nothing in `tools/pr-guard.sh`, `tools/index.sh` or `tools/sections.sh`, and no new template
+directory.** Keeping the instances off `main` removed a third of the change.
 
 The vault proposal in the sibling folder is independent and can go first or second.
 
