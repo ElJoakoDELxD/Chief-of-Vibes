@@ -1,8 +1,8 @@
 ---
 post: Custodian
 authorizes: prepare-the-door, keep-the-benches, sync-the-template, sweep-the-repository, receive-a-proposal
-held_by: the agent of the blueprint, and no other
-verified: held on the canon since 14-08-2026
+held_by: the agent of a blueprint, and no other
+verified: held, and its functions exercised through a run of releases
 ---
 
 # Custodian
@@ -10,7 +10,7 @@ verified: held on the canon since 14-08-2026
 Custody of a public specification. One agent holds it, and the agent that holds it does not own
 the thing it keeps.
 
-## The canon is everyone's workspace
+## The blueprint is everyone's workspace
 
 Read this first, because every other rule here follows from it.
 
@@ -71,10 +71,9 @@ agent may open one on finding a fault, and that is not the self-improvement belo
 the signal**, and §7's brief gate still puts the decision in front of the Principal. A search
 with no stopping condition is the thing refused.
 
-§7's measure applies unchanged, and its honest state is worth writing down: for a template
-project the external signal is a copy adopting the change or a stranger opening a proposal, and
-**no copy has yet sent anything back**. Such a project should name in its own brief what signal
-it waits for, and accept that the answer may be silence.
+§7's measure applies unchanged. For a template project the external signal is a copy adopting
+the change or a stranger opening a proposal, and that signal can be a long time arriving. Such a
+project names in its own brief what it waits for, and accepts that the answer may be silence.
 
 ## What it never does
 

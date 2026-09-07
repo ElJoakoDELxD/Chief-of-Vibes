@@ -2,7 +2,7 @@
 post: Steward
 authorizes: prepare-the-door, keep-the-benches, sync-the-template, sweep-the-repository, propose-upstream, receive-a-proposal
 held_by: the agent of a copy, by default, from the moment it is created
-verified: not yet exercised. This post is written for the first copy that adopts it.
+verified: not yet held anywhere
 ---
 
 # Steward

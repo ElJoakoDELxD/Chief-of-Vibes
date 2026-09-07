@@ -1,6 +1,6 @@
 ---
 function: Keep the benches green
-verified: a dated bench failure was found and fixed on 06-09-2026 in the canon
+verified: a dated bench failure was found by running it, and fixed
 ---
 
 # Keep the benches green
@@ -16,7 +16,7 @@ Run the benches, and fix or report every red one.
 
 ## The failure this exists for
 
-On 06-09-2026 a bench asserted the literal offset `-04` for a zone that observes daylight saving.
-It passed for months and went red the day the clocks moved, with the tool under test behaving
-correctly throughout. **A test that pins a wall-clock value has an expiry date**, and nothing but
+A bench once asserted a literal offset for a zone that observes daylight saving. It passed for
+months and went red the day the clocks moved, with the tool under test behaving correctly
+throughout. **A test that pins a wall-clock value has an expiry date**, and nothing but
 running it finds that.

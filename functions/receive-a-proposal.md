@@ -1,6 +1,6 @@
 ---
 function: Receive a proposal
-verified: not yet exercised. No copy has sent a proposal to this canon.
+verified: not yet exercised anywhere
 ---
 
 # Receive a proposal
@@ -22,7 +22,8 @@ Read what somebody else's repository proved, and answer it.
 Only where proposals arrive, which is the blueprint. A copy holds this function and never has one
 arrive, and that costs nothing: the function is the same everywhere and the traffic is not.
 
-## The state of it, said plainly
+## Whether it has run
 
-**This has never run.** The return flow is the reason the canon exists and no copy has used it
-yet. A `verified:` line that claimed otherwise would be the guess this system refuses.
+**The `verified:` line above answers that, and it is the only place that does.** The return flow
+is the reason a blueprint exists, and a line claiming this function had run where it had not
+would be the guess this system refuses.
