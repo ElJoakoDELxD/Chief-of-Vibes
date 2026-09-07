@@ -156,6 +156,64 @@ check_absent "a placed and verified entry is left alone" "tema/bien.md" "${out}"
   && echo "ok   the knowledge checks run without memory/" \
   || { echo "FAIL the knowledge checks run without memory/"; fail=1; }
 
+# --- corrections.md, named rather than created -------------------------------
+# Section 5 refuses to create it in advance and is right. What the absence needs
+# is for the path to be said out loud, because section 9 says to read the file
+# and section 5 is the only place its path appears.
+build "${tmp}/nocorr" 2026-08-01
+printf 'x\n' > "${tmp}/nocorr/memory/backlog.md"
+out="$(run "${tmp}/nocorr")"
+check "an absent corrections.md is named" "memory/corrections.md does not exist yet" "${out}"
+
+printf 'a correction\n' > "${tmp}/nocorr/memory/corrections.md"
+out="$(run "${tmp}/nocorr")"
+check_absent "a present corrections.md is silent" "corrections.md does not exist" "${out}"
+
+# --- two branches, one agent -------------------------------------------------
+# Measured on 07-09-2026: a session read a superseded vault for its whole length
+# because each branch read correctly on its own. Only a check that looks across
+# branches sees it, so the fixture needs a real remote and a real clone.
+#
+# The fixture's default branch is called trunk. Naming it after this repository's
+# protected branch would make every line here read like a command reaching for
+# it, and the guard hook is right to refuse a string it cannot tell apart.
+origin="${tmp}/origin.git"
+work="${tmp}/twovaults"
+rm -rf "${origin}" "${work}"
+git init -q --bare "${origin}"
+git clone -q "${origin}" "${work}" 2>/dev/null
+(
+  cd "${work}"
+  git config user.email bench@example.com
+  git config user.name bench
+  git switch -q -c trunk
+  printf '**Version 9.9.9.** spec\n' > SYSTEM.md
+  mkdir -p memory
+  printf 'x\n' > memory/backlog.md
+  printf 'a correction\n' > memory/corrections.md
+  git add -A && git commit -q -m spec && git push -q -u origin trunk
+
+  git switch -q -c agent-one
+  printf -- '---\nagent: One\n---\n' > memory/state.md
+  git add -A && git commit -q -m one && git push -q origin agent-one
+  git fetch -q origin
+) >/dev/null 2>&1
+
+out="$(cd "${work}" && bash "${here}/hygiene.sh")"
+check_absent "one vault is left alone" "More than one branch carries" "${out}"
+
+(
+  cd "${work}"
+  git switch -q -c agent-two trunk
+  printf -- '---\nagent: One\n---\n' > memory/state.md
+  git add -A && git commit -q -m two && git push -q origin agent-two
+  git fetch -q origin
+) >/dev/null 2>&1
+
+out="$(cd "${work}" && bash "${here}/hygiene.sh")"
+check "two vaults are reported" "More than one branch carries memory/state.md" "${out}"
+check "the report names both branches" "origin/agent-two" "${out}"
+
 if (( fail )); then
   echo "tools/hygiene.sh: bench FAILED"
   exit 1
