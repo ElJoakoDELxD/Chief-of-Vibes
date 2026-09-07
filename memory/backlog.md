@@ -78,7 +78,10 @@ What gets done. What was already done lives in the journal, not here.
   one agent already stands there, holding the custodian role and serving as the demonstration.
 
   Fix: on the canon, name the agent as the demo and leave it readable, offer the copy and the pull
-  request, and never offer continuation. Found 07-09-2026. Candidate for upstream.
+  request, and never offer continuation. The principle it violates is written up in
+  `memory/projects/universal-core/canon-identity/the-custodian-role.md`: the canon is nobody's
+  workspace, the maintainer's included, and that is why the maintainer keeps a copy.
+  Found 07-09-2026. Candidate for upstream.
 
 ## Principal
 
