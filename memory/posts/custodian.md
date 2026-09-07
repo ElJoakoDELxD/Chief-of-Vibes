@@ -20,6 +20,26 @@ The definition lives in `posts/custodian.md` on `main` and is the same for anybo
 | `sweep-the-repository` | twenty branches became seven on 07-09-2026: fourteen deleted, six kept |
 | `receive-a-proposal` | **never.** No copy has sent one to this repository |
 
+## Which models may exercise it, and the gate that was never built
+
+**Approved by the Principal on 14-08-2026: `claude-sonnet-5`, for the scheduled guard. Nothing
+else, and nothing since.**
+
+The identity file used to say that `MODELS.md` on `main` names the approved models and that
+`tools/models.sh` reads what the runtime actually served and compares. **Neither file exists.**
+Both were named on 15-08-2026 and neither was ever written, so that paragraph described an
+intention while reading as a control. It is the defect this repository has now recorded three
+times: prose wearing capability's format.
+
+**And it has been running unenforced.** The sessions of 06-09-2026 and 07-09-2026 were served by
+`claude-opus-5`, which is not on the list, and they held this post through seven releases into the
+blueprint. Nothing detected it, because the thing that would have is the file that does not exist.
+It surfaced only because the Principal asked an unrelated question.
+
+Two decisions belong to the Principal and neither is this agent's: whether that model is approved
+to hold this post, and whether the gate gets built or the claim gets dropped. **A rule that reads
+as a mechanism and is prose is worse than an absent rule, because it is trusted.**
+
 ## What has never run, and it is the important row
 
 `receive-a-proposal` is the reason the blueprint exists and it has never been exercised here. The
