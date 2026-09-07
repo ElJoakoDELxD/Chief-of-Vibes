@@ -98,10 +98,11 @@ What gets done. What was already done lives in the journal, not here.
   else, `sync.sh` would otherwise push the canon's post into every copy, and shipping them would
   have meant widening the `pr-guard.sh` allowlist that keeps agent material off `main`. The
   specification carries the blank form, as a fenced block beside the ones for `state.md`, a
-  handoff and a `knowledge/` entry. **The default post is custodian of your own copy**: every
-  agent gets it at onboarding, it guards that repository's `main` and sends proposals to the
-  canon's agent, and the canon needs no special post because *receive a proposal* is the same
-  function everywhere. §6 already says a copy's `main` changes only by an approved pull request
+  handoff and a `knowledge/` entry. **Two posts, and a copy's is not called custodian**: `steward` is the
+  default every agent gets at onboarding, guarding that repository's `main` and sending proposals
+  to the canon's agent, while `custodian` stays the canon's. The naming objection was pointing at
+  a substantive one — agnosticism is the custodian's whole claim to judge a proposal, and a
+  copy's agent properly has an interest, so it was never eligible for that post. §6 already says a copy's `main` changes only by an approved pull request
   and never says whose job that is. **An agent creates a post or function and proposes the
   universal ones upstream** — engineer, accountant, lawyer, reviewer, critic — under the
   `knowledge/` rule: the canon admits only what is agnostic, and `verified:` means an agent has

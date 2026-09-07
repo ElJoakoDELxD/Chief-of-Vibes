@@ -58,38 +58,47 @@ for each, as a fenced block beside the ones for `state.md`, a handoff note and a
 entry. The universal posts themselves ship on `main`, for the reason set out below. Which posts
 this agent holds is `state.md`, and that never travels.
 
-## The default post: custodian of your own copy
+## Two posts, because they are not the same duty
 
-Set by the Principal on 07-09-2026. **What onboarding builds by default is the agent that holds
-custody of its own copy and sends proposals to the canon's agent.**
+Set by the Principal on 07-09-2026: **a copy's post cannot be called `custodian`**, because the
+word would then mean two things and the proposals that travel between repositories are exactly
+where that breaks.
 
-That is one post, uniform, in every repository:
+The naming objection turned out to be pointing at a substantive one. *The post is identical, only
+the repository differs* was written an hour earlier and it is **wrong**:
 
-| | Canon | A copy |
+| | `custodian` | `steward` |
 |---|---|---|
-| post | custodian | **custodian** |
-| what it guards | the canon's `main` | **that copy's `main`** |
-| where proposals go | nowhere above it | **the canon's agent** |
+| holds | the canon's agent | **every copy's agent, by default** |
+| guards | property that belongs to everyone | one Principal's repository |
+| proposals | **receives** them, from strangers | **sends** them, upward |
+| interest | **none** — agnostic is the whole claim | it serves a goal, and that is correct |
 
-**The post is identical. What differs is which repository it stands in.** That is what makes it a
-default rather than a canon arrangement somebody has to reproduce by hand.
+**Agnosticism is the difference and it is load-bearing.** The charter's claim to judge a
+proposal rests on the holder having no interest on the other side of the table. A copy's agent
+has one, properly. So it was never eligible for that post, and the shared name was hiding it.
 
-Baseline functions it authorizes: keep the benches green, prepare the door on a change to `main`
+**Recommended: `steward`.** It means holding something on behalf of another, which is what a
+copy's agent does for its Principal, and it imports no merge authority. `maintainer` is the
+alternative and the common word, but in open source it usually implies the merge right this post
+does not have.
+
+Both ship in the catalogue. A copy carries the `custodian` definition without holding it, the way
+it carries every skill it never invokes, and reading it is how a copy knows what it is proposing
+to.
+
+**And this is where the two-directory split earns itself.** The two posts authorize mostly the
+same functions — prepare the door, keep the benches, sync the template, sweep the repository.
+Written once in `functions/` and referenced twice. Had the bodies lived inside the post files,
+this change would have duplicated four of them today.
+
+Baseline functions for `steward`: keep the benches green, prepare the door on a change to `main`
 and never merge it, sync the template from upstream, propose upstream what generalizes, sweep the
-repository.
-
-**The canon needs no special post.** *Receive a proposal* is the same function everywhere; a copy
-simply never has one arrive. Giving the canon a post of its own would break the uniformity the
-blueprint is for, and buy nothing.
-
-**And proposals travel agent to agent.** The canon's agent is the recipient, not the repository.
-That is who the charter's *duty to the contributor* is owed by: somebody is at the door.
+repository. `custodian` adds *receive a proposal* and drops nothing.
 
 §6 already describes a copy's `main` as read-only, changed only by a pull request the Principal
-approves, with the guard hook blocking work on it. It never says whose job that is. This names it,
-and the answer is the copy's own agent, from the moment it is created.
-
-**And `main` stays clean**, which is what makes it worth copying.
+approves, with the guard hook blocking work on it. It never says whose job that is. **The steward
+post names it**, from the moment the agent is created.
 
 ## Creating one, and proposing it upward
 
@@ -119,10 +128,9 @@ is weak: `.canon` did damage because it was *read as a claim about this reposito
 post file claims nothing. `.claude/skills/` already ships every skill to every copy, half of them
 never invoked, and nobody calls that a defect. A catalogue is the same shape.
 
-**And it makes one earlier sentence true rather than approximate.** The custodian post ships in
-the catalogue like any other, and onboarding only *assigns* it in `state.md`. No form to fill, no
-generation step, and a copy's custodian post is literally the same file as the canon's — which is
-what *the post is identical* was claiming all along.
+**And onboarding assigns rather than generates.** The post ships in the catalogue like any other
+and `state.md` records which one this agent holds. No form to fill and no generation step. Which
+post gets assigned is the section above: `steward` in a copy, `custodian` on the canon.
 
 ### The gate, and the guard it needs
 
