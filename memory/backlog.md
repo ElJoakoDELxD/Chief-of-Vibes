@@ -38,7 +38,8 @@ What gets done. What was already done lives in the journal, not here.
   evident intent without re-asking*. The agent standing there is the demo: meeting it is the
   point, being handed it is not. Fix: name it as the demo, offer the copy and the pull request,
   never continuation. Candidate for upstream. #propagate:07-09-2026
-- **Complete the vault.** §5 draws a tree onboarding only partly builds: `memory/projects/` is
+- **Complete the vault** — *the hygiene half landed in 1.67.0; what is left is the tree.* §5 draws
+  a tree onboarding only partly builds: `memory/projects/` is
   required before anything creates it, `projects/` is named twice and built by nothing, and
   `memory/corrections.md` is absent by an argument whose hole is that nothing says the file may
   exist. Plus a fourth `tools/hygiene.sh` check for two branches carrying one agent's vault, which
@@ -88,7 +89,8 @@ What gets done. What was already done lives in the journal, not here.
   `memory/projects/universal-core/what main is for/the proposal does not stop.md`.
   Candidate for upstream. #propagate:07-09-2026
 
-- **An untagged candidate is invisible, and prose about the tag is not.** On 07-09-2026
+- ~~**An untagged candidate is invisible, and prose about the tag is not.**~~ **Landed 07-09-2026
+  in 1.67.0.** Kept one line because the sibling item below still points at it: On 07-09-2026
   `tools/candidates.sh` reported exactly one item waiting, undated. The truth was **eleven**
   waiting and **none** tagged: the one it found was a sentence describing the sensor, because it
   greps the bare tag name rather than the dated form. Both directions are wrong — a real candidate
