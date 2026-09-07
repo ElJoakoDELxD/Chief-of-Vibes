@@ -58,10 +58,10 @@ What gets done. What was already done lives in the journal, not here.
 - **`tools/test-now.sh` pinned a wall-clock offset and expired.** It asserted `-04` for
   `America/Santiago`, which is right in winter and wrong under daylight saving. Chile moved its
   clocks on 06-09-2026 and the bench went red with `now.sh` behaving correctly throughout. Fixed
-  by resolving the offset at run time from `date`, the independent oracle. **The fix is committed
-  on this agent branch, where a template file does not belong**, so the next sync will overwrite
-  it and the canon stays red. It needs a pull request into `main` with a version bump. Waiting on
-  the Principal.
+  by resolving the offset at run time from `date`, the independent oracle. **Door prepared
+  07-09-2026 as pull request #77**, version 1.64.0 to 1.65.0, on branch
+  `custodian/the-bench-that-expired` off `main`. Guard clean, 15 benches green, index and sections
+  current. The merge is the Principal's (§6).
 
 - **A stranger on the canon is offered the canon's own agent.** In `.claude/hooks/anchor.sh` the
   continuation line is appended after all three menu branches without regard to which one fired,
