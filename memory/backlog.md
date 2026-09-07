@@ -104,4 +104,7 @@ What gets done. What was already done lives in the journal, not here.
   holds the git credentials outside the sandbox, and it refuses a ref deletion whichever branch is
   checked out. Tested both ways on 07-09-2026. Push and branch creation work in the same session,
   so it is the destructive ref update that is refused, not the credential and not the branch name.
-  The remedy is GitHub's own interface or a local session. **Principal's, and only by capability.**
+  ~~The remedy is GitHub's own interface or a local session.~~ **A runner is the route**, the same
+  shape `stacks.yml` and `create-release.yml` already use. Door prepared 07-09-2026 as pull
+  request #78, version 1.66.0. Once it lands: dispatch in `report` mode, read the log, then
+  `delete`. Expected thirteen deleted, four kept.

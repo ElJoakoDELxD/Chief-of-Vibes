@@ -112,8 +112,25 @@ push and not at a local prompt.
 
 ## What does
 
+**A runner.** It is a different origin: same repository, its own token, no proxy in between.
+`.github/workflows/stacks.yml` and `create-release.yml` already use that shape for the same
+class of problem, and `stacks.yml` states the principle in its own header — *the block is on the
+origin, not the authorization*. Reading it was what turned this from a dead end into a route.
+
+Prepared 07-09-2026 as pull request #78, version 1.66.0: `tools/sweep-branches.sh` with ten bench
+cases against a real bare repository, and `.github/workflows/sweep-branches.yml` to dispatch it.
+It reports by default and deletes only on a deliberate input. Containment is re-tested at run
+time rather than read from this file, because a list is true when it is written and not when it
+runs.
+
+Two others, neither of which was available today:
+
 1. GitHub's own interface. *Delete branch* on each merged pull request, or the branch list.
 2. A local session using the Principal's own git credentials. The git proxy is not in that path.
+
+**And the durable fix, which is a repository setting and not a template change:** GitHub's
+*Automatically delete head branches*, under Settings, Pull Requests. It stops the graveyard
+re-forming. It does not touch what is already there.
 
 ## The sweep, ready to paste in a local session
 
