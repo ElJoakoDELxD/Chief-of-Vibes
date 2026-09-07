@@ -13,7 +13,9 @@ What gets done. What was already done lives in the journal, not here.
   version rail on the canon silently — a fail-open. No longer blocking: the lineage plan keeps
   `.canon` at one line. Found 06-09-2026 while tracing the laboratory proposal
   (`memory/projects/universal-core/canon-identity/custodian-verdict.md`). Candidate for upstream. #propagate:06-09-2026
-- **A fork blinds itself, and the one-hop finding beside it was wrong.** `.canon` was read as
+- ~~**A fork blinds itself.**~~ **Landed 07-09-2026 in 1.68.0.** `.blueprint` names where the
+  template comes from and the drift check reads it, so a fork editing a marker no longer silences
+  the comparison. Kept one line because the reasoning behind it is worth finding: `.canon` was read as
   holding two facts, so a copy of a copy was said to sync against the wrong repository. The
   Principal settled it on 07-09-2026: **every generation proposes to the blueprint and none proxies
   through its parent**, so syncing from the root is correct and an intermediate that is ahead is
@@ -32,7 +34,8 @@ What gets done. What was already done lives in the journal, not here.
   somebody runs `tools/sync.sh`. On 06-09-2026 this branch was at 1.62.0 against main's 1.64.0,
   four commits behind, and a whole plan was written against the stale tree before an unrelated
   question surfaced it. Synced. The sensor is still missing. Candidate for upstream. #propagate:07-09-2026
-- **A stranger on the canon is offered the canon's own agent.** `.claude/hooks/anchor.sh` appends
+- ~~**A stranger on the canon is offered the canon's own agent.**~~ **Landed 07-09-2026 in
+  1.68.0.** Original finding: `.claude/hooks/anchor.sh` appends
   the continuation line after all three menu branches without regard to which fired, so the canon
   menu says no agent is created here and then offers its own agent branches, closing with *act on
   evident intent without re-asking*. The agent standing there is the demo: meeting it is the
@@ -53,7 +56,8 @@ What gets done. What was already done lives in the journal, not here.
   agent properly has an interest. Definitions ship, grants do not. Full design in
   `memory/projects/universal-core/posts and functions/proposal.md`.
   Candidate for upstream. #propagate:07-09-2026
-- **A copy's `main` README is the canon's sales page, addressed to a reader who already left.**
+- **Rebuild a copy's `main` README** — *§6 now names the rule; the onboarding step is release C.*
+  Original finding:
   It says *your first act is making your own copy* to somebody standing inside one. The agent
   rebuilds it with its Principal's specifications — whose repository, what for, which agent, and
   where it came from. Provenance is recorded twice for two readers: that README line for a person,
@@ -62,7 +66,8 @@ What gets done. What was already done lives in the journal, not here.
   **the first hop does not**, so a rebuilt README is overwritten by the next template pull request.
   Written up in `memory/projects/universal-core/what main is for/the readme is the filled form.md`.
   Candidate for upstream. #propagate:07-09-2026
-- **Put the membership test and the upward flow into §6.** The test — *does a fresh copy need
+- ~~**Put the membership test and the upward flow into §6.**~~ **Landed 07-09-2026 in 1.68.0**,
+  with the three-part gate and the README rule. Original entry: The test — *does a fresh copy need
   this to become itself* — is written nowhere, so the rule survives as a path list that cannot
   answer for a path nobody has proposed yet. And it is a rule about **every** `main`, not the
   canon's, because any `main` can be copied. With it: everything is proven outside its own `main`
