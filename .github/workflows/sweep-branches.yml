@@ -28,6 +28,14 @@ on:
         type: choice
         options: [report, delete]
         default: report
+      retire:
+        description: "One branch to retire by name, measured file by file against the branch below. Empty runs the ordinary sweep."
+        required: false
+        type: string
+      against:
+        description: "The branch the retired one was folded into. Required with retire."
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -45,7 +53,16 @@ jobs:
       - name: Sweep
         run: |
           git fetch origin '+refs/heads/*:refs/remotes/origin/*'
-          if [[ "${{ inputs.mode }}" == delete ]]; then
+          if [[ -n "${{ inputs.retire }}" ]]; then
+            # Retiring measures the named branch against the one it was folded
+            # into, so the runner has to be standing there.
+            git checkout -q "${{ inputs.against }}"
+            if [[ "${{ inputs.mode }}" == delete ]]; then
+              bash tools/sweep-branches.sh origin --retire "${{ inputs.retire }}" --delete
+            else
+              bash tools/sweep-branches.sh origin --retire "${{ inputs.retire }}"
+            fi
+          elif [[ "${{ inputs.mode }}" == delete ]]; then
             bash tools/sweep-branches.sh origin --delete
           else
             bash tools/sweep-branches.sh origin

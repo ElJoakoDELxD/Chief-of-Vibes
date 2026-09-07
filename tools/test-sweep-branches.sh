@@ -88,6 +88,53 @@ remaining="$(git ls-remote --heads origin | sed -E 's#.*refs/heads/##' | sort | 
 out="$(bash "${here}/sweep-branches.sh" origin --delete 2>&1)"
 check want "0 to delete"                     "a second run finds nothing and says so"
 
+# --- retiring one named branch ------------------------------------------------
+# A superseded vault is never contained in the default branch, so ancestry proves
+# nothing about it. What can be proved is content, per file, and the report is
+# the point: a file it cannot find elsewhere is a file the fold missed.
+(
+  cd "${tmp}/work"
+  git switch -q -c keeper
+  mkdir -p memory/projects/old
+  printf 'moved verbatim\n' > memory/projects/old/note.md
+  printf 'merged by hand\n' > memory/state.md
+  git add -A && git commit -q -m vault && git push -q origin keeper
+
+  git switch -q -c folded keeper
+  mkdir -p memory/projects/new
+  printf 'moved verbatim\n' > memory/projects/new/note.md
+  printf 'merged by hand, differently\n' > memory/state.md
+  printf 'a template file that moved on\n' > SYSTEM.md
+  git add -A && git commit -q -m fold
+  git fetch -q origin
+) >/dev/null 2>&1
+
+out="$( cd "${tmp}/work" && bash "${here}/sweep-branches.sh" origin --retire keeper 2>&1 )"
+check want "kept      memory/projects/old/note.md" "a file whose bytes moved under a new path is kept"
+check want "NOT HERE  memory/state.md" "a file the fold changed is named"
+check want-not "NOT HERE  SYSTEM.md" "a template mirror is not called a loss"
+check want "template file(s) skipped" "the template count is reported"
+check want "Reported only" "reporting does not delete"
+
+before="$( cd "${tmp}/work" && git ls-remote --heads origin | wc -l | tr -d ' ' )"
+out="$( cd "${tmp}/work" && bash "${here}/sweep-branches.sh" origin --retire keeper 2>&1 )"
+after="$( cd "${tmp}/work" && git ls-remote --heads origin | wc -l | tr -d ' ' )"
+[[ "${before}" == "${after}" ]] \
+  && report "a retire report removes no ref" yes "" \
+  || report "a retire report removes no ref" no "refs ${before} then ${after}"
+
+out="$( cd "${tmp}/work" && bash "${here}/sweep-branches.sh" origin --retire folded 2>&1 )"
+check want "is the branch you are standing on" "standing on the branch is refused"
+
+out="$( cd "${tmp}/work" && bash "${here}/sweep-branches.sh" origin --retire nowhere 2>&1 )"
+check want "no origin/nowhere" "an absent branch is named, never guessed"
+
+out="$( cd "${tmp}/work" && bash "${here}/sweep-branches.sh" origin --retire keeper --delete 2>&1 )"
+remaining="$( cd "${tmp}/work" && git ls-remote --heads origin | sed -E 's#.*refs/heads/##' | sort | paste -sd ',' - )"
+[[ "${remaining}" != *keeper* ]] \
+  && report "--delete retires the named branch" yes "" \
+  || report "--delete retires the named branch" no "remaining=${remaining}"
+
 if (( fails )); then
   echo "tools/sweep-branches.sh: bench FAILED"; exit 1
 fi
