@@ -62,7 +62,14 @@ agent="$(sed -n 's/^agent:[[:space:]]*//p' memory/state.md 2>/dev/null | head -n
 posts="$(sed -n 's/^posts:[[:space:]]*//p' memory/state.md 2>/dev/null | head -n1)"
 identity=""
 [[ -n "${agent}" ]] && identity=" Agent: ${agent}."
-[[ -n "${posts}" ]] && identity="${identity} Posts held: ${posts}. Declare which one this session exercises, and put it in the header as post/function (SYSTEM.md section 9)." 
+[[ -n "${posts}" ]] && identity="${identity} Posts held: ${posts}. Declare which one this session exercises, and put it in the header as post/function (SYSTEM.md section 9)."
+
+# The model gate cannot read what the runtime served, so the obligation to fetch
+# it is stated here where a session cannot miss it. Silence let an unlisted model
+# hold the custodian post for two days in September 2026.
+if [[ -n "${posts}" ]] && grep -q '^models:' memory/posts/*.md 2>/dev/null; then
+  identity="${identity} Before exercising a post: ask the runtime which model served this session, then run \`bash tools/models.sh <that-model> <post>\`. No reading is a refusal, not a pass."
+fi
 
 # The reach record for time (SYSTEM.md §8). Silent on every platform already
 # listed, which is every session after the first one on a machine.
