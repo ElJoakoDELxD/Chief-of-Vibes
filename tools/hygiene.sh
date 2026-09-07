@@ -96,6 +96,9 @@ if [[ -f memory/backlog.md ]]; then
   fi
 fi
 
+# memory/posts/ and memory/functions/ are the agent's own, written before they
+# are universal enough to propose into the catalogue on main (section 5).
+#
 # A folder memory/ was never meant to hold is invisible to the check below,
 # because that one only ever walks inside memory/projects/. On 13-08-2026 a
 # sibling called memory/thinking/ had existed for nine days holding one note,
@@ -106,7 +109,7 @@ if [[ -d memory ]]; then
   while IFS= read -r dir; do
     name="${dir#memory/}"
     case "${name}" in
-      projects|journal|handoff) continue ;;
+      projects|journal|handoff|posts|functions) continue ;;
     esac
     echo "memory/${name}/ is not a folder SYSTEM.md 5 names. Its contents are invisible to every check that walks memory/projects/. Move it or fold it in."
   done < <(find memory -mindepth 1 -maxdepth 1 -type d | sort)

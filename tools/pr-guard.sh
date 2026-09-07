@@ -58,6 +58,11 @@ is_canon=0
 fail=0
 
 # --- 1. only template files reach main ----------------------------------------
+# posts/ and functions/ are the catalogue, and they are definitions rather than
+# instances: a copy's agent must hold a post from the moment it is created and
+# cannot hold one nothing defines, so a fresh copy needs them to become itself
+# (section 6). Which post an agent holds is memory/state.md and never travels.
+#
 # Agent memory and project output belong on agent branches. knowledge/ is a
 # template path in both repositories since 1.61.0, and the difference between
 # them is no longer WHETHER the folder may exist but WHAT it admits: a copy
@@ -65,7 +70,7 @@ fail=0
 # distinction is a judgment about content, so it belongs to the reviewer and not
 # to a path pattern. This guard checks the path and says nothing about the
 # entry.
-allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|CLOCKS|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools|system|knowledge)/'
+allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|CLOCKS|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools|system|knowledge|posts|functions)/'
 scope='outside the template'
 
 while IFS= read -r -d '' f; do
