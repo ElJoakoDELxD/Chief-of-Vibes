@@ -13,15 +13,13 @@ What gets done. What was already done lives in the journal, not here.
   version rail on the canon silently — a fail-open. No longer blocking: the lineage plan keeps
   `.canon` at one line. Found 06-09-2026 while tracing the laboratory proposal
   (`memory/projects/universal-core/canon-identity/custodian-verdict.md`). Candidate for upstream.
-- **The pointer is stale by one hop from the second copy onward, and the hard fork blinds
-  itself.** `.canon` holds one slug for two facts — where syncs come from, and where proposals
-  go. A copy of a copy inherits the root's slug and syncs against the wrong repository; a fork
-  that edits the line matches its own origin, so `anchor.sh` skips the drift check and reports
-  parity forever (§1 promises silence means parity, so that reading is fabricated). Planned,
-  unimplemented: a second file `.upstream` holds the parent, written once by onboarding and never
-  shipped by the canon, while `.canon` keeps the root unchanged. Full plan in
-  `memory/projects/universal-core/canon-identity/plan-lineage.md`. Waiting on the Principal's go.
-  Candidate for upstream.
+- **A fork blinds itself, and the one-hop finding beside it was wrong.** `.canon` was read as
+  holding two facts, so a copy of a copy was said to sync against the wrong repository. The
+  Principal settled it on 07-09-2026: **every generation proposes to the blueprint and none proxies
+  through its parent**, so syncing from the root is correct and an intermediate that is ahead is
+  holding its own unproposed debt. What survives is the fork: editing `.canon` to your own slug
+  makes `origin` match it, `anchor.sh` skips the drift check entirely, and §1's promise that
+  silence means parity turns into a fabricated reading. Candidate for upstream.
 - **The role is declared where nothing reads it, and a branch does not say what kind it is.**
   §5 closes `state.md`'s frontmatter — *all of it* — at agent, principal, language, timezone,
   goal, branch, created. There is no `role`, so every constraint in the Custodian's identity file
@@ -55,13 +53,6 @@ What gets done. What was already done lives in the journal, not here.
   somebody runs `tools/sync.sh`. On 06-09-2026 this branch was at 1.62.0 against main's 1.64.0,
   four commits behind, and a whole plan was written against the stale tree before an unrelated
   question surfaced it. Synced. The sensor is still missing. Candidate for upstream.
-- **`tools/test-now.sh` pinned a wall-clock offset and expired.** It asserted `-04` for
-  `America/Santiago`, which is right in winter and wrong under daylight saving. Chile moved its
-  clocks on 06-09-2026 and the bench went red with `now.sh` behaving correctly throughout. Fixed
-  by resolving the offset at run time from `date`, the independent oracle. ~~Prepare the door.~~
-  **Merged 07-09-2026 as `8014ab7`, version 1.65.0, on the Principal's approval.** Synced onto this
-  branch; both sides read 1.65.0 and 15 benches are green.
-
 - **A stranger on the canon is offered the canon's own agent.** In `.claude/hooks/anchor.sh` the
   continuation line is appended after all three menu branches without regard to which one fired,
   so the canon menu reads *no agent is created here and no work lands here* and then *existing
@@ -111,6 +102,14 @@ What gets done. What was already done lives in the journal, not here.
   agent may open one on finding a fault. Proposal in
   `memory/projects/universal-core/posts and functions/proposal.md`. One release, not small. Two
   decisions are the Principal's. Candidate for upstream.
+- **A copy's `main` README is the canon's sales page, addressed to a reader who already left.**
+  It says *your first act is making your own copy* to somebody standing inside one. The agent
+  rebuilds it with its Principal's specifications — whose repository, what for, which agent, and
+  where it came from, which is where provenance belongs. `README.md` is the one template file that
+  becomes identity the moment a copy exists. The second hop already carves it out of the sync and
+  **the first hop does not**, so a rebuilt README is overwritten by the next template pull request.
+  Written up in `memory/projects/universal-core/what main is for/the readme is the filled form.md`.
+  Candidate for upstream.
 - **Put the membership test and the upward flow into §6.** The test — *does a fresh copy need
   this to become itself* — is written nowhere, so the rule survives as a path list that cannot
   answer for a path nobody has proposed yet. And it is a rule about **every** `main`, not the
@@ -153,17 +152,3 @@ What gets done. What was already done lives in the journal, not here.
   describes it as the doorman whose difficulty rotates with the ISO week and which the weekly
   guard tunes on the attempt log. Same class as the item above: memory describing machinery that
   was never built.
-- **Delete thirteen merged branches.** §6 says the branch list is live work, not a graveyard, and
-  thirteen branches are contained in `origin/main`, not the three the record named. Every SHA and
-  the restore command are in `memory/projects/custodian/the branch graveyard/restore manifest.md`.
-  **This agent cannot do it and no setting changes that.** The 403 comes from the git proxy, which
-  holds the git credentials outside the sandbox, and it refuses a ref deletion whichever branch is
-  checked out. Tested both ways on 07-09-2026. Push and branch creation work in the same session,
-  so it is the destructive ref update that is refused, not the credential and not the branch name.
-  ~~The remedy is GitHub's own interface or a local session.~~ **A runner is the route**, the same
-  shape `stacks.yml` and `create-release.yml` already use. Door prepared 07-09-2026 as pull
-  request #78. ~~Once it lands, dispatch it.~~ **Done 07-09-2026 on the Principal's approval.**
-  #78 merged as `f11afa4`, version 1.66.0. Dispatched in `report` mode, log read, then `delete`.
-  Fourteen deleted and six kept, verified against `git ls-remote`: twenty branches became seven.
-  The prediction said thirteen and four; the difference is the sweep's own branch, merged in
-  between, and the two memory branches which the count had described separately.
