@@ -35,12 +35,19 @@ fi
 # a pull request's head is template content, so this tool cannot read it here.
 #
 # That is the point rather than a gap. The version question below is a judgment
-# about whether a change is a release, made by whoever is writing it, on a branch
-# where the marker is on disk. What this guard must never do is answer it anyway:
+# about whether a change is a release, made by whoever is writing it, and it is
+# asked by running this tool **from the branch that holds the post**, against the
+# two refs:
+#
+#     bash tools/pr-guard.sh origin/main <work-branch> <owner/repo>
+#
+# The marker is then on disk, where identity is read, while the refs being
+# diffed carry none — which is also why no branch name is hard-coded anywhere. What this guard must never do is answer it anyway:
 # a missing marker used to mean `is_canon=0`, which printed *no bump required* and
 # went green, reporting a check that had not run (section 3).
 lower() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }
-canon="$(lower "$(tr -d '[:space:]' < .canon 2>/dev/null)")"
+canon=""
+[[ -f .canon ]] && canon="$(lower "$(tr -d '[:space:]' < .canon)")"
 here="$(lower "${repo}")"
 have_marker=0
 [[ -n "${canon}" ]] && have_marker=1
@@ -58,7 +65,7 @@ fail=0
 # distinction is a judgment about content, so it belongs to the reviewer and not
 # to a path pattern. This guard checks the path and says nothing about the
 # entry.
-allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|CLOCKS|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore)$|^(\.claude|\.github|tools|system|knowledge)/'
+allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|CLOCKS|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools|system|knowledge)/'
 scope='outside the template'
 
 while IFS= read -r -d '' f; do
@@ -68,6 +75,16 @@ while IFS= read -r -d '' f; do
   fi
 done < <(git diff -z --name-only "${base}...${head}")
 (( fail )) || echo "Paths: every changed file is a template file."
+
+# `.canon` stays an allowed *path* so the release that removed it could remove
+# it. What is forbidden is the file existing on main: custody belongs to the post
+# that holds it and never ships in the template (section 6). Stating the rule as
+# presence rather than as an omission from the list above is what lets the error
+# say why.
+if git cat-file -e "${head}:.canon" 2>/dev/null; then
+  echo "REJECT: .canon is on main. Custody lives with the post, on the branch that holds it, and never ships (SYSTEM.md section 6)."
+  fail=1
+fi
 
 # --- 2. a template change is a release ----------------------------------------
 # The canon holds the master version, and a copy holds a superset of it. A copy

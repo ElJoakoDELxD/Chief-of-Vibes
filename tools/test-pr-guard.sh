@@ -43,11 +43,17 @@ build() {
   git init -q .
   git config user.email bench@example.com
   git config user.name bench
-  # An empty slug builds a repository with no marker, which is what a checkout of
-  # a pull request's head looks like now that custody lives with the post.
-  [[ -n "${canon}" ]] && printf '%s\n' "${canon}" > .canon
   printf '**Version %s.** spec\n' "${version}" > SYSTEM.md
+  # The fixture ignores the marker so `git add -A` cannot sweep it into a commit.
+  # That is the shape being modelled: on disk where the guard reads it, absent
+  # from every tree the guard diffs.
+  printf '.canon\n' > .gitignore
   git add -A && git commit -q -m base && git tag base
+  # The marker is written into the working tree and never committed, because that
+  # is where it is read from and where it lives: the custodian runs this guard
+  # from the branch holding the post, diffing two refs whose trees carry no
+  # marker at all. An empty slug builds the other case, a checkout that has none.
+  [[ -n "${canon}" ]] && printf '%s\n' "${canon}" > .canon
   cd - >/dev/null
 }
 
@@ -162,9 +168,19 @@ check_code   "and a clean-path change still exits 0" 0 "$(code nomarker "${CANON
 # rejected like any other file that does not belong on main.
 build canonback 1.0.0 ""
 printf '**Version 1.1.0.** spec\n' > "${tmp}/canonback/SYSTEM.md"
-printf 'Owner/Canon\n' > "${tmp}/canonback/.canon"; commit canonback
+printf 'Owner/Canon\n' > "${tmp}/canonback/.canon"
+( cd "${tmp}/canonback" && git add -f .canon ) >/dev/null 2>&1; commit canonback
 out="$(run canonback "${CANON}")"
-check "putting .canon back on main is rejected" ".canon is outside the template" "${out}"
+check "putting .canon back on main is rejected" ".canon is on main" "${out}"
+
+# The release that took .canon off main had to be able to take it off. A path
+# rule alone rejected its own deletion, which is why the rule is presence.
+build canongone 1.0.0 ""
+( cd "${tmp}/canongone" && printf 'Owner/Canon\n' > .canon && git add -f .canon && git commit -q -m marker ) >/dev/null 2>&1
+rm -f "${tmp}/canongone/.canon"
+printf '**Version 1.1.0.** spec\n' > "${tmp}/canongone/SYSTEM.md"; commit canongone
+out="$(run canongone "${CANON}")"
+check_absent "removing .canon from main is not rejected" "REJECT" "${out}"
 
 if (( fail )); then
   echo "tools/pr-guard.sh: bench FAILED"
