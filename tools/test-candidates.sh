@@ -26,7 +26,9 @@ cat > "${tmp}/backlog.md" <<EOF
 
 - **A finding that has waited.** #propagate:${old}
 - **A finding filed today.** #propagate:${today}
-- **A finding with no date.** #propagate
+- **A finding whose tag lost its date.** #propagate:
+- **A finding nobody tagged.** Candidate for upstream.
+- **A note about the tool.** It reads #propagate tags out of this file.
 - **An ordinary item.** Nothing to send upstream.
 - **A tag with a broken date.** #propagate:99-99-9999
 - **An entry that absorbed a second finding.** #propagate:${old}
@@ -69,7 +71,7 @@ check want     "A finding whose tag sits alone." "a tag alone on its line still 
 check want-not "  9 days: $"                 "no report is ever an empty line"
 check want     "…"                           "a title over the width ends in an ellipsis"
 check want-not "writt…"                      "the cut lands between words, never inside one"
-check want     "undated"      "a tag with no date is reported as undated"
+check want     "undated"      "a tag whose date is missing is reported as undated"
 check want     "bad date"     "a tag with a broken date is named, never guessed"
 
 # One item, one line, however many tags it carry. Reporting per tag counted an
@@ -86,6 +88,13 @@ check want     "${older_age} days: An entry that absorbed" "an entry with two ta
 # A struck-through entry is closed, and a closed thing is not waiting.
 check want-not "A finding that landed"  "a struck-through entry stops being reported"
 check want-not "ordinary"     "an untagged item is left alone"
+
+# Both directions of the failure measured on 07-09-2026: a sentence naming the
+# tag became the only item reported, while every real candidate carrying no tag
+# was invisible.
+check want-not "A note about the tool" "prose naming the tag is not an item"
+check want     "untagged: A finding nobody tagged." "a candidate with no dated tag is reported"
+check want     "nothing is measuring"  "the untagged report says what is missing"
 
 out="$(bash "${here}/candidates.sh" 2 "${tmp}/absent.md")"
 check want-not "days"         "a missing backlog is silence, not an error"

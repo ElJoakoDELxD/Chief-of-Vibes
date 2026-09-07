@@ -11,12 +11,23 @@
 #      second memory drifting out of sync. A handoff whose `updated:` date is
 #      older than the last change to SYSTEM.md describes a session that ran under
 #      rules no longer in force.
-#   3. A file under memory/projects/ is outside the shape section 5 fixes: a
+#   3. Two branches carry a memory/state.md for one agent. Section 5 calls a
+#      second memory drifting out of sync a defect, and each branch reads
+#      correctly on its own, so only a check that looks across branches sees it.
+#      Measured on 07-09-2026: a session read a superseded vault for its whole
+#      length because nothing did. Remote-tracking refs are read, never the
+#      network, so this costs a session nothing.
+#   4. memory/corrections.md is absent. Section 9 says read it before routing
+#      the next correction, and section 5 is the only place its path appears, so
+#      an agent finds it by remembering. The file is not created in advance on
+#      purpose: an empty one teaches the next session there is nothing to read.
+#      Naming the path is what the absence needs instead.
+#   5. A file under memory/projects/ is outside the shape section 5 fixes: a
 #      topic folder, a thread folder inside it, and the topic's brief.md as the
 #      only file the topic level holds. A loose file there belongs to no thread,
 #      so the next session cannot tell what work it came from.
 #
-# The third cannot be a rail. memory/ lives on the agent branch and never passes
+# The last cannot be a rail. memory/ lives on the agent branch and never passes
 # through a pull request (section 6), so there is no gate to block at.
 #
 # Rung 3: it reports and never blocks, so it always exits 0. Silence means both
@@ -50,11 +61,33 @@ if [[ -d knowledge ]]; then
   done < <(find knowledge -type f -name '*.md' | sort)
 fi
 
-# Everything below needs memory/, and the canon has none. The knowledge checks
+# Two branches, one agent. Read from refs/remotes, which a clone already has, so
+# no session pays a network call for it. Silent at one or none, which is every
+# healthy repository.
+vaults=""
+while IFS= read -r ref; do
+  [[ -n "${ref}" ]] || continue
+  git cat-file -e "${ref}:memory/state.md" 2>/dev/null \
+    && vaults="${vaults}${vaults:+, }${ref#refs/remotes/}"
+done < <(git for-each-ref --format='%(refname)' refs/remotes/ 2>/dev/null | grep -v '/HEAD$')
+if [[ -n "${vaults}" ]] && [[ "${vaults}" == *", "* ]]; then
+  echo "More than one branch carries memory/state.md: ${vaults}. One agent, one vault (SYSTEM.md 5). Reading the wrong one is invisible, because each reads correctly alone."
+fi
+
+# Everything below needs memory/, and this repository may have none on the branch
+# checked out. The knowledge checks
 # above do not: since 1.61.0 the canon carries knowledge/ too, so a guard that
 # sent the whole sensor home on a repository without agents would take those
 # with it — in the one repository whose entries every copy inherits.
 [[ -d memory ]] || exit 0
+
+# corrections.md, named rather than created. Section 5 refuses to create it in
+# advance and is right: an empty file claims no correction has happened, which is
+# a different thing from nobody having written one down. What the absence needs is
+# for the path to be said out loud where a session will meet it.
+if [[ ! -f memory/corrections.md ]]; then
+  echo "memory/corrections.md does not exist yet. That is normal until the Principal corrects something; when they do, it goes there (SYSTEM.md 5, 9)."
+fi
 
 if [[ -f memory/backlog.md ]]; then
   words="$(wc -w < memory/backlog.md | tr -d '[:space:]')"
