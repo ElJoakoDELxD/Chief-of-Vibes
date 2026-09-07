@@ -102,7 +102,11 @@ What gets done. What was already done lives in the journal, not here.
   agent gets it at onboarding, it guards that repository's `main` and sends proposals to the
   canon's agent, and the canon needs no special post because *receive a proposal* is the same
   function everywhere. §6 already says a copy's `main` changes only by an approved pull request
-  and never says whose job that is. The Custodian post authorizes projects aimed at the template and the canon, and the
+  and never says whose job that is. **An agent creates a post or function and proposes the
+  universal ones upstream** — engineer, accountant, lawyer, reviewer, critic — under the
+  `knowledge/` rule: the canon admits only what is agnostic, and `verified:` means an agent has
+  held the post and exercised it, never that somebody judged it useful. The definitions ship in a
+  catalogue on `main` like `.claude/skills/` does; only the grant stays on the agent. The Custodian post authorizes projects aimed at the template and the canon, and the
   agent may open one on finding a fault. Proposal in
   `memory/projects/universal-core/posts and functions/proposal.md`. One release, not small. Two
   decisions are the Principal's. Candidate for upstream.

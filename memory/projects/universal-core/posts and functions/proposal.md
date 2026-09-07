@@ -53,10 +53,10 @@ reason is mechanical rather than tidiness:
 - `tools/pr-guard.sh` allows only template paths into `main`. Shipping `posts/` meant widening
   that allowlist — loosening the guard whose whole job is keeping agent material off `main`.
 
-**What ships is the form, not the instances.** No filled-in post reaches a copy. The blank does,
-as a fenced block in §5, which is exactly how `state.md`'s frontmatter, a handoff note and a
-`knowledge/` entry are already specified. One convention, used five times instead of four, and no
-new file on `main`.
+**What ships is the catalogue and the form; what never ships is the grant.** §5 carries the blank
+for each, as a fenced block beside the ones for `state.md`, a handoff note and a `knowledge/`
+entry. The universal posts themselves ship on `main`, for the reason set out below. Which posts
+this agent holds is `state.md`, and that never travels.
 
 ## The default post: custodian of your own copy
 
@@ -90,6 +90,52 @@ approves, with the guard hook blocking work on it. It never says whose job that 
 and the answer is the copy's own agent, from the moment it is created.
 
 **And `main` stays clean**, which is what makes it worth copying.
+
+## Creating one, and proposing it upward
+
+Set by the Principal on 07-09-2026. An instance agent **creates** a post or a function, at
+onboarding or when asked, and can then **propose it to the canon** — not the specific ones, the
+universal ones: engineer, accountant, lawyer, reviewer, critic.
+
+That is the `knowledge/` loop applied to a new object, and it needs no new mechanism.
+
+### Which resolves the placement, and revises what was written an hour earlier
+
+Two things were being run together, and separating them settles it:
+
+| | Where | Travels |
+|---|---|---|
+| **the definition** — what a post is, what functions it authorizes | `posts/`, `functions/` on `main` | inherited by sync, like `.claude/skills/` |
+| **the grant** — which posts *this agent* holds | `memory/state.md`, `posts:` | never |
+| **a local invention** — a post this agent made for itself, not yet universal | `memory/posts/`, `memory/functions/` | never, until proposed and accepted |
+
+The Principal's rule was about **authorization**: the files that authorize what the agent uses
+live on the agent. That is true and it is `state.md`. The earlier note over-applied it to
+definitions and concluded nothing ships at all.
+
+**The objection that produced that conclusion was overstated.** It said an inherited post file
+describes a post the copy's agent may not hold, and called that the `.canon` failure. The analogy
+is weak: `.canon` did damage because it was *read as a claim about this repository*. An unheld
+post file claims nothing. `.claude/skills/` already ships every skill to every copy, half of them
+never invoked, and nobody calls that a defect. A catalogue is the same shape.
+
+**And it makes one earlier sentence true rather than approximate.** The custodian post ships in
+the catalogue like any other, and onboarding only *assigns* it in `state.md`. No form to fill, no
+generation step, and a copy's custodian post is literally the same file as the canon's — which is
+what *the post is identical* was claiming all along.
+
+### The gate, and the guard it needs
+
+`knowledge/` already sets the rule and it transfers unchanged: **the canon admits only what is
+agnostic.** Nothing about one Principal, one agent or one project. A post built around somebody's
+business stays in their copy. *Reviewer* travels.
+
+**And `verified:` transfers with it, because this catalogue is where scope runs away.** An
+accountant post authorizing functions the system cannot perform is prose pretending to be
+capability, which is the defect this repository recorded twice today in `MODELS.md` and
+`tools/challenge.sh`. So a post reaches the canon when an agent **has held it and exercised its
+functions**, and never because somebody judged it useful. That keeps the catalogue from filling
+with job titles nobody has done.
 
 ## The header
 
