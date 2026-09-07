@@ -55,6 +55,19 @@ run() {
   fi
 }
 
+# The offset a zone is actually on right now, printed the way now.sh prints it.
+# Never hardcode one. America/Santiago is -04 in winter and -03 under daylight
+# saving, so a literal pinned the bench to half the year: it was written with
+# -04 and went red on 06-09-2026, the day Chile moved its clocks, with now.sh
+# behaving correctly throughout. `date` is the independent oracle here — it
+# reads the same zone database and none of now.sh's code.
+offset_of() {
+  local z raw
+  z="$1"
+  raw="$(TZ="${z}" date +%z 2>/dev/null)" || return 1
+  [[ "${raw}" == *00 ]] && printf '%s' "${raw%??}" || printf '%s:%s' "${raw:0:3}" "${raw:3:2}"
+}
+
 STAMP='^[0-9]{2}-[0-9]{2}-[0-9]{4} [0-9]{2}:[0-9]{2} [+-][0-9]{2}(:[0-9]{2})?'
 
 # --- it answers ---------------------------------------------------------------
@@ -127,8 +140,9 @@ nostate="${tmp}/nostate"
 rm -rf "${nostate}"; mkdir -p "${nostate}"
 cp "${here}/now.sh" "${nostate}/now.sh"
 
+santiago="$(offset_of America/Santiago)"
 out="$(cd "${nostate}" && COV_TZ=America/Santiago bash ./now.sh 2>&1)"; code=$?
-[[ "${out}" == *"-04"* && "${out}" != *"UTC default"* && ${code} -eq 0 ]] \
+[[ "${out}" == *"${santiago}"* && "${out}" != *"UTC default"* && ${code} -eq 0 ]] \
   && report "COV_TZ answers where state.md is absent, unmarked, exit 0" yes "" \
   || report "COV_TZ answers where state.md is absent, unmarked, exit 0" no "exit=${code} out=${out:-<empty>}"
 
@@ -141,7 +155,7 @@ out="$(cd "${nostate}" && bash ./now.sh 2>&1)"; code=$?
 # has already declared where it is.
 both="$(build both America/Santiago)"
 out="$(cd "${both}" && COV_TZ=Asia/Tokyo bash ./now.sh 2>&1)"
-[[ "${out}" == *"-04"* && "${out}" != *"+09"* ]] \
+[[ "${out}" == *"${santiago}"* && "${out}" != *"$(offset_of Asia/Tokyo)"* ]] \
   && report "state.md outranks COV_TZ" yes "" \
   || report "state.md outranks COV_TZ" no "out=${out:-<empty>}"
 
