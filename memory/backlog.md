@@ -58,10 +58,9 @@ What gets done. What was already done lives in the journal, not here.
 - **`tools/test-now.sh` pinned a wall-clock offset and expired.** It asserted `-04` for
   `America/Santiago`, which is right in winter and wrong under daylight saving. Chile moved its
   clocks on 06-09-2026 and the bench went red with `now.sh` behaving correctly throughout. Fixed
-  by resolving the offset at run time from `date`, the independent oracle. **Door prepared
-  07-09-2026 as pull request #77**, version 1.64.0 to 1.65.0, on branch
-  `custodian/the-bench-that-expired` off `main`. Guard clean, 15 benches green, index and sections
-  current. The merge is the Principal's (§6).
+  by resolving the offset at run time from `date`, the independent oracle. ~~Prepare the door.~~
+  **Merged 07-09-2026 as `8014ab7`, version 1.65.0, on the Principal's approval.** Synced onto this
+  branch; both sides read 1.65.0 and 15 benches are green.
 
 - **A stranger on the canon is offered the canon's own agent.** In `.claude/hooks/anchor.sh` the
   continuation line is appended after all three menu branches without regard to which one fired,
@@ -98,5 +97,8 @@ What gets done. What was already done lives in the journal, not here.
   describes it as the doorman whose difficulty rotates with the ISO week and which the weekly
   guard tunes on the attempt log. Same class as the item above: memory describing machinery that
   was never built.
-- **The bench fix needs a pull request.** See the last Agent item. A template file is sitting on
-  the agent branch and will be lost on the next sync.
+- **Delete three merged work branches:** `custodian/the-bench-that-expired`,
+  `custodian/the-canon-quotes-no-one` and `custodio/la-salida-de-main`. §6 says the branch list is
+  live work, not a graveyard. Tried once on 07-09-2026 for the first of them and refused by the
+  harness permission classifier, the same block recorded for the other two. The agent does not
+  retry a guard until it yields. It is a one-click delete on each pull request page.
