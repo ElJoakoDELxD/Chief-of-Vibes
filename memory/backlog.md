@@ -93,8 +93,11 @@ What gets done. What was already done lives in the journal, not here.
   07-09-2026 splits the word *role*: an agent **holds a post**, a post **authorizes functions**,
   and a session exercises one. What it buys is a sentence a hook can enforce — a function no post
   authorizes cannot be exercised. `posts/<post>.md` beside `knowledge/`, `posts:` in `state.md`,
-  and the header gains agent and post/function. The Custodian post authorizes projects aimed at
-  the template and the canon, and the agent may open one on finding a fault. Proposal in
+  and the header gains agent and post/function. **Two directories**: `functions/` holds the
+  bodies, written once for everybody, and `posts/` references them and carries what is true of
+  the holder. A post never names an agent — `state.md` does — because a post file is inherited by
+  every copy. The Custodian post authorizes projects aimed at the template and the canon, and the
+  agent may open one on finding a fault. Proposal in
   `memory/projects/universal-core/posts and functions/proposal.md`. One release, not small. Two
   decisions are the Principal's. Candidate for upstream.
 - **Write the knowledge entry: a cloud session cannot delete a ref, and a runner is the route.**

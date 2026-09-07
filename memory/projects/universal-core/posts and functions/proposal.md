@@ -32,17 +32,14 @@ a room.
 
 ## Where they live
 
-**`posts/<post>.md`, a template directory beside `knowledge/`.**
+**`posts/<post>.md` and `functions/<function>.md`, two template directories beside `knowledge/`.**
 
 `knowledge/` is what a repository knows. `posts/` is what an agent may be. The canon ships
 `posts/custodian.md`, and a copy inherits the file and fills the post with its own occupant,
 which is what §6 already describes for everything else in the template.
 
-Each file defines one post and lists the functions it authorizes. **One new directory, not two.**
-A function that no post authorizes cannot be exercised, so the post is the natural file boundary,
-and the canon has four top-level directories today. A separate `functions/` catalogue is the
-alternative, and it is the Principal's call: it earns its place the day one function is
-authorized by two posts, and not before.
+A post file lists the functions it authorizes **by reference**. The bodies live in `functions/`,
+written once. The reasoning is below, under the decision it reverses.
 
 `memory/state.md` gains **`posts:`**, the set this agent holds. The charter already drafted at
 `../canon-identity/the-custodian-role.md` moves out of memory and becomes `posts/custodian.md`.
@@ -113,19 +110,57 @@ The vault proposal in the sibling folder is independent and can go first or seco
 
 ## Both open decisions, resolved 07-09-2026
 
-### One directory, with a written trigger for the second
+### Two directories, and the one-directory recommendation is withdrawn
 
-**`posts/` alone.** The objection worth answering is drift: two posts describing the same
-function in two files is the defect §5 names about two memories. It does not bite yet. The canon
-ships one post file and a copy inherits **that file**, not a transcription of it, so nothing is
-written twice until a copy defines a post of its own with an overlapping function. Splitting then
-is a mechanical move of bodies out and references in, and starting with one directory makes it no
-harder.
+**Reversed on 07-09-2026, the same day it was made.** The recommendation said one directory until
+a function is shared, with a written trigger for splitting. The Principal read further ahead and
+the trigger fires almost at once.
 
-So the trigger goes in writing, and the decision does not get re-argued from taste:
+Name four functions and ask whether a copy's post would authorize them:
 
-> Split `functions/` out of `posts/` the day a second post authorizes a function the first
-> already defines.
+| Function | Canon | A copy |
+|---|---|---|
+| prepare the door on a change to `main` | yes | **yes** — every copy has a `main` and a gate |
+| keep the benches green | yes | **yes** |
+| write the handoff | yes | **yes**, and arguably no post gates it at all |
+| judge a proposal from a stranger | yes | no — only the canon receives strangers |
+
+Three of four are shared with the **first** copy that adopts a post, not someday. So a post file
+holding function bodies duplicates them from the beginning, which is the drift §5 names about two
+memories, arriving through a door this proposal would have built.
+
+**So: `functions/<function>.md` and `posts/<post>.md`, two directories.**
+
+### What each one is, and why nothing is written twice
+
+```
+functions/prepare-the-door.md          what the work is, once, for everybody
+posts/custodian.md                     which functions it authorizes, and what holding it obliges
+memory/state.md   posts: [custodian]   which posts THIS agent holds
+the header        custodian/prepare-the-door    which one this session exercises
+```
+
+**A function is an activity, defined once.** What it is, what it requires, what it must never do.
+`functions/` is the catalogue and it is written for everybody, because the same door needs
+preparing in every repository that has a `main`.
+
+**A post is authority, plus the obligations of holding it.** `posts/custodian.md` says which
+functions the post authorizes — by reference, never by copying their text — and carries what is
+true of the holder rather than of any one activity: independence, custody without authority, duty
+to the contributor, duty to the absent party, measurement before opinion.
+
+**A post does not name an agent.** It says what the post authorizes, and `memory/state.md` says
+which posts this agent holds. That indirection is the point. A post file is template content
+inherited by every copy, so a post naming an agent would ship somebody else's agent into every
+repository that syncs — which is precisely the mistake diagnosed this morning about `.canon`,
+rebuilt in a new place.
+
+**And a function is not a skill.** A skill is *how* to do something. A function is *whether this
+agent may*. The two are different axes and the mapping is not one to one: `handoff` is a skill
+serving a function, merging into `main` is a function authorized to **no** post and so has no
+skill, and `orchestrate` runs underneath every function rather than being one. `functions/` does
+not mirror `.claude/skills/` and listing them against each other would be the redundancy this
+split exists to avoid.
 
 ### The header keeps the branch, adds the agent, and the agent is not the check
 
