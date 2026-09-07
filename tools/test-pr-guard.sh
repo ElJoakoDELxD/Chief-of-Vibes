@@ -151,6 +151,18 @@ printf 'no version here\n' > "${tmp}/canon-noline/SYSTEM.md"; commit canon-nolin
 out="$(run canon-noline "${CANON}")"
 check "a missing version line is named, not ignored" "carries no '**Version X.Y.Z.**' line" "${out}"
 
+# --- the catalogue is template content ---------------------------------------
+# A copy's agent must hold a post from the moment it is created and cannot hold
+# one nothing defines, so the definitions belong on main. Which post it holds is
+# memory/state.md, and that is rejected by the path rule like any other vault file.
+build catalogue 1.0.0 ""
+mkdir -p "${tmp}/catalogue/posts" "${tmp}/catalogue/functions"
+printf -- '---\npost: Steward\n---\n' > "${tmp}/catalogue/posts/steward.md"
+printf -- '---\nfunction: Keep the benches\n---\n' > "${tmp}/catalogue/functions/keep.md"
+printf '**Version 1.1.0.** spec\n' > "${tmp}/catalogue/SYSTEM.md"; commit catalogue
+out="$(run catalogue "${CANON}")"
+check "posts/ and functions/ reach main" "every changed file is a template file" "${out}"
+
 # --- no marker: the question is not asked here -------------------------------
 # Custody lives with the post, so a checkout of a pull request's head carries no
 # marker. The guard used to read that as "not the canon" and print *no bump

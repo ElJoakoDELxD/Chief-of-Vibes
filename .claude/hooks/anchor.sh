@@ -53,6 +53,17 @@ if (( now_exit != 0 )) && [[ -z "${timestamp}" ]]; then
 fi
 branch="$(git branch --show-current 2>/dev/null || echo unknown)"
 
+# The agent's name, read rather than remembered. The header carries it beside the
+# branch so a reply says who wrote it, and so the pair can be read at a glance:
+# on 07-09-2026 a session worked a whole day from a superseded vault, and both
+# files were internally consistent, so only a name printed beside its branch
+# makes that kind of mismatch visible at all. Absent where no vault is.
+agent="$(sed -n 's/^agent:[[:space:]]*//p' memory/state.md 2>/dev/null | head -n1)"
+posts="$(sed -n 's/^posts:[[:space:]]*//p' memory/state.md 2>/dev/null | head -n1)"
+identity=""
+[[ -n "${agent}" ]] && identity=" Agent: ${agent}."
+[[ -n "${posts}" ]] && identity="${identity} Posts held: ${posts}. Declare which one this session exercises, and put it in the header as post/function (SYSTEM.md section 9)." 
+
 # The reach record for time (SYSTEM.md §8). Silent on every platform already
 # listed, which is every session after the first one on a machine.
 clocks="$(bash tools/clocks.sh 2>/dev/null)" || clocks=""
@@ -222,7 +233,7 @@ if [[ "${event}" == "SessionStart" && "${origin_kind}" == "clear" && -f memory/s
 fi
 
 HOOK_EVENT="${event}" \
-HOOK_CONTEXT="Anchors (hook-measured): time=${timestamp} branch=${branch}. Open the reply with the header built from these values. Never work on main.${menu}${drift}${candidates}${hygiene}${clocks}" \
+HOOK_CONTEXT="Anchors (hook-measured): time=${timestamp} branch=${branch}.${identity} Open the reply with the header built from these values. Never work on main.${menu}${drift}${candidates}${hygiene}${clocks}" \
 HOOK_RESUME="${resume}" \
 python3 - <<'PY'
 import json

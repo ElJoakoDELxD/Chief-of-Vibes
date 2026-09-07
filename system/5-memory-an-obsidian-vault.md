@@ -43,7 +43,45 @@ timezone: UTC              # IANA zone; drives every timestamp. Outranks $COV_TZ
                            # which answers only where this file cannot be read
 goal: <one sentence>       # the standing objective all priorities serve
 branch: <agent-branch>     # the agent's home branch
+posts: [steward]           # the posts this agent holds, by name from posts/ (§9)
 created: YYYY-MM-DD
+---
+```
+
+### `posts/` and `functions/` — what this agent may do
+
+An agent **holds a post**, and a post **authorizes functions**. A session exercises one of them
+and says which (§9). The split is what makes authority checkable: **a function no post authorizes
+cannot be exercised**, which is a sentence a rule can be written against. One word doing both jobs
+could never produce it.
+
+**The definitions ship and the grant does not.** `posts/` and `functions/` on `main` are the
+catalogue, inherited like every skill in `.claude/skills/`, because an agent must hold a post from
+the moment it is created and cannot hold one nothing defines. Which posts *this* agent holds is
+the `posts:` line above, and that never travels. A copy carries the definition of a post it does
+not hold, and that claims nothing.
+
+**An agent may write its own.** A post or a function it needs and the catalogue lacks goes in
+`memory/posts/` or `memory/functions/`, where it is this agent's and travels nowhere. Proposing it
+into the catalogue is the same gate as `knowledge/`: only what is agnostic, and `verified:` means
+an agent has **held the post and exercised its functions**, never that somebody judged it useful.
+A catalogue of professional titles nobody has done is prose wearing capability's format.
+
+The two shapes are fixed:
+
+```markdown
+---
+post: <name>
+authorizes: <function>, <function>
+held_by: <who may hold it, and on what>
+verified: <where it has been held, or that it has not>
+---
+```
+
+```markdown
+---
+function: <what it does, in a few words>
+verified: <what was run, or that it has never run>
 ---
 ```
 
