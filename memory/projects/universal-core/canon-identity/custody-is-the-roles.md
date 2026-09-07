@@ -91,15 +91,32 @@ prose rather than in a file a machine follows. Half wrong: the README line is wh
 reads, and `.blueprint` is what the **drift check** reads. Two readers, two records, and neither
 substitutes for the other.
 
+## The guard, resolved 07-09-2026
+
+The Principal: **the check belongs on the agent's side, where the pull request is prepared, and
+then it is the custodian's job to review it and send it to `main`.**
+
+That dissolves the problem instead of solving it. `tools/pr-guard.sh` asks two questions and only
+one of them needs identity:
+
+| Question | Needs the marker | Where it belongs |
+|---|---|---|
+| do only template files reach `main`? | no | **stays in CI on the pull request** — mechanical, and it covers a stranger's fork |
+| is this the repository that issues the master version? | **yes** | **the agent's side**, before the pull request exists |
+
+**The version question was never CI's to ask.** It is a judgment about whether this change is a
+release, made by whoever is writing the release, on a branch where the marker is on disk. The
+custodian asserts it while preparing the door, which is a function the post already authorizes.
+
+**And it removes the fail-open rather than patching it.** With the marker off `main`, CI would
+have read nothing, set `is_canon=0`, printed *no bump required* and gone green — reporting a check
+it could not run. §3 forbids exactly that about a reading. The rule generalizes: **a check that
+cannot be answered where it runs should not run there.** Moving it is better than teaching it to
+guess, and better than the branch-name dependency proposed at 14:56, which is now unnecessary.
+
 ## Open
 
-- **`tools/pr-guard.sh` still has no answer, and this is the unresolved cost.** It runs in CI on a
-  checkout of the pull request's head, which is template content and carries no marker of either
-  name. Its question is whether this repository issues the master version, and with `.canon` off
-  `main` it cannot ask. `actions/checkout` already fetches with `fetch-depth: 0`, so reading the
-  marker from the role's branch is possible — at the price of the guard knowing that branch's
-  name. Flagged this morning, restated at 14:56, still open.
-- The branch-name dependency that fix introduces.
+- Nothing on identity. The remaining work is the release itself.
 - `plan-lineage.md`'s file layout is superseded. `.canon` no longer ships on `main`; the design is
   `.upstream` generated at onboarding, plus custody held with the role. The defects it traced —
   a copy of a copy syncing against the root, a fork blinding itself — are unchanged and still real.
