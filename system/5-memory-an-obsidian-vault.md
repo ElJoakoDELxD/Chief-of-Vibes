@@ -135,9 +135,18 @@ this buys is that the item stops spreading, gets to where it belongs, and then l
 
 The distinction is what the writing is *for*. The journal records that a thing happened, dated and closed. An entry here records how to do it again.
 
-**It exists in the canon as well, and the two do not admit the same thing.** A copy's folder holds whatever that repository learned, including what is true only there: this Principal's tools, this account, this machine. The canon's holds **only what is agnostic**: knowledge about operating this system, improvements toward it, and reflections on it. Nothing about one Principal, one agent, or one project reaches it, because an entry there is inherited by every copy that ever syncs, and a wrong one propagates further than any single repository can correct.
+**One admission standard, everywhere.** `knowledge/` is template: it ships, and every copy that ever syncs inherits it. So it holds **only what is agnostic** — how to operate this system, improvements toward it, reflections on it — and nothing about one Principal, one agent, one machine or one project, because a wrong entry there propagates further than any single repository can correct. Until 1.80.0 a copy's folder was allowed to hold what was true only there, which made a copy's `main` a place work accumulated. That is memory wearing a template's clothes, and §7 already forbids the content of it on any surface that publishes.
 
-**So `verified:` stops being hygiene and becomes the gate.** In a copy it records what was run. In the canon it is the condition of entry: an entry nobody ran is a guess wearing a procedure's format, and a guess that every copy inherits is worse than an empty folder, because it will be trusted.
+**A finding is authored in `memory/`, and nowhere else.** The agent writes it the first time it works something out, and not later. What happens next is the whole of the rule:
+
+- **Not agnostic** — it stays in `memory/`. That is a complete answer rather than a consolation.
+- **Agnostic** — it is proposed upward (§6), and it stays in `memory/` while it travels.
+- **Refused** — it stays, with the verdict beside it, and its backlog line loses the `#propagate:` tag. A candidate the sensor keeps raising after a decision is a decision nobody made.
+- **Accepted** — it becomes template and returns to this repository's `main` by sync. **Only then may the agent delete its copy.** Between acceptance and arrival the only copy is the one in memory, so the precondition is the file being present on `main`, never the verdict. That is the quarantine receipt in a second place: nothing is deleted until it has demonstrably arrived somewhere else.
+
+**So `main` is received, never authored.** The canon is the one exception and not a loophole: it has nothing above it, so its custodian writes `knowledge/` there by release, through the gate every other template file passes. What this buys is that **a version names one tree.** Two copies at the same version hold the same rails and the same procedures, so a finding reported from one is reproducible in the other, and the template stops being a candidate explanation for a difference between them.
+
+**So `verified:` stops being hygiene and becomes the gate, in every repository.** An entry nobody ran is a guess wearing a procedure's format, and a guess that every copy inherits is worse than an empty folder, because it will be trusted. It records what was run and never who ran it: the day, the branch and the pull request are this repository's account, and git already holds them (§7).
 
 **The register is honest, serious, self-critical, and without preferences.** An entry that flatters the system is not knowledge about it. What earns a place is what was measured, including what the measurement said about the writer — and *especially* that, because it is the part no one else can supply.
 
@@ -146,9 +155,9 @@ The distinction is what the writing is *for*. The journal records that a thing h
 ```markdown
 ---
 topic: <one line — the task this covers>
-updated: DD-MM-YYYY            # the day, and no finer. A clock time carries a zone,
-                               # a zone is a location, and every copy inherits this (§7)
-verified: <what was actually run or checked to know this works>
+verified: <what was run or checked to know this works, and never who ran it>
+          # no date and no repository. Both are account, git holds them already,
+          # and a hand-written date is a second copy that drifts (§8)
 ---
 
 ## When this applies
