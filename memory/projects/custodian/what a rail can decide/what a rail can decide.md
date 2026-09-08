@@ -85,3 +85,16 @@ tooling would survive the inspection) but because a shell script is one shape of
 family. Covering one shape sells confidence the rail cannot honour. The branch's guarantee is
 `protected: true` at the remote, verified rather than repeated from a comment.
 
+## Where the thread ended
+
+The rails were the small half. The Principal took the same question — what can be decided without
+inference — up to the structure, and it produced a rule the rails could not: **`main` holds one
+thing, and a finding is authored in `memory/` and nowhere else.**
+
+A version then names one tree. That is the condition every measurement across copies needed and
+never had, and it is why the door has never been used: with two admission standards there was no
+reason to propose anything, since a copy could simply keep it.
+
+The line worth carrying forward: **you cannot study a variable system unless the constants are
+actually constant.** The template is meant to be the constant. Until 1.80.0 it was not.
+
