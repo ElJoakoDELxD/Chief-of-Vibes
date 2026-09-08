@@ -1,7 +1,7 @@
 ---
-topic: The main guard reads text, so a message about a command is blocked like the command
-updated: 09-08-2026
-verified: 09-08-2026. Two attempts to feed `guard-main.sh` a test case were themselves refused, because the test command quoted a push to the protected branch. The refusal is the demonstration. Recorded first on 30-07-2026, and still live
+topic: The main guard reads text, so a branch name inside an executed argument is blocked like the command
+updated: 08-09-2026
+verified: 08-09-2026. The here-document half was corrected against the rails themselves: the write that authors `tools/test-guard-main.sh` is now accepted, and the same body piped into a shell is still refused. Both are bench cases. Recorded first on 30-07-2026
 ---
 
 # The guard reads text, not intent
@@ -9,7 +9,7 @@ verified: 09-08-2026. Two attempts to feed `guard-main.sh` a test case were them
 ## The trap
 
 `guard-main.sh` blocks commands that reach the protected branch. It decides by matching
-the command string. A shell command that only **quotes** such a command looks the same.
+the command string, so an argument that only **quotes** such a command looks the same.
 
 This is refused, and it pushes nothing:
 
@@ -17,9 +17,8 @@ This is refused, and it pushes nothing:
 git commit -m "explains how a push to that branch breaks the history"
 ```
 
-Three words sit in one segment: the branch name, `push`, and `git`. The guard cannot tell
-a sentence from an instruction. It errs closed on purpose, and that direction is the safe
-one. A command that writes a dangerous command into a file reads exactly like the command.
+Three words sit in one segment: the branch name, `push`, and `git`. That argument is
+executed text, so the rail cannot call it data, and it errs closed.
 
 ## What to do
 
@@ -29,29 +28,39 @@ one. A command that writes a dangerous command into a file reads exactly like th
 git commit -F <path>
 ```
 
-Write that file with an editor tool. A shell heredoc will not do: its contents are part of
-the command string, and the guard judges them too.
+A shell here-document writes that file, and so does an editor tool. The same holds for a
+pull request body, an issue comment, or any prose about the branch that would otherwise
+travel inside an executed argument.
 
-The same holds for a pull request body, an issue comment, or any prose about the branch
-that would travel inside a shell argument.
+## What the rail no longer confuses
+
+Until 08-09-2026 this note said a here-document was no use either, because its body was
+part of the command string. That was a defect wearing the note's own reasoning. A body on
+its way to a file is data by the shell's own grammar, and `.claude/hooks/lib/command.sh`
+reads that grammar, so the three rails now judge what the shell will run. Writing a bench
+that holds the strings a rail refuses is accepted. The same body piped into a shell is
+refused, and that half is what makes the first one safe.
+
+Two more things are mechanical and now decided rather than guessed. A `-C` naming an
+absolute path outside this working tree runs against another repository, whose branches
+are not the ones this rail holds. And each segment is judged alone, so an `echo` is never
+evidence about a neighbouring push.
 
 ## What not to do
 
-Do not rephrase the message to slip past the match. The wording is not the problem. A
-message bent around a rail also says less than the one you meant. Move the text out of the
-command instead.
+Do not rephrase a message to slip past the match. The wording is not the problem, and a
+message bent around a rail says less than the one you meant. Move the text out of the
+executed argument instead.
 
-Do not loosen the guard. The obvious fix is to skip the check when the command runs
-somewhere else. That makes the rail avoidable: put a directory change in front of it. A
-rail you can talk your way out of is not a rail.
-
-## Where the line already is
-
-The guard judges each segment alone. An `echo` in one segment is not evidence about a push
-in the next. That much is fixed. What scoping cannot fix is one segment holding both the
-prose and the words.
+Do not loosen the guard by exempting a context. The obvious version is to skip the check
+when the command runs somewhere else, which makes the rail avoidable by putting a
+directory change in front of it. Narrowing to what the shell will run is the opposite
+move: it removes false positives without granting an exemption anyone can claim.
 
 ## The general shape
 
-**A rail that reads text will read your description of a thing as the thing.** Where the
-description is the work, move it into a file and hand the rail a path.
+**A rail decides what is mechanically decidable, and a rail pushed past that produces
+false positives, which teach the agent to route around it** (SYSTEM.md §8). Whether
+running a given command is right is intent, and no rail settles it. That half belongs to
+the post holding the session, and it is written down as a rule rather than matched as a
+string.

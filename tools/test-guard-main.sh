@@ -10,10 +10,10 @@
 # Usage:  bash tools/test-guard-main.sh [path/to/guard-main.sh]
 # Exits non-zero with the number of failures.
 #
-# Note: the default branch is referenced through $M rather than spelled out, so
-# that writing or editing this file from a shell does not trip the very guard it
-# tests. That is not a workaround — the guard cannot tell a test fixture from a
-# real command, and erring closed is the behavior we want.
+# Note: this file is written by a shell here-document, which the guard now reads
+# as data on its way to a file rather than as the commands it holds. The $M
+# indirection stays for a different reason: a `sed` over these lines is executed
+# text, so a branch name spelled out in them would read as a ref again.
 
 set -uo pipefail
 
@@ -67,6 +67,28 @@ check BLOCK "echo preparing && git checkout ${M}"
 check BLOCK "git fetch origin | tee log; git push origin HEAD:${M}"
 check BLOCK "echo ${M} && echo ${M} && git push origin ${M}"
 
+echo
+echo "=== a body bound for a file is data; a body bound for a shell is not ==="
+# The write that authors a bench like this one. Refusing it taught the agent to
+# route around the rail, which is the failure section 8 names.
+check PASS  "$(printf 'cat > tools/fixture.sh <<%sEOF%s\ngit push origin %s\nEOF\n' "'" "'" "${M}")"
+check PASS  "$(printf 'cat > tools/fixture.sh <<EOF\ngit checkout %s\nEOF\necho written\n' "${M}")"
+check BLOCK "$(printf 'cat <<EOF | bash\ngit push origin %s\nEOF\n' "${M}")"
+check BLOCK "$(printf 'bash <<EOF\ngit checkout %s\nEOF\n' "${M}")"
+
+echo
+echo "=== another repository's default branch is not the one this rail holds ==="
+# Mechanical, not a judgment: an absolute -C outside this working tree names a
+# different repository. A fixture under a temporary directory is the ordinary
+# case, and building one used to be denied.
+here_top="$(git rev-parse --show-toplevel 2>/dev/null || echo /nonexistent)"
+check PASS  "git -C /tmp/some-fixture checkout ${M}"
+check PASS  "git -C /tmp/some-fixture push origin ${M}"
+check BLOCK "git -C ${here_top} checkout ${M}"
+# A relative path resolves against a working directory the hook cannot see, so
+# it counts as ours and stays refused.
+check BLOCK "git -C ../elsewhere checkout ${M}"
+
 echo "=== the near half: what the hook does while the checkout IS on ${M} ==="
 # Every case above runs from whatever branch the session happens to be on, so
 # they all exercise the segment scanner and none of them exercise the branch
@@ -80,7 +102,7 @@ echo "=== the near half: what the hook does while the checkout IS on ${M} ==="
 fixture="$(mktemp -d)"
 HOOK_ABS="$(cd "$(dirname "${HOOK}")" && pwd)/$(basename "${HOOK}")"
 git -C "${fixture}" init -q -b "${M}" 2>/dev/null
-git -C "${fixture}" -c user.email=b@b -c user.name=b commit -q --allow-empty -m init 2>/dev/null
+git -C "${fixture}" commit -q --allow-empty -m init 2>/dev/null
 
 check_on_default() {
   local want="$1" cmd="$2"

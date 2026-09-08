@@ -1,27 +1,32 @@
 #!/usr/bin/env bash
 #
-# Claude Code hook (PreToolUse on Edit|Write|Bash): keeps main read-only.
-# On main it blocks everything; elsewhere it blocks the git commands that reach
-# main, each documented at its own rule below. Exit 2 denies the call, reason on
-# stderr. Input: PreToolUse hook JSON on stdin.
+# Claude Code hook (PreToolUse on Edit|Write|Bash): keeps the default branch
+# read-only. Standing there it blocks everything; elsewhere it blocks the git
+# commands that reach it, each documented at its own rule below. Exit 2 denies
+# the call, reason on stderr. Input: PreToolUse hook JSON on stdin.
 #
 # A rail, not a lock: it only runs in sessions that wire it, and string-matching
-# is never exhaustive. The guarantee for main is branch protection plus CI.
+# is never exhaustive. The guarantee is branch protection plus CI.
 #
-# It errs closed where text and intent are indistinguishable — a command writing
-# a dangerous command into a file reads exactly like the command. That direction
-# is safe. Blocking ordinary work is not, and prose mentioning the branch used to
-# be enough to deny an unrelated push. Segment scoping separates the two;
-# tools/test-guard-main.sh pins both halves.
+# **It judges what the shell will run, and nothing else.** Three things are
+# mechanical, so the rail keeps them: a here-document body bound for a file is
+# data (.claude/hooks/lib/command.sh), each segment is judged alone so prose in
+# one is not evidence about a push in the next, and a `-C` naming a path outside
+# this working tree is a different repository whose branches are not ours. What
+# is left over is intent — whether this checkout is the one that was meant — and
+# no rail decides that. It belongs to the post holding the session (SYSTEM.md
+# section 8). tools/test-guard-main.sh pins every half.
+#
+# One thing stays coarse on purpose: a branch name inside a quoted argument, as
+# in a commit message, still reads as a ref. That argument is executed, so the
+# rail cannot call it data. knowledge/the-canon-copy-loop/ carries the way round.
 
 set -uo pipefail
+# shellcheck source=/dev/null
+source "$(dirname "${BASH_SOURCE[0]}")/lib/command.sh"
 
-input="$(cat)"
 branch="$(git branch --show-current 2>/dev/null || echo "")"
-
-command="$(printf '%s' "${input}" \
-  | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input", {}).get("command", ""))' \
-  2>/dev/null)" || command=""
+command="$(hook_command)"
 
 if [[ "${branch}" == "main" ]]; then
   # The escape hatch, and it is one command wide.
@@ -49,17 +54,33 @@ if [[ "${branch}" == "main" ]]; then
   exit 2
 fi
 
+# This repository's own tree, for the -C rule below. Empty outside a checkout,
+# which makes every -C read as ours and the rail err closed.
+toplevel="$(git rev-parse --show-toplevel 2>/dev/null || echo "")"
+
 # Quotes can hide the ref, so strip them — which also flattens prose into refs.
 # Hence the split: each segment is judged alone, a git invocation lives in
 # exactly one of them, and an echo stops being evidence about a neighbouring push.
-cmd="$(printf '%s' "${command}" | tr -d "\"'")"
-segments="$(printf '%s' "${cmd}" | sed 's/&&/\n/g; s/||/\n/g' | tr ';|&' '\n')"
+runs="$(executable_text "${command}" | tr -d "\"'")"
+segments="$(command_segments "${runs}")"
 
 reason=""
 while IFS= read -r seg; do
   # Only inspect git commands; leave everything else alone.
   printf '%s' "${seg}" | grep -qE '(^|[^[:alnum:]_])git([[:space:]]|$)' || continue
   cmd="${seg}"
+
+  # A -C naming an absolute path outside this working tree runs against another
+  # repository, and its default branch is not the one this rail protects. A
+  # fixture built under a temporary directory is the ordinary case. A relative
+  # path resolves against a working directory this hook cannot see, so it counts
+  # as ours.
+  if [[ "${cmd}" =~ -C[[:space:]]+(/[^[:space:]]*) ]]; then
+    target="${BASH_REMATCH[1]}"
+    if [[ -z "${toplevel}" || "${target}" != "${toplevel}"* ]]; then
+      continue
+    fi
+  fi
 
   # push to any refspec form ending in main (main, +main, src:main, refs/heads/main).
   # The token must end there, so 'maintenance' and 'main..HEAD' are not matched.
