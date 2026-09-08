@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.72.0**
+Specification version: **1.73.0**
 
 ## The specification
 
@@ -84,6 +84,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/test-candidates.sh` | Bench for tools/candidates.sh. It pins what must be reported and what must be |
 | `tools/test-clocks.sh` | Bench for tools/clocks.sh, the sensor behind CLOCKS.md. It pins both |
 | `tools/test-environment.sh` | Bench for tools/environment.sh. It pins the two things the report must never |
+| `tools/test-guard-identity.sh` | Bench for .claude/hooks/guard-identity.sh. It pins both directions: what must |
 | `tools/test-guard-install.sh` | Test bench for .claude/hooks/guard-install.sh. |
 | `tools/test-guard-main.sh` | Test bench for .claude/hooks/guard-main.sh. |
 | `tools/test-hygiene.sh` | Bench for tools/hygiene.sh. It pins both directions: what must be reported, |

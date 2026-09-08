@@ -46,8 +46,13 @@ fi
 # a missing marker used to mean `is_canon=0`, which printed *no bump required* and
 # went green, reporting a check that had not run (section 3).
 lower() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }
+# head -n1, matching .claude/hooks/anchor.sh. Until 1.73.0 this read the whole
+# file through `tr -d '[:space:]'` while the hook read the first line, so the two
+# agreed only while the marker stayed one line. A comment added to explain the
+# file would have made this guard match nothing, set is_canon=0, and drop the
+# version rail with a green check. The parsers agree now.
 canon=""
-[[ -f .canon ]] && canon="$(lower "$(tr -d '[:space:]' < .canon)")"
+[[ -f .canon ]] && canon="$(lower "$(head -n1 .canon | tr -d '[:space:]')")"
 here="$(lower "${repo}")"
 have_marker=0
 [[ -n "${canon}" ]] && have_marker=1
