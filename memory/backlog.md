@@ -7,12 +7,6 @@ What gets done. What was already done lives in the journal, not here.
 - **Report what the weekly guard finds.** The first run of the guard has not happened yet, so
   this list is empty by fact and not by tidiness. An empty backlog here is the normal state of
   a template nobody has broken.
-- **`.canon` has two parsers and they disagree.** `anchor.sh` reads `head -n1`; `pr-guard.sh`
-  reads the whole file through `tr -d '[:space:]'`. They agree only while the file is one line,
-  so any comment added to it makes `pr-guard` match nothing, set `is_canon=0`, and drop the
-  version rail on the canon silently — a fail-open. No longer blocking: the lineage plan keeps
-  `.canon` at one line. Found 06-09-2026 while tracing the laboratory proposal
-  (`memory/projects/universal-core/canon-identity/custodian-verdict.md`). Candidate for upstream. #propagate:06-09-2026
 - **The role is declared where nothing reads it.** §5 closes `state.md`'s frontmatter at seven
   fields and none names what the branch is for, so every constraint the custodian states about
   itself is prose no hook reads. Settled by the Principal on 07-09-2026 into posts and functions;
@@ -58,14 +52,6 @@ What gets done. What was already done lives in the journal, not here.
   learns about holding it is what would earn a change to the definition. Nothing to do until then.
   #propagate:07-09-2026
 
-- **Build the rail that refuses an inline identity override.** A `git` invocation carrying
-  `-c user.email=` or `-c user.name=` is refused. Not the email alone: the Principal ruled on
-  03-09-2026 that the agent observes its identity and never sets it, so the name override was
-  never legitimate either. Bench: both overrides blocked, a plain commit untouched, and a case
-  proving `Edit` and `Write` cannot reach it. **This is the first specification, restored** — a
-  middle version narrowed it to the email so it would not block the agent's own habit, which is
-  the rail bending around the defect it exists to catch. Folded from the second vault
-  07-09-2026. Candidate for upstream. #propagate:03-09-2026
 - **Run the weekly guard once, end to end, and publish the report.** Wired since 14-08-2026 and it
   has never produced one. A schedule with no output is indistinguishable from a schedule that
   never fired. The five steps are in `memory/projects/custodian/the weekly guard/`, with step 4
@@ -88,7 +74,12 @@ What gets done. What was already done lives in the journal, not here.
 
 ## Principal
 
-- **Hand the copy its one file.** The Principal named it privately on 03-09-2026 and this is a
+- **Hand the copy its one file** — *quarantined 08-09-2026, waiting on a receipt.*
+  `memory/quarantine/the-funding-arrangement.md` says what it is, where it goes, and carries an
+  unsigned `received:` line. The copy's agent records the commitment in its own `state.md` and
+  signs. Until then `tools/hygiene.sh` names it at every session start, and nobody deletes it.
+  The custodian post does not reach into another repository, so the signature is the only thing
+  that can end the wait. Original item: The Principal named it privately on 03-09-2026 and this is a
   public repository, so it is not written here. The copy's agent takes
   `memory/projects/custodian/what belongs in the copy/handover to the copy.md` as a brief: the
   funding commitment moves there and nothing else does. This agent does not write into another
