@@ -101,6 +101,34 @@ verified: <what was run, or that it has never run>
 ---
 ```
 
+### `quarantine/` — what this agent turned out to be holding for somebody else
+
+An agent sometimes finds it is keeping something that belongs elsewhere: a standing arrangement
+that is one Principal's, a note that is another repository's business. **Deleting it is the wrong
+answer and so is keeping it**, because the first loses what nobody else has yet and the second
+leaves it where it does not belong.
+
+So it waits, named, in `memory/quarantine/`, and each item carries three things: **what it is**,
+**where it goes**, and a **receipt** the recipient signs.
+
+```markdown
+---
+quarantined: DD-MM-YYYY
+belongs_to: <whose it is, and which repository takes it>
+goes_to: <the path there, and what shape it takes>
+received:            # the recipient fills this, and only then may this be deleted
+---
+```
+
+**The receipt is the whole mechanism.** An agent does not reach into another repository (§4), so
+it cannot put the item where it goes and cannot know that anybody did. What it can do is refuse to
+delete until the line is signed. `tools/hygiene.sh` reports every unreceipted item, so a waiting
+room does not quietly become a cupboard.
+
+**Quarantine is not privacy, and a note that pretends otherwise is worse than none.** Moving
+something here does not unpublish it: a public repository's history still holds what it held. What
+this buys is that the item stops spreading, gets to where it belongs, and then leaves.
+
 ### `knowledge/` — what a repository knows
 
 `memory/` belongs to one agent on one branch. `knowledge/` belongs to the repository, sits on `main`, and is read by every agent there. **The agent writes an entry the first time it works a procedure out, and not later.** A folder that waits for a reason to exist never gets one, and every agent then rediscovers the same thing. This section is the only place its shape is defined.
