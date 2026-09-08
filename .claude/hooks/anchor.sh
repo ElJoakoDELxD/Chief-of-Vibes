@@ -58,8 +58,18 @@ branch="$(git branch --show-current 2>/dev/null || echo unknown)"
 # on 07-09-2026 a session worked a whole day from a superseded vault, and both
 # files were internally consistent, so only a name printed beside its branch
 # makes that kind of mismatch visible at all. Absent where no vault is.
-agent="$(sed -n 's/^agent:[[:space:]]*//p' memory/state.md 2>/dev/null | head -n1)"
-posts="$(sed -n 's/^posts:[[:space:]]*//p' memory/state.md 2>/dev/null | head -n1)"
+# The vault ships as an empty form on main (SYSTEM.md section 5), so the file is
+# present on every branch and its fields carry only their own comments. A value is
+# what a field holds once the comment is cut, and **an agent is a filled form rather
+# than a present file**: testing existence would read every branch as an agent's.
+field() {  # field <name> -> its value in memory/state.md, comments and space removed
+  sed -n "s/^$1:[[:space:]]*//p" memory/state.md 2>/dev/null \
+    | head -n1 | sed 's/[[:space:]]*#.*$//; s/[[:space:]]*$//'
+}
+has_agent() { [[ -f memory/state.md && -n "$(field agent)" ]]; }
+
+agent="$(field agent)"
+posts="$(field posts)"
 identity=""
 [[ -n "${agent}" ]] && identity=" Agent: ${agent}."
 [[ -n "${posts}" ]] && identity="${identity} Posts held: ${posts}. Declare which one this session exercises, and put it in the header as post/function (SYSTEM.md section 9)."
@@ -77,7 +87,7 @@ clocks="$(bash tools/clocks.sh 2>/dev/null)" || clocks=""
 [[ -n "${clocks}" ]] && clocks=" Clock reach: ${clocks}"
 
 menu=""
-if [[ ! -f memory/state.md ]]; then
+if ! has_agent; then
   # Canon or copy? The canon is the repository named in .canon; every other
   # repository carrying these files is somebody's copy of it, and a copy is
   # where agents are created. The remote is matched on its trailing
@@ -101,13 +111,13 @@ if [[ ! -f memory/state.md ]]; then
     | paste -sd ',' - | sed 's/,/, /g')" || true
 
   if [[ -n "${blueprint_slug}" ]]; then
-    menu=" No agent lives on this branch (no memory/state.md), and this repository is derived: .blueprint names ${blueprint_slug} as the blueprint it came from. Greet briefly in the user's language, assuming they may not know what this is, and offer: create their agent (.claude/skills/onboard/), or maintain the template through a pull request into this copy's main."
+    menu=" No agent lives on this branch (memory/state.md is the empty form), and this repository is derived: .blueprint names ${blueprint_slug} as the blueprint it came from. Greet briefly in the user's language, assuming they may not know what this is, and offer: create their agent (.claude/skills/onboard/), or maintain the template through a pull request into this copy's main."
   elif [[ -z "${canon_slug}" || -z "${origin_url}" ]]; then
-    menu=" No agent lives here (no memory/state.md), and whether this repository is the canon or the user's own copy could not be determined (no marker on this branch, or no origin remote): say so and ask which it is before creating an agent — never guess. Greet briefly in the user's language, assuming they may not know what this is."
+    menu=" No agent lives here (memory/state.md is the empty form), and whether this repository is the canon or the user's own copy could not be determined (no marker on this branch, or no origin remote): say so and ask which it is before creating an agent — never guess. Greet briefly in the user's language, assuming they may not know what this is."
   elif [[ "/${origin_url}" == *"/${canon_slug}" ]]; then
     menu=" This session runs on the canon (origin matches .canon): no agent is created here and no work lands here. Greet briefly in the user's language, assuming they may not know what this is, and offer the two legitimate reasons to be on the canon: create their own copy of the template (the session makes the repository for them when a tool allows it, .claude/skills/onboard/ step 0, with GitHub's 'Use this template' as the fallback), or contribute a template change through a pull request."
   else
-    menu=" No agent lives here yet (no memory/state.md), and this repository is the user's own copy of the template (origin does not match .canon) — this is where their agent belongs. Greet briefly in the user's language, assuming they may not know what this is, and offer: create their agent (.claude/skills/onboard/), or maintain the template through a pull request into this copy's main."
+    menu=" No agent lives here yet (memory/state.md is the empty form), and this repository is the user's own copy of the template (origin does not match .canon) — this is where their agent belongs. Greet briefly in the user's language, assuming they may not know what this is, and offer: create their agent (.claude/skills/onboard/), or maintain the template through a pull request into this copy's main."
   fi
 
   # The continuation offer belongs to a copy, where the Principal is returning to
@@ -188,7 +198,7 @@ fi
 # It reports and never blocks: deciding that a finding generalizes is a judgment,
 # and a rail on a judgment lies (§8).
 candidates=""
-if [[ "${event}" == "SessionStart" && -f memory/state.md ]]; then
+if [[ "${event}" == "SessionStart" ]] && has_agent; then
   waiting="$(bash tools/candidates.sh 2 2>/dev/null)" || waiting=""
   if [[ -n "${waiting}" ]]; then
     candidates=" Findings tagged for upstream and still waiting:
@@ -202,7 +212,7 @@ fi
 # a backlog too large to act on, and a handoff describing a session that ran
 # under superseded rules (§5). Reports, never blocks.
 hygiene=""
-if [[ "${event}" == "SessionStart" && -f memory/state.md ]]; then
+if [[ "${event}" == "SessionStart" ]] && has_agent; then
   untidy="$(bash tools/hygiene.sh 2>/dev/null)" || untidy=""
   if [[ -n "${untidy}" ]]; then
     hygiene=" Memory hygiene:
@@ -223,7 +233,7 @@ fi
 # `resume` nothing was destroyed. The message names the notes by path, because
 # a reader never looks for what they must read (§3).
 resume=""
-if [[ "${event}" == "SessionStart" && "${origin_kind}" == "clear" && -f memory/state.md ]]; then
+if [[ "${event}" == "SessionStart" && "${origin_kind}" == "clear" ]] && has_agent; then
   notes=""
   for note in memory/handoff/*.md; do
     [[ -e "${note}" ]] || continue

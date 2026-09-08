@@ -67,11 +67,16 @@ fi
 vaults=""
 while IFS= read -r ref; do
   [[ -n "${ref}" ]] || continue
-  git cat-file -e "${ref}:memory/state.md" 2>/dev/null \
+  # A FILLED form, never a present file. The form ships on every branch (SYSTEM.md
+  # section 5), so testing existence would name every branch here and turn the one
+  # check that caught a real second vault into noise nobody reads.
+  named="$(git cat-file -p "${ref}:memory/state.md" 2>/dev/null \
+    | sed -n 's/^agent:[[:space:]]*//p' | head -n1 | sed 's/[[:space:]]*#.*$//; s/[[:space:]]*$//')"
+  [[ -n "${named}" ]] \
     && vaults="${vaults}${vaults:+, }${ref#refs/remotes/}"
 done < <(git for-each-ref --format='%(refname)' refs/remotes/ 2>/dev/null | grep -v '/HEAD$')
 if [[ -n "${vaults}" ]] && [[ "${vaults}" == *", "* ]]; then
-  echo "More than one branch carries memory/state.md: ${vaults}. One agent, one vault (SYSTEM.md 5). Reading the wrong one is invisible, because each reads correctly alone."
+  echo "More than one branch names an agent in memory/state.md: ${vaults}. One agent, one vault (SYSTEM.md 5). Reading the wrong one is invisible, because each reads correctly alone."
 fi
 
 # Everything below needs memory/, and this repository may have none on the branch
