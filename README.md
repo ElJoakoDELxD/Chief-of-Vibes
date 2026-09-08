@@ -68,6 +68,7 @@ Nothing happens behind your back. This is the complete list. If it is not in thi
 | Drift check | each session start, in your copy only | your agent says so when your copy is behind this repository, and offers the update |
 | Main guard | before every edit and shell command | a visible `BLOCKED` message when it acts |
 | Install guard | before every shell command | a visible `BLOCKED` message when an install would not survive the session |
+| Identity guard | before every shell command | a visible `BLOCKED` message when a command would sign a commit as somebody else |
 | Candidate sensor | each session start, in your copy only | your agent names what it found and has not sent back here yet |
 | Hygiene sensor | each session start, in your copy only | your agent says when its own notes have grown past the point of being useful, or when a note is filed where the next session will not find it |
 | Hand-back | after you clear the chat, in your copy only | your agent opens the empty window by picking the thread back up from its notes |

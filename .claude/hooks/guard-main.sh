@@ -1,27 +1,42 @@
 #!/usr/bin/env bash
 #
-# Claude Code hook (PreToolUse on Edit|Write|Bash): keeps main read-only.
-# On main it blocks everything; elsewhere it blocks the git commands that reach
-# main, each documented at its own rule below. Exit 2 denies the call, reason on
-# stderr. Input: PreToolUse hook JSON on stdin.
+# Claude Code hook (PreToolUse on Edit|Write|Bash): keeps the default branch
+# read-only. Standing there it blocks everything; elsewhere it blocks the git
+# commands that reach it. Exit 2 denies the call, reason on stderr. Input:
+# PreToolUse hook JSON on stdin.
 #
-# A rail, not a lock: it only runs in sessions that wire it, and string-matching
-# is never exhaustive. The guarantee for main is branch protection plus CI.
+# A rail, not a lock: it only runs in sessions that wire it, and it reads one
+# command at a time. The guarantee is branch protection plus CI.
 #
-# It errs closed where text and intent are indistinguishable — a command writing
-# a dangerous command into a file reads exactly like the command. That direction
-# is safe. Blocking ordinary work is not, and prose mentioning the branch used to
-# be enough to deny an unrelated push. Segment scoping separates the two;
-# tools/test-guard-main.sh pins both halves.
+# **It judges what the shell will run, in the position the word holds.** Three
+# grammars are already there to be read, and reading them is not a guess:
+#
+#   the shell's       a here-document body bound for a file is data, and each
+#                     segment is a command of its own (lib/command.sh)
+#   the shell's       quoting marks where a word starts and ends, so a message
+#                     is one word and never a list of refs
+#   git's own         a subcommand decides what its operands mean, and only
+#                     seven of them can reach a branch at all
+#
+# So `git commit -m "do not push to main"` is a commit with one message operand,
+# and `git push origin main` is a push with a ref. The words are the same. The
+# positions are not, and the position is what this reads. Until 1.77.0 the rail
+# read the flat string and refused three of five ordinary messages.
+#
+# Where a command cannot be tokenized, an unbalanced quote being the usual
+# reason, it falls back to matching the flat text. That direction is safe and it
+# is the only place this errs closed.
+#
+# What is left over is intent, whether this checkout is the one that was meant,
+# and no rail decides that. It belongs to the post holding the session
+# (SYSTEM.md section 8). tools/test-guard-main.sh pins every half.
 
 set -uo pipefail
+# shellcheck source=/dev/null
+source "$(dirname "${BASH_SOURCE[0]}")/lib/command.sh"
 
-input="$(cat)"
 branch="$(git branch --show-current 2>/dev/null || echo "")"
-
-command="$(printf '%s' "${input}" \
-  | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input", {}).get("command", ""))' \
-  2>/dev/null)" || command=""
+command="$(hook_command)"
 
 if [[ "${branch}" == "main" ]]; then
   # The escape hatch, and it is one command wide.
@@ -49,50 +64,186 @@ if [[ "${branch}" == "main" ]]; then
   exit 2
 fi
 
-# Quotes can hide the ref, so strip them — which also flattens prose into refs.
-# Hence the split: each segment is judged alone, a git invocation lives in
-# exactly one of them, and an echo stops being evidence about a neighbouring push.
-cmd="$(printf '%s' "${command}" | tr -d "\"'")"
-segments="$(printf '%s' "${cmd}" | sed 's/&&/\n/g; s/||/\n/g' | tr ';|&' '\n')"
+# This repository's own tree, for the -C rule. Empty outside a checkout, which
+# makes every -C read as ours and the rail err closed.
+toplevel="$(git rev-parse --show-toplevel 2>/dev/null || echo "")"
 
-reason=""
-while IFS= read -r seg; do
-  # Only inspect git commands; leave everything else alone.
-  printf '%s' "${seg}" | grep -qE '(^|[^[:alnum:]_])git([[:space:]]|$)' || continue
-  cmd="${seg}"
+reason="$(executable_text "${command}" | python3 -c '
+import re, shlex, sys
 
-  # push to any refspec form ending in main (main, +main, src:main, refs/heads/main).
-  # The token must end there, so 'maintenance' and 'main..HEAD' are not matched.
-  if printf '%s' "${cmd}" | grep -qE '(^|[[:space:]])push([[:space:]]|$)' \
-     && printf '%s' "${cmd}" | grep -qE '(^|[[:space:]:+/])main([[:space:];&|]|$)'; then
-    reason="pushes to main"
-  fi
+BRANCH = "main"
+TOPLEVEL = sys.argv[1]
 
-  # push --mirror / --all replicate every ref, main included.
-  if printf '%s' "${cmd}" | grep -qE '(^|[[:space:]])push([[:space:]]|$)' \
-     && printf '%s' "${cmd}" | grep -qE '(^|[[:space:]])--(mirror|all)([[:space:];&|]|$)'; then
-    reason="pushes all refs (main included)"
-  fi
+# The seven subcommands that can move or reach a branch. Everything else git
+# does — commit, log, diff, add, merge-base — takes no operand this rail cares
+# about, so its words are never read as refs.
+REACHING = {"push", "checkout", "switch", "branch", "worktree",
+            "update-ref", "symbolic-ref"}
 
-  # checkout/switch onto main past any flags. Branching OFF main and a path
-  # named main-something are not matched.
-  if printf '%s' "${cmd}" | grep -qE '(checkout|switch)([[:space:]]+-[^[:space:]]+)*[[:space:]]+main([[:space:];&|]|$)'; then
-    reason="checks out main"
-  fi
+# Global options that consume the next word, so the subcommand is not mistaken
+# for the value of one.
+GLOBAL_VALUE = {"-C", "-c", "--git-dir", "--work-tree", "--namespace",
+                "--exec-path", "--super-prefix"}
+# Words a segment can open with that are not the program this rail judges: a
+# privilege wrapper, an assignment, or an interpreter reading its script from
+# somewhere else. A body fed to one of these arrives as words of its own, so
+# stepping past the interpreter is what lets the rail read it.
+PREFIX = {"sudo", "env", "command", "exec", "nohup", "time",
+          "sh", "bash", "zsh", "ksh", "dash", "python", "python3",
+          "node", "perl", "ruby", "eval", "xargs", "source"}
+REDIRECT = {">", ">>", "<", "<<", "2>", "&>", ">|"}
+ASSIGN = re.compile(r"[A-Za-z_][A-Za-z0-9_]*=")
 
-  # branch with a force/delete/move/copy flag targeting main.
-  if printf '%s' "${cmd}" | grep -qE 'branch([[:space:]]+-[^[:space:]]+)*[[:space:]]+-[A-Za-z]*[fdDmMC][A-Za-z]*[[:space:]]+main([[:space:];&|]|$)'; then
-    reason="force-moves, renames, or deletes main"
-  fi
+def is_operator(tok):
+    return tok != "" and all(c in ";|&\n" for c in tok)
 
-  # worktrees on main and ref plumbing that reaches main without a checkout.
-  if printf '%s' "${cmd}" | grep -qE 'worktree[^|;&]*[[:space:]]main([[:space:];&|]|$)' \
-     || printf '%s' "${cmd}" | grep -qE '(update-ref|symbolic-ref)[^|;&]*refs/heads/main([[:space:];&|]|$)'; then
-    reason="manipulates main via worktree or ref plumbing"
-  fi
+def segments(text):
+    """Tokenize once, then cut on the shell operators. Quoting survives, so a
+    message holding a semicolon stays one word. The newline is an operator here
+    rather than whitespace, because it separates commands."""
+    lexer = shlex.shlex(text, posix=True, punctuation_chars="();<>|&\n")
+    lexer.whitespace = " \t\r"
+    lexer.whitespace_split = True
+    out, cur = [], []
+    for tok in lexer:              # raises ValueError on an unbalanced quote
+        if is_operator(tok):
+            out.append(cur); cur = []
+        else:
+            cur.append(tok)
+    out.append(cur)
+    return out
 
-  [[ -n "${reason}" ]] && break
-done <<< "${segments}"
+def ends_in_branch(word):
+    """A refspec whose destination is the protected branch: main, +main,
+    HEAD:main, refs/heads/main. Not maintenance, and not main..HEAD."""
+    return word == BRANCH or bool(re.fullmatch(r".*[:+/]" + BRANCH, word))
+
+SHELLS = {"sh", "bash", "zsh", "ksh", "dash", "busybox"}
+DASH_C = re.compile(r"-[A-Za-z]*c")
+
+def verdict(tokens, depth=0):
+    # Drop redirections and their targets; they are not arguments to git.
+    words, skip = [], False
+    for tok in tokens:
+        if skip:
+            skip = False
+            continue
+        if tok in REDIRECT:
+            skip = True
+            continue
+        words.append(tok)
+
+    i = 0
+    while i < len(words) and ASSIGN.match(words[i]):
+        i += 1
+
+    # A shell asked to run a string, or eval given one, holds a command inside
+    # a word. That is the one place a multi-word token is not data, and it is
+    # decided by position like everything else here. A message argument is not
+    # this, which is why it is read once and never again.
+    if depth < 3 and i < len(words):
+        prog = words[i].split("/")[-1]
+        if prog in SHELLS:
+            for j in range(i + 1, len(words) - 1):
+                if DASH_C.fullmatch(words[j]):
+                    r = analyse(words[j + 1], depth + 1)
+                    if r:
+                        return r
+                    break
+        elif prog == "eval":
+            for w in words[i + 1:]:
+                if not w.startswith("-"):
+                    r = analyse(w, depth + 1)
+                    if r:
+                        return r
+
+    while i < len(words) and (words[i].split("/")[-1] in PREFIX
+                              or ASSIGN.match(words[i])):
+        i += 1
+    if i >= len(words) or words[i].split("/")[-1] != "git":
+        return ""
+    i += 1
+
+    # Global options, and the -C that names another repository.
+    outside = False
+    while i < len(words) and words[i].startswith("-"):
+        opt = words[i]
+        name = opt.split("=", 1)[0]
+        if name == "-C" and "=" not in opt:
+            target = words[i + 1] if i + 1 < len(words) else ""
+            if target.startswith("/") and (not TOPLEVEL or not target.startswith(TOPLEVEL)):
+                outside = True
+        if name in GLOBAL_VALUE and "=" not in opt:
+            i += 2
+        else:
+            i += 1
+    if outside:
+        return ""
+    if i >= len(words):
+        return ""
+
+    sub = words[i]
+    if sub not in REACHING:
+        return ""
+
+    rest = words[i + 1:]
+    flags = [w for w in rest if w.startswith("-")]
+    operands = [w for w in rest if not w.startswith("-")]
+
+    if sub == "push":
+        if any(f in ("--mirror", "--all") for f in flags):
+            return "pushes all refs (main included)"
+        if any(ends_in_branch(o) for o in operands):
+            return "pushes to main"
+    elif sub in ("checkout", "switch"):
+        if BRANCH in operands:
+            return "checks out main"
+    elif sub == "branch":
+        moving = any(re.fullmatch(r"-[A-Za-z]*[fdDmMC][A-Za-z]*", f) for f in flags)
+        if moving and BRANCH in operands:
+            return "force-moves, renames, or deletes main"
+    elif sub == "worktree":
+        if BRANCH in operands:
+            return "manipulates main via worktree or ref plumbing"
+    elif sub in ("update-ref", "symbolic-ref"):
+        if any(o.endswith("refs/heads/" + BRANCH) or o == BRANCH for o in operands):
+            return "manipulates main via worktree or ref plumbing"
+    return ""
+
+def coarse(text):
+    """The fallback, for text no tokenizer can read. It matches the flat string,
+    which is what every version before 1.77.0 did everywhere."""
+    flat = re.sub(r"[\"\x27]", "", text)
+    for seg in re.split(r"&&|\|\||[;|&\n]", flat):
+        if not re.search(r"(^|[^\w])git([\s]|$)", seg):
+            continue
+        has_push = re.search(r"(^|\s)push(\s|$)", seg)
+        if has_push and re.search(r"(^|[\s:+/])" + BRANCH + r"(\s|$)", seg):
+            return "pushes to main"
+        if has_push and re.search(r"(^|\s)--(mirror|all)(\s|$)", seg):
+            return "pushes all refs (main included)"
+        if re.search(r"(checkout|switch)(\s+-\S+)*\s+" + BRANCH + r"(\s|$)", seg):
+            return "checks out main"
+        if re.search(r"branch(\s+-\S+)*\s+-[A-Za-z]*[fdDmMC][A-Za-z]*\s+" + BRANCH + r"(\s|$)", seg):
+            return "force-moves, renames, or deletes main"
+        if re.search(r"worktree[^|;&]*\s" + BRANCH + r"(\s|$)", seg) or \
+           re.search(r"(update-ref|symbolic-ref)[^|;&]*refs/heads/" + BRANCH + r"(\s|$)", seg):
+            return "manipulates main via worktree or ref plumbing"
+    return ""
+
+def analyse(text, depth=0):
+    try:
+        parts = segments(text)
+    except ValueError:
+        return coarse(text)
+    for tokens in parts:
+        r = verdict(tokens, depth)
+        if r:
+            return r
+    return ""
+
+print(analyse(sys.stdin.read()))
+' "${toplevel}" 2>/dev/null)" || reason=""
 
 if [[ -n "${reason}" ]]; then
   echo "BLOCKED by guard-main.sh: that command ${reason}. Template changes go through an approved pull request." >&2

@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.74.0**
+Specification version: **1.78.0**
 
 ## The specification
 
@@ -22,7 +22,7 @@ work reaches them. Each section is one address.
 | [§8](system/8-extending.md#8-extending) | Extending | `system/8-extending.md` |
 | [§9](SYSTEM.md#9-header-and-session) | Header and session | `SYSTEM.md` |
 
-### The rules of §3, by name. There are 19.
+### The rules of §3, by name. There are 21.
 
 - Act, do not queue.
 - A negative answer names its frame.
@@ -40,6 +40,8 @@ work reaches them. Each section is one address.
 - Ingest, do not guess.
 - Write it down, in the folder that fits.
 - Prose stays out of the command channel.
+- Say when a rule is wrong, and go on obeying it.
+- A script measures. It does not decide, and its silence decides nothing.
 - The Principal's voice is the Principal's.
 - The Principal never looks for what they must read.
 - Involve and teach.
@@ -83,6 +85,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/test-anchor.sh` | Bench for the resumption half of .claude/hooks/anchor.sh. It pins what must |
 | `tools/test-candidates.sh` | Bench for tools/candidates.sh. It pins what must be reported and what must be |
 | `tools/test-clocks.sh` | Bench for tools/clocks.sh, the sensor behind CLOCKS.md. It pins both |
+| `tools/test-command-lib.sh` | Bench for .claude/hooks/lib/command.sh. It pins the one question the rails |
 | `tools/test-environment.sh` | Bench for tools/environment.sh. It pins the two things the report must never |
 | `tools/test-guard-identity.sh` | Bench for .claude/hooks/guard-identity.sh. It pins both directions: what must |
 | `tools/test-guard-install.sh` | Test bench for .claude/hooks/guard-install.sh. |
