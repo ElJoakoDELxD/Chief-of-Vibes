@@ -72,10 +72,10 @@ Nothing happens behind your back. This is the complete list. If it is not in thi
 | Candidate sensor | each session start, in your copy only | your agent names what it found and has not sent back here yet |
 | Hygiene sensor | each session start, in your copy only | your agent says when its own notes have grown past the point of being useful, or when a note is filed where the next session will not find it |
 | Hand-back | after you clear the chat, in your copy only | your agent opens the empty window by picking the thread back up from its notes |
-| Index check (CI) | on every pull request into `main` | a failed check when `INDEX.md` no longer matches the repository |
-| Section check (CI) | on every pull request into `main` | a failed check when the specification's map points at a file that does not hold that section |
-| Prose gate (CI) | on every pull request into `main` | the readability score of every published file, and which ones are over the line |
-| PR guard (CI) | on every pull request into `main` | a failed check when a change reaches outside the system files or skips the version bump |
+| Index check (CI) | on every pull request | a failed check when `INDEX.md` no longer matches the repository |
+| Section check (CI) | on every pull request | a failed check when the specification's map points at a file that does not hold that section |
+| Prose gate (CI) | on every pull request | the readability score of every published file, and which ones are over the line |
+| PR guard (CI) | on every pull request | a failed check when a change reaches outside the system files or skips the version bump |
 
 All agent state lives in `memory/`. There is no hidden index, no sensor, and no background process.
 

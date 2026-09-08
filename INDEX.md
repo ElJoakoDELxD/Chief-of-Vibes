@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.78.0**
+Specification version: **1.79.0**
 
 ## The specification
 
@@ -97,6 +97,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/test-pr-guard.sh` | Bench for tools/pr-guard.sh, the check that decides what reaches main. It had |
 | `tools/test-prose-gate.sh` | Bench for tools/prose-gate.sh. It pins that the check reports and never blocks, |
 | `tools/test-ready.sh` | Bench for tools/ready.sh. The probe exists to stop a session editing the |
+| `tools/test-scope.sh` | Bench for .github/scope.sh, which decides whether the guard jobs apply to a |
 | `tools/test-sections.sh` | Bench for tools/sections.sh. It pins each way the map and the tree can |
 | `tools/test-skills.sh` | Bench for tools/skills.sh. It pins the grouping against the two fields the |
 | `tools/test-sweep-branches.sh` | Bench for tools/sweep-branches.sh. A sweep that deletes refs is the one tool |
