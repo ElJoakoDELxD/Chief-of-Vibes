@@ -54,3 +54,18 @@ it, which is `-F` and a file.
 And the limit that was always there: a command written to a file now and run by name in the
 next call walks past every rail here. `guard-install.sh` already said so. These rails stop the
 reflex; they do not defeat an adversary, and saying otherwise would be the more expensive lie.
+
+## What the Principal added next
+
+That the agent also lacks the third test: it sees repetition and contradiction and not a rule that
+is illogical or counterproductive. Shipped as 1.76.0, pull request #88.
+
+The objection worth keeping: an agent that grades its own rules will find the inconvenient ones
+faulty, which is the exact failure `memory/corrections.md` records about the identity rail. It does
+not survive against the duty to report, only against a licence to set aside. So the rule holds while
+the proposal travels, and the objection carries an event or it is a preference.
+
+**Both defects in 1.75.0 were of the two shapes named there.** The rail's stated reason did not
+support it, and the rail worked as written while costing more than it bought. Every check in the
+tree was green over both, for weeks. That is the measurement the new test exists on.
+
