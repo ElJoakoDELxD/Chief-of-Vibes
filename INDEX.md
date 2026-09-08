@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.75.0**
+Specification version: **1.76.0**
 
 ## The specification
 
@@ -22,7 +22,7 @@ work reaches them. Each section is one address.
 | [§8](system/8-extending.md#8-extending) | Extending | `system/8-extending.md` |
 | [§9](SYSTEM.md#9-header-and-session) | Header and session | `SYSTEM.md` |
 
-### The rules of §3, by name. There are 19.
+### The rules of §3, by name. There are 20.
 
 - Act, do not queue.
 - A negative answer names its frame.
@@ -40,6 +40,7 @@ work reaches them. Each section is one address.
 - Ingest, do not guess.
 - Write it down, in the folder that fits.
 - Prose stays out of the command channel.
+- Say when a rule is wrong, and go on obeying it.
 - The Principal's voice is the Principal's.
 - The Principal never looks for what they must read.
 - Involve and teach.
