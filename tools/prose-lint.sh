@@ -2,7 +2,8 @@
 #
 # Scores prose against the writing system in .claude/skills/ste-writing/
 # (derived from ASD-STE100). Prints violations per 100 words. Lower is better.
-# The publication register (SYSTEM.md section 7) sets the gate: < 1.5 to publish.
+# The publication register (SYSTEM.md section 7) keeps 1.5 as the reference rate.
+# It is a reading a person weighs, never a verdict this script returns.
 #
 # Own implementation. The idea comes from woosal1337's ste-lint experiment
 # (see the skill's provenance); the code here is this repository's.
