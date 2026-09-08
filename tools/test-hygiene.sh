@@ -169,6 +169,24 @@ out="$(run "${tmp}/ownposts")"
 check_absent "memory/posts/ is not an intruder" "memory/posts/ is not a folder" "${out}"
 check_absent "memory/functions/ is not an intruder" "memory/functions/ is not a folder" "${out}"
 
+# --- quarantine is a waiting room, not a cupboard -----------------------------
+# An item nobody has taken must stay visible while it waits. A signed receipt is
+# what ends the wait, and only the recipient can sign it.
+build "${tmp}/quar" 2026-08-01
+printf 'x\n' > "${tmp}/quar/memory/backlog.md"
+printf 'a correction\n' > "${tmp}/quar/memory/corrections.md"
+mkdir -p "${tmp}/quar/memory/quarantine"
+printf -- '---\nquarantined: 08-09-2026\nbelongs_to: somebody\ngoes_to: somewhere\nreceived:\n---\n' \
+  > "${tmp}/quar/memory/quarantine/thing.md"
+out="$(run "${tmp}/quar")"
+check "an unreceipted item is reported" "quarantined and unreceipted" "${out}"
+check_absent "and quarantine/ is not called an intruder" "memory/quarantine/ is not a folder" "${out}"
+
+printf -- '---\nquarantined: 08-09-2026\nbelongs_to: somebody\ngoes_to: somewhere\nreceived: taken 09-09-2026\n---\n' \
+  > "${tmp}/quar/memory/quarantine/thing.md"
+out="$(run "${tmp}/quar")"
+check_absent "a signed receipt ends the report" "quarantined and unreceipted" "${out}"
+
 # --- corrections.md, named rather than created -------------------------------
 # Section 5 refuses to create it in advance and is right. What the absence needs
 # is for the path to be said out loud, because section 9 says to read the file

@@ -98,6 +98,8 @@ fi
 
 # memory/posts/ and memory/functions/ are the agent's own, written before they
 # are universal enough to propose into the catalogue on main (section 5).
+# memory/quarantine/ holds what this agent turned out to be keeping for somebody
+# else, waiting on a receipt from whoever it belongs to.
 #
 # A folder memory/ was never meant to hold is invisible to the check below,
 # because that one only ever walks inside memory/projects/. On 13-08-2026 a
@@ -109,10 +111,20 @@ if [[ -d memory ]]; then
   while IFS= read -r dir; do
     name="${dir#memory/}"
     case "${name}" in
-      projects|journal|handoff|posts|functions) continue ;;
+      projects|journal|handoff|posts|functions|quarantine) continue ;;
     esac
     echo "memory/${name}/ is not a folder SYSTEM.md 5 names. Its contents are invisible to every check that walks memory/projects/. Move it or fold it in."
   done < <(find memory -mindepth 1 -maxdepth 1 -type d | sort)
+fi
+
+# Quarantine is a waiting room and not a cupboard. An item whose receipt is
+# still unsigned is one nobody has taken, and the point of naming it here is that
+# it stops being invisible while it waits (section 5).
+if [[ -d memory/quarantine ]]; then
+  while IFS= read -r file; do
+    grep -q '^received:[[:space:]]*[^[:space:]]' "${file}" \
+      || echo "${file} is quarantined and unreceipted. It waits for whoever it belongs to, and until they sign the \`received:\` line nobody may delete it (SYSTEM.md 5)."
+  done < <(find memory/quarantine -type f -name '*.md' | sort)
 fi
 
 if [[ -d memory/projects ]]; then
