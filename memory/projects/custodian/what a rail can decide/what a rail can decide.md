@@ -98,3 +98,25 @@ reason to propose anything, since a copy could simply keep it.
 The line worth carrying forward: **you cannot study a variable system unless the constants are
 actually constant.** The template is meant to be the constant. Until 1.80.0 it was not.
 
+## The rule that closes the loop
+
+**Only what the copy proposes, and nothing beyond the natural.** The fact that somebody worked from
+outside arrives unasked, carried by the proposal itself: git's authorship, the account that opened
+it, the day the platform stamped on it. Nobody gathers those. They exist because a contribution
+happened.
+
+So nothing may be built to collect anything else. Not a hash, not a count, not a ping. **A mechanism
+that produces information about a copy is a beacon whatever its intent**, and the manifest was one.
+
+The consequence, and it is the part that will keep pressing: **the canon cannot know whether it is
+being used, and must not try.** Zero forks and zero proposals is not evidence of no users. It is
+evidence of nothing. Every mechanism that would resolve that ambiguity is the forbidden one, so the
+thing has to be built to be worth using without ever confirming that it is. The pressure returns
+every time somebody asks whether anyone is out there, and this is the answer to give them.
+
+**Checked against the tree, not assumed.** `tools/clocks.sh` already says *add it by pull request
+into the canon*, so the reach records are proposals and 1.80.0 did not break them. One thing is left
+over: both files carry a hand-written day. Git stamps the pull request already, so the day is a
+second copy of what git knows — the same argument that removed `updated:` from `knowledge/` — and it
+is the only copy-activity datum those files hold beyond the natural. Two rules agree that it goes.
+
