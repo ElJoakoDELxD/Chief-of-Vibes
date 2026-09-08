@@ -16,7 +16,10 @@ on:
     # stacked layer got no checks at all and the top of the stack lands every
     # layer under it. Nothing compares such a list against the branches in use,
     # so nothing could catch it. Measured 08-09-2026, on the stack that shipped
-    # 1.75.0 to 1.78.0: two of four layers opened with zero checks.
+    # 1.75.0 to 1.78.0: three of four layers opened with zero checks. Only the
+    # bottom layer had a run, because only its base was main. The commit
+    # message of 59566e7 says two, which was estimated rather than counted;
+    # the workflow run list is the count.
     #
     # A copy naming its branches differently inherits the same defect from a
     # list, which is why there is none. What is excluded is decided by reading
