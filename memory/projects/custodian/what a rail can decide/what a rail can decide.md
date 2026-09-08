@@ -69,3 +69,19 @@ the proposal travels, and the objection carries an event or it is a preference.
 support it, and the rail worked as written while costing more than it bought. Every check in the
 tree was green over both, for weeks. That is the measurement the new test exists on.
 
+## The third grammar, and the thing I nearly left alone
+
+The Principal asked whether the coarse half had a fix. Answering it honestly meant admitting I had
+not looked: *coarse on purpose* was a conclusion, not a measurement, written in the same reply that
+shipped a rule against exactly that.
+
+It had a fix. Quoting says where a word ends; git says which subcommand takes a ref. Both were
+sitting there. **The pattern across three releases is one pattern**: every limit I called inherent
+was a grammar I had declined to read.
+
+What genuinely has no fix is the deferred command — write a script now, run it by name later. Not
+because it is undecidable for a shell script (it is decidable, and I checked: the repository's own
+tooling would survive the inspection) but because a shell script is one shape of an unbounded
+family. Covering one shape sells confidence the rail cannot honour. The branch's guarantee is
+`protected: true` at the remote, verified rather than repeated from a comment.
+
