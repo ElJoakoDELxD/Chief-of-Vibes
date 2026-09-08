@@ -150,3 +150,26 @@ wearing rung 2's clothes**.
 ours and the limit sounds like rigour. The tell was the workaround: this agent had built two, and
 called neither one a workaround.
 
+---
+
+## 08-09-2026 — "no fix worth taking"
+
+**What was claimed.** That the deferred command — write a script now, run it by name later — has no
+fix, because a shell script is one shape of an unbounded family and a rail covering one shape sells
+confidence it cannot honour.
+
+**What is true.** The first half. A rail there would be dishonest, and that reasoning holds. The
+close does not: *no rail can decide this* is not *this is undecided*. §8's ladder answers it in one
+line, and the answer is rung 4. The rule now says the absence of a block is never permission.
+
+**The shape, which is now three for three.** A limit measured on a mechanism, reported as a limit on
+the system. Grammar first, then the missing soundness test, now a gap with no rail. Every time the
+measurement was right and the conclusion was one rung short of where the ladder puts it.
+
+**Where the fix went.** §3, held every session, with the number half beside it: a threshold standing
+in for a judgment that needs inference is the same defect from the other side. §7's publication gate
+was one, measured at 21 of 26 files over a line nothing enforced.
+
+**The tell to watch for.** A sentence of mine that closes a gap by naming what a tool cannot do. The
+tool's limit is a measurement. The gap's disposition is a decision, and it is never the tool's.
+
