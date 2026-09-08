@@ -1,7 +1,6 @@
 ---
 topic: Bring a canon release into this copy, and then into the agent branch
-updated: 04-08-2026
-verified: run seven times, on 02-08-2026 and 03-08-2026, for releases 1.30.0, 1.31.0, 1.32.1, 1.33.0, 1.34.0, 1.35.0 and 1.35.1. All three sides read back and compared each time
+verified: run seven times across a consecutive run of releases, with all three sides read back and compared each time
 ---
 
 ## When this applies
@@ -41,13 +40,13 @@ in, and nothing looks wrong from inside it.
   canon's `INDEX.md` across drops those rows and the CI index check fails, naming the
   exact lines. Run `bash tools/index.sh > INDEX.md` on the sync branch instead. The rule
   generalizes: a generated file is regenerated on the side that will hold it, never
-  carried across. Found on 04-08-2026 syncing 1.40.0, and the check caught it.
+  carried across. Found while syncing a release, and the check caught it.
 
 - **Run the regeneration from the copy, and check the working directory first.** Reading
   the release files needs a `cd` into the clone of the canon, and a `cd` persists. Running
   `tools/index.sh` in the next breath regenerates the *canon's* index, reports it current,
   and leaves the copy's stale — a green reading of the wrong tree, which is worse than a
-  red one. Same failure twice on 04-08-2026, the second time in this exact procedure.
+  red one. The same failure twice in one day, the second time inside this procedure.
   `git branch --show-current` before regenerating answers it in one line.
 
 - **The drift report names the working branch, not `main`.** The hook compares the branch

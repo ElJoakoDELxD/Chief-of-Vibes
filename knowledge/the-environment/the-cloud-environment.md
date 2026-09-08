@@ -1,17 +1,16 @@
 ---
 topic: What a cloud session actually is, and which parts of it the agent can change
-updated: 13-08-2026
-verified: read from the official documentation on 13-08-2026, and every reach claim
+verified: read from the official documentation, and every reach claim
   measured in-session with `bash tools/environment.sh`. The durable-install claim is
-  documentation, not yet run: no setup script has been used from here.
+  documentation rather than a run: no setup script has been used to verify it.
 ---
 
 ## When this applies
 
 Any session that hits a wall it did not build: a domain that will not resolve, a tool that
 is missing, a variable that is not set, an install that will not survive. Read this before
-filing the wall under **Principal**, because three times in two days this repository filed
-one that did not exist.
+filing the wall under **Principal**, because three times in two days an agent filed one that
+did not exist.
 
 ## The shape of the thing
 
