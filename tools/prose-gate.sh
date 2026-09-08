@@ -2,9 +2,11 @@
 #
 # Scores every piece of published prose against the gate in SYSTEM.md section 7.
 #
-# Rung 3 (section 8): it reports, and it never blocks. Section 7 sets the gate at
-# 1.5 violations per 100 words, and until now only a manual run measured it. A
-# rule in force that nothing measures is a rule nobody can tell was skipped.
+# Rung 3 (section 8): it reports, and it never blocks. Section 7 keeps 1.5
+# violations per 100 words as the reference rate and says plainly that the number
+# is a reading rather than a verdict — reading it is rung 4, and whether a piece
+# is fit to publish stays with the post that publishes it. What this buys is that
+# the number never waits for somebody to ask for it.
 #
 # It does not fail the build. Most of this repository is over the gate today, and
 # a check that is red from the first day is a check nobody reads (section 8: a
