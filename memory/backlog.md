@@ -78,6 +78,14 @@ What gets done. What was already done lives in the journal, not here.
   that did the wrong work. One comment in the workflow, batched into the next release.
   Candidate for upstream. #propagate:07-09-2026
 
+- **The post has no function for teaching, and the header found it on day one.** `posts/custodian.md`
+  carries *duty to the contributor* and the charter's third role was teacher, but the catalogue has
+  six functions and none of them covers explaining the system to somebody using it. The Principal
+  asked where to open a chat on 08-09-2026 and the honest header was `custodian/no function
+  declared`. Either a function joins the catalogue or the post stops claiming the duty. The gate
+  working is what made the gap visible rather than tolerable. Candidate for upstream.
+  #propagate:08-09-2026
+
 ## Principal
 
 - **Hand the copy its one file.** The Principal named it privately on 03-09-2026 and this is a
