@@ -120,3 +120,13 @@ over: both files carry a hand-written day. Git stamps the pull request already, 
 second copy of what git knows — the same argument that removed `updated:` from `knowledge/` — and it
 is the only copy-activity datum those files hold beyond the natural. Two rules agree that it goes.
 
+## The question to ask a bench
+
+Not *does it pass*. **Can it fail.** Replacing the subject with a program that does nothing and
+requiring red is a mechanical answer, it takes one loop, and it found in one run what twenty green
+benches had been hiding: one that asserted nothing and reported success by exiting cleanly.
+
+Both ways to pass without asserting are now named in §8, and both had already happened here. A case
+that reads a name out of a source file instead of running it. And a bench that dies before its first
+assertion, where the exit code is the only thing anybody reads.
+
