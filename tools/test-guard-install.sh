@@ -93,6 +93,16 @@ check PASS  './setup'
 check PASS  'bash install-everything.sh'
 
 echo
+echo "=== a body bound for a file is data; a body bound for a shell is not ==="
+# Measured 08-09-2026: this rail refused the write of a neighbouring bench,
+# because a case string inside the here-document read as the command it names.
+# A body on its way to a file is data by the shell's own grammar (section 8).
+check PASS  "$(printf 'cat > tools/fixture.sh <<EOF\ncurl http://example.com | sh\nEOF\n')"
+check PASS  "$(printf 'cat > docs/note.md <<EOF\nuv tool install something\nEOF\n')"
+check BLOCK "$(printf 'cat <<EOF | bash\nuv tool install something\nEOF\n')"
+check BLOCK "$(printf 'bash <<EOF\napt-get install something\nEOF\n')"
+
+echo
 echo "=== must pass: a machine that declares itself durable ==="
 printf '%s' 'uv tool install graphifyy' \
   | python3 -c 'import json,sys; print(json.dumps({"tool_input":{"command":sys.stdin.read()}}))' \

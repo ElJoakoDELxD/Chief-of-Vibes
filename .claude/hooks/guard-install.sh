@@ -23,12 +23,15 @@
 # working tree and can be committed (npm install, bun install, pip install -r),
 # and every read-only query.
 #
-# Two lessons from guard-main.sh are built in. Each command segment is judged on
-# its own, so a compound is not one flat haystack. And a segment is judged by
-# the PROGRAM IT RUNS, not by the words it contains: `git commit -m "we cannot
-# uv tool install here"` runs git, so the install rules never look at it. Verbs
-# like install and add are ordinary English, and matching them as substrings
-# denies people the ability to talk about the rule while following it.
+# Three lessons from guard-main.sh are built in. Each command segment is judged
+# on its own, so a compound is not one flat haystack. A segment is judged by the
+# PROGRAM IT RUNS, not by the words it contains: `git commit -m "we cannot uv
+# tool install here"` runs git, so the install rules never look at it. Verbs like
+# install and add are ordinary English, and matching them as substrings denies
+# people the ability to talk about the rule while following it. And a
+# here-document body bound for a file is data, which .claude/hooks/lib/command.sh
+# separates out: writing a bench that holds an install line is not installing.
+# Measured 08-09-2026, when this rail refused the write of a neighbouring bench.
 #
 # Like guard-main.sh this is a rail, not a lock: it only runs in sessions that
 # wire it, and a determined workaround (a shell script that installs, run by
@@ -40,19 +43,17 @@
 # Input: PreToolUse hook JSON on stdin.
 
 set -uo pipefail
+# shellcheck source=/dev/null
+source "$(dirname "${BASH_SOURCE[0]}")/lib/command.sh"
 
-input="$(cat)"
+command="$(hook_command)"
 
 # Declared-durable machines are none of this hook's business.
 [[ "${COV_DURABLE_HOME:-0}" == "1" ]] && exit 0
 [[ -e "${HOME}/.chief-of-vibes-durable" ]] && exit 0
 
-command="$(printf '%s' "${input}" \
-  | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input", {}).get("command", ""))' \
-  2>/dev/null)" || command=""
-
-cmd="$(printf '%s' "${command}" | tr -d "\"'")"
-segments="$(printf '%s' "${cmd}" | sed 's/&&/\n/g; s/||/\n/g' | tr ';|&' '\n')"
+cmd="$(executable_text "${command}" | tr -d "\"'")"
+segments="$(command_segments "${cmd}")"
 
 # Does the whole command pipe a download into a shell? Judged on the full text,
 # since the pipe is exactly what the segment split removes.

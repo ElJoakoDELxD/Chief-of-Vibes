@@ -5,13 +5,13 @@
 # turned off, and a rail narrowed around the habit it exists to catch is not a
 # rail (SYSTEM.md section 8).
 #
-# **This file cannot be written by a shell heredoc while the rail is live**, and
-# that is the rail working rather than a defect. The cases below contain the
-# exact strings it refuses, so a `cat > file <<EOF` carrying them is a Bash
-# invocation holding a git identity override, and the hook cannot tell the text
-# from the intent. Author it with the editor instead. The same is true of
-# .claude/hooks/guard-main.sh, whose comment says it errs closed for the same
-# reason: that direction is safe and the other one is not.
+# **This file is written by a shell here-document, and that is the point.** It
+# holds the exact strings the rail refuses, so an earlier version of the rail
+# read the write as the command and denied it. The comment here then called that
+# erring closed. It was not. A body on its way to a file is data by the shell's
+# own grammar, and .claude/hooks/lib/command.sh reads that grammar, so the rail
+# now judges what will run and nothing else. The last two sections below pin
+# both sides of it.
 #
 # Usage:  bash tools/test-guard-identity.sh
 
@@ -54,6 +54,20 @@ allowed 'git push -u origin some-branch'                   "a push is untouched"
 # no git invocation beside it, is prose or a search and must not fire.
 allowed 'echo "the flag we refuse is the identity one" > note.md' "prose is not a git invocation"
 allowed 'grep -rn "identity override" tools/'              "searching for the rule is allowed"
+
+# A body on its way to a file is data. This is the write that authors this very
+# file, and refusing it taught the agent to route around the rail instead.
+allowed "$(printf 'cat > tools/bench.sh <<%sEOF%s\ngit -c user.email=a@b commit -m x\nEOF\n' "'" "'")" \
+        "a here-document writing a fixture is data, not a command"
+allowed "$(printf 'cat > tools/bench.sh <<EOF\ngit -c user.name=Someone commit\nEOF\necho written\n')" \
+        "an unquoted here-document into a file is data too"
+
+# The same body reaching a shell is a command, and stays refused. This is the
+# half that makes dropping the other one safe.
+denied "$(printf 'cat <<EOF | bash\ngit -c user.email=a@b commit -m x\nEOF\n')" \
+       "a here-document piped into a shell is a command"
+denied "$(printf 'bash <<EOF\ngit -c user.name=Someone commit\nEOF\n')" \
+       "a here-document fed straight to a shell is a command"
 
 if (( fails )); then echo ".claude/hooks/guard-identity.sh: bench FAILED"; exit 1; fi
 echo ".claude/hooks/guard-identity.sh: bench passed"

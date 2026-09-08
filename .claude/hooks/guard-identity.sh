@@ -3,12 +3,11 @@
 # Claude Code hook (PreToolUse on Bash): refuses a git invocation that sets the
 # commit identity inline.
 #
-# `git -c user.email=` and `git -c user.name=` are both refused, and the second
-# is not an afterthought. The Principal ruled on 03-09-2026 that the agent
-# **observes** its identity and never sets it: the environment configures it and
-# a session-start hook pins it, because the signing key is registered to that
-# address. Whether the value an override substitutes is a good one is not the
-# question.
+# The two flags that name an author are both refused, and the second is not an
+# afterthought. The Principal ruled on 03-09-2026 that the agent **observes** its
+# identity and never sets it: the environment configures it and a session-start
+# hook pins it, because the signing key is registered to that address. Whether
+# the value an override substitutes is a good one is not the question.
 #
 # The failure it exists to end: on 03-09-2026 an agent authored four commits
 # under the Principal's personal address, taken from the session context, into a
@@ -18,20 +17,24 @@
 # A rail narrowed to the email alone would bend around the habit it exists to
 # catch, which is why it covers the name too.
 #
+# **What it judges, and what it leaves to judgment.** It reads the text the shell
+# will run, which .claude/hooks/lib/command.sh separates from the text on its way
+# to a file. A bench holding these flags as fixtures is data and passes; the same
+# body piped into a shell is a command and does not. Whether a given override is
+# defensible is intent, so no rail decides it: the custodian post carries that,
+# and the answer written down is that none is.
+#
 # Exit 2 denies the call, reason on stderr. Input: PreToolUse hook JSON on stdin.
 
 set -uo pipefail
+# shellcheck source=/dev/null
+source "$(dirname "${BASH_SOURCE[0]}")/lib/command.sh"
 
-input="$(cat)"
-command="$(printf '%s' "${input}" \
-  | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input", {}).get("command", ""))' \
-  2>/dev/null)" || command=""
-
+command="$(hook_command)"
 [[ -n "${command}" ]] || exit 0
 
-# Only a git invocation, and only the -c form that sets an identity. A file that
-# happens to contain the text is not a command, and prose about the rule must
-# not trip it: the match requires `git` before the flag on the same segment.
+# Only a git invocation, and only the -c form that sets an identity. Prose about
+# the rule must not trip it: the match requires `git` on the same segment.
 while IFS= read -r segment; do
   printf '%s' "${segment}" | grep -qE '(^|[[:space:];&|(])git([[:space:]]|$)' || continue
   if printf '%s' "${segment}" | grep -qE -- '-c[[:space:]]*user\.(email|name)='; then
@@ -46,6 +49,6 @@ while IFS= read -r segment; do
 # A trailing newline, because `read` returns non-zero on a last line without
 # one and the loop body then never runs. The first version of this rail passed
 # every case it was meant to refuse, silently, for exactly that reason.
-done < <(printf '%s\n' "${command}" | tr ';&|' '\n')
+done < <(command_segments "$(executable_text "${command}")"; printf '\n')
 
 exit 0
