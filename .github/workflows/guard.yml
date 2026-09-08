@@ -11,15 +11,20 @@
 name: guard
 on:
   pull_request:
-    # main, plus the disposable branches template work is built on (§6). A
-    # stacked pull request targets the layer below it rather than main, so a
-    # trigger listening only for main would let every layer above the first
-    # merge unchecked — and merging the top of a stack lands all of them. Each
-    # layer is judged against its own base, which is the diff a reviewer sees.
+    # Every pull request, whatever its base. A branch-name list was here until
+    # 1.79.0 and it named the prefix this repository had stopped using, so a
+    # stacked layer got no checks at all and the top of the stack lands every
+    # layer under it. Nothing compares such a list against the branches in use,
+    # so nothing could catch it. Measured 08-09-2026, on the stack that shipped
+    # 1.75.0 to 1.78.0: three of four layers opened with zero checks. Only the
+    # bottom layer had a run, because only its base was main. The commit
+    # message of 59566e7 says two, which was estimated rather than counted;
+    # the workflow run list is the count.
     #
-    # Agent branches are deliberately not listed. They carry memory/ and
-    # projects/ by design, and these jobs would reject exactly what belongs there.
-    branches: [main, 'claude/**']
+    # A copy naming its branches differently inherits the same defect from a
+    # list, which is why there is none. What is excluded is decided by reading
+    # the branch instead: see the scope step in every job below.
+    types: [opened, synchronize, reopened, edited]
 jobs:
   pr-guard:
     # Rejects non-template files bound for main, and a template change with no
@@ -31,7 +36,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - id: scope
+        run: bash .github/scope.sh
       - name: Only template files, and a release carries a version
+        if: steps.scope.outputs.skip != 'true'
         run: |
           bash tools/pr-guard.sh \
             "${{ github.event.pull_request.base.sha }}" \
@@ -45,7 +53,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - id: scope
+        run: bash .github/scope.sh
       - name: Require a current INDEX.md
+        if: steps.scope.outputs.skip != 'true'
         run: bash tools/index.sh --check
 
   section-check:
@@ -56,15 +67,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - id: scope
+        run: bash .github/scope.sh
       - name: Require the specification's map to match its tree
+        if: steps.scope.outputs.skip != 'true'
         run: bash tools/sections.sh --check
 
   prose-gate:
-    # §7 sets the gate at 1.5 violations per 100 words. This reports and never
-    # blocks: most of the repository is over the gate today, and a check that is
-    # red from the first day is a check nobody reads (§8).
+    # §7 keeps 1.5 violations per 100 words as the reference rate, and says the
+    # number is a reading rather than a verdict. This reports and never blocks.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - id: scope
+        run: bash .github/scope.sh
       - name: Report the prose score
+        if: steps.scope.outputs.skip != 'true'
         run: bash tools/prose-gate.sh
