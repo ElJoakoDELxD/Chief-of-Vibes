@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.76.0**
+Specification version: **1.77.0**
 
 ## The specification
 
