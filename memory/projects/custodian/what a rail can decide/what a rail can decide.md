@@ -1,0 +1,56 @@
+---
+thread: What a rail may read, and what it must hand to judgment
+date: 08-09-2026
+state: shipped as 1.75.0, pull request #87, awaiting the Principal's approval to merge
+---
+
+# What a rail can decide
+
+## The Principal's correction
+
+This agent wrote that a hook cannot tell text from intent, and treated that as a property to
+err closed around. The Principal answered that it is a property to use, not to obey blindly,
+and that what belongs to intention cannot be delegated to a hook at all — only to better
+judgment.
+
+Both halves land. The reasoning was doing two different jobs under one sentence, and only one
+of them was true.
+
+## What was actually undecidable, and what was not
+
+A here-document body on its way to a file is data. That is the shell's own grammar, and it is
+the grammar the rail is already reading to find the words it refuses. Reading half of it and
+calling the other half unknowable was the defect. §8 had already written the cost: a rail
+pushed past what is mechanically decidable produces false positives, which teach the agent to
+route around it.
+
+The routing around had already happened here, twice, without being named as such:
+
+- `tools/test-guard-identity.sh` carried a paragraph explaining that it could not be written
+  by a here-document, and the file was authored with an editor tool instead.
+- `tools/test-guard-main.sh` used an `$M` variable so the branch name never appeared, with a
+  comment calling that *not a workaround*. It was one.
+
+While this change was being made the install rail refused the write of the main rail's bench,
+because a case string inside the body named a download piped to a shell. That is the false
+positive, measured live, in the same session that was arguing it could not be avoided.
+
+## Where the line sits now
+
+Mechanical, so the rail keeps it: a body bound for a file is data, a body reaching an
+interpreter is a command, each segment is judged alone, and a `-C` naming an absolute path
+outside the working tree runs against another repository.
+
+Intent, so no rail touches it: whether running a given command is the right thing. That goes
+to the post holding the session and is written as a rule. **A rail that claims the intent half
+is rung 4 wearing rung 2's clothes**, and it pays for the claim in false positives.
+
+## What stays coarse, honestly
+
+A branch name inside an executed argument, as in `git commit -m "..."`, still reads as a ref.
+That argument runs, so the rail cannot call it data. The knowledge note carries the way round
+it, which is `-F` and a file.
+
+And the limit that was always there: a command written to a file now and run by name in the
+next call walks past every rail here. `guard-install.sh` already said so. These rails stop the
+reflex; they do not defeat an adversary, and saying otherwise would be the more expensive lie.

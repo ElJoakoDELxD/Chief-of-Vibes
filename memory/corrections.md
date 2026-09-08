@@ -119,3 +119,34 @@ One commit today was made correctly and nothing noticed. `1a4775a` is the sync m
 `tools/sync.sh`, which does not override anything. It authored as the configured identity, sitting
 in the middle of the log between overridden commits on both sides. The right answer was already
 in the history, produced by a tool, while the agent kept supplying its own.
+
+---
+
+## 08-09-2026 — "the hook cannot tell text from intent"
+
+**What was claimed.** That a rail reading a command string cannot separate a file being written
+from a command being run, so refusing the write of its own bench was the rail erring closed, in
+the safe direction.
+
+**What is true.** One sentence was carrying two claims. Whether running a command is right is
+intent, and no rail decides it. Whether a here-document body is data is grammar, and the rail was
+already parsing that grammar to find the words it refuses. Reading half of it and calling the rest
+unknowable was a false positive with a justification attached.
+
+**How it showed.** Twice, and both were named as something else at the time. One bench carried a
+paragraph on why it could not be written by a here-document. The other used a variable so the
+branch name never appeared, with a comment insisting that was *not a workaround*. §8 already had
+the rule that names both: a rail routed around protects less than none.
+
+**What the Principal said.** Use the property in your favour rather than against it. What belongs
+to intention cannot be delegated to a hook, only to better judgment.
+
+**Where the fix went.** Rung 1 as `.claude/hooks/lib/command.sh`, read by all three rails, with a
+bench pinning both directions. Rung 4 in §8 and §7: the intent half is named to the post and
+written as a rule. The general form is in §8 as **a rail that claims the intent half is rung 4
+wearing rung 2's clothes**.
+
+**The shape to watch for.** A limit stated about a mechanism, believed because the mechanism is
+ours and the limit sounds like rigour. The tell was the workaround: this agent had built two, and
+called neither one a workaround.
+
