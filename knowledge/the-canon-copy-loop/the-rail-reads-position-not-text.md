@@ -1,7 +1,6 @@
 ---
 topic: The main guard reads a word by the position it holds, and the two workarounds it once needed are gone
-updated: 08-09-2026
-verified: 08-09-2026. Measured against both rails in one run. Three of five ordinary commit messages were refused by the old one and none by the new one, with 37 adversarial cases blocked by both. Recorded first on 30-07-2026 as the opposite conclusion
+verified: measured against both rails in one run. Three of five ordinary commit messages were refused by the old one and none by the new one, with 37 adversarial cases blocked by both
 ---
 
 # The rail reads position, not text
@@ -12,8 +11,8 @@ That a rail matching a command string cannot tell a sentence from an instruction
 about the protected branch had to leave the command channel, and a here-document was no use
 either because its body was part of the string.
 
-Both halves were wrong, and both were corrected on 08-09-2026 by reading a grammar that was
-already there instead of guessing around it.
+Both halves were wrong, and both were corrected in 1.75.0 and 1.77.0 by reading a grammar that
+was already there instead of guessing around it.
 
 ## The three grammars
 

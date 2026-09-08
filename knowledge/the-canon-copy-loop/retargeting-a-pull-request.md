@@ -1,6 +1,5 @@
 ---
 topic: Re-pointing a pull request's base leaves the old check standing
-updated: 08-09-2026
 verified: GitHub's default activity types for `pull_request` are opened, synchronize and reopened. Changing a base emits `edited`, which is not among them. Measured twice: a note recording it, and a stack whose retargeted layers started no run until their heads moved
 ---
 
@@ -47,9 +46,9 @@ target changes, ask which event that emitted, then ask whether the workflow list
 it. A green tick names one commit and one base. It does not promise that the pair is the
 one about to merge.
 
-## Why this note held nothing of the repository it was written in
+## Why this note holds no template file
 
-An earlier version quoted the trigger from this repository's own workflow file. That made
-the note a second copy of a file, and it went stale the day the file changed. What belongs
-here is the platform's behaviour, which no release of ours can alter. Check the workflow
-for what the workflow says.
+An earlier version quoted a trigger out of the workflow file beside it. That made the note a
+second copy of a file, and it went stale the day the file changed. What belongs here is the
+platform's behaviour, which no release can alter. Read the workflow for what the workflow
+says.
