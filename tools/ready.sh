@@ -67,10 +67,21 @@ echo
 # --- 1. the rails ---------------------------------------------------------
 red=0
 green=0
+# **Green is exit 0 AND at least one case reported.** A bench that dies before its
+# first assertion exits 0 having asserted nothing, and every reader that trusts the
+# exit code alone counts it as passing. Measured 08-09-2026: replacing a sourced
+# library with `exit 0` made its bench print nothing, exit 0, and read as green in
+# this loop. That is the shape section 8 names — logic whose failure mode is a
+# green check — and it is the second time this repository has hit it.
 for bench in tools/test-*.sh; do
   [[ -f "${bench}" ]] || continue
-  if bash "${bench}" >/dev/null 2>&1; then
+  out="$(bash "${bench}" 2>&1)"; code=$?
+  cases="$(printf '%s' "${out}" | grep -cE '^(ok|FAIL)')"
+  if (( code == 0 )) && (( cases > 0 )); then
     green=$(( green + 1 ))
+  elif (( code == 0 )); then
+    red=$(( red + 1 ))
+    echo "  MUTE  ${bench} exited 0 and asserted nothing. A bench that ran no case did not pass."
   else
     red=$(( red + 1 ))
     echo "  RED   ${bench}"

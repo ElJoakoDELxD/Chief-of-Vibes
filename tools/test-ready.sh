@@ -34,7 +34,9 @@ build() {
   printf 'index\n' > INDEX.md
   printf 'leaf\n' > system/1-purpose.md
   printf 'state\n' > memory/state.md
-  printf '#!/usr/bin/env bash\nexit %s\n' "${bench}" > tools/test-thing.sh
+  # A healthy bench reports a case and exits 0. Exit code alone is not health:
+  # one that dies before its first assertion also exits 0 (SYSTEM.md section 8).
+  printf '#!/usr/bin/env bash\necho "ok   a case ran"\nexit %s\n' "${bench}" > tools/test-thing.sh
   git add -A && git commit -q -m base
   if [[ -n "${main_v}" ]]; then
     git branch -q -f main
@@ -47,8 +49,16 @@ build() {
 run() { ( cd "$1" && bash tools/ready.sh "${2-}" 2>&1 ); }
 
 # --- the rails half -----------------------------------------------------------
+# A bench that exits 0 having asserted nothing did not pass. Measured 08-09-2026:
+# a sourced library replaced by `exit 0` made its bench print nothing, exit 0, and
+# read as green wherever the exit code was the whole test.
 d="$(build green 1.0.0 "" 0)"
 check "a green tree says so, with a count" "1 of 1 benches green" "$(run "${d}")"
+
+mute="$(build mute 1.0.0 "" 0)"
+printf '#!/usr/bin/env bash\nexit 0\n' > "${mute}/tools/test-thing.sh"
+check "a bench that asserted nothing is not green" "asserted nothing" "$(run "${mute}")"
+check "and it counts as red rather than passing"   "1 red"            "$(run "${mute}")"
 
 d="$(build red 1.0.0 "" 1)"
 out="$(run "${d}")"
