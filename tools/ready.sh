@@ -36,7 +36,7 @@
 #         bash tools/ready.sh --fee      # the entry fee alone, one line
 
 set -uo pipefail
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || { echo "$(basename "$0"): could not reach the repository root; nothing was measured." >&2; exit 1; }
 
 # Characters per token. Stated rather than hidden, because every token figure
 # below is this divisor's opinion and not a measurement. 3.8 is the ratio this
@@ -115,6 +115,35 @@ echo "             drift check at session start. This one only reads the tree."
 echo "  Entry fee: ${chars} chars of specification and memory, about ${tokens} tokens at ${DIVISOR} chars/token."
 echo "  Remaining window: UNREADABLE from here. The runtime owns it, so the session"
 echo "                    reads it there and compares, or says it could not."
+
+# --- 4. what this change grows ---------------------------------------------
+# Section 8: **if a change grows the machinery and the prose both, it has not
+# finished.** That test was rung 4 and applied to one release at a time, so a run
+# of them could add to both and no release was ever the one that broke the rule.
+# Measured 09-09-2026 over thirteen: +2724 words of specification and +1046 lines
+# of shell, with nothing having reported it. Reading it is still judgment; the
+# labour of looking is what moves here.
+prose_now=0; prose_was=0; code_now=0; code_was=0
+for f in SYSTEM.md CLAUDE.md README.md CONTRIBUTING.md $(ls system/*.md 2>/dev/null); do
+  [[ -f "${f}" ]] && prose_now=$(( prose_now + $(wc -w < "${f}") ))
+  was="$(git show "origin/main:${f}" 2>/dev/null | wc -w)" || was=0
+  prose_was=$(( prose_was + was ))
+done
+while IFS= read -r f; do
+  [[ -f "${f}" ]] && code_now=$(( code_now + $(wc -l < "${f}") ))
+done < <(ls tools/*.sh .claude/hooks/*.sh .claude/hooks/lib/*.sh .github/*.sh 2>/dev/null)
+while IFS= read -r f; do
+  [[ -z "${f}" ]] && continue
+  was="$(git show "origin/main:${f}" 2>/dev/null | wc -l)" || was=0
+  code_was=$(( code_was + was ))
+done < <(git ls-tree -r --name-only origin/main 2>/dev/null | grep -E '^(tools|\.claude/hooks|\.claude/hooks/lib|\.github)/.*\.sh$')
+dp=$(( prose_now - prose_was )); dc=$(( code_now - code_was ))
+printf '  Growth against main: prose %+d words, machinery %+d lines.\n' "${dp}" "${dc}"
+if (( dp > 0 && dc > 0 )); then
+  echo "                       Both grew. Section 8 calls that unfinished: say what was"
+  echo "                       removed and make the case, or pay one of them down."
+fi
+
 echo
 echo "The fee is the floor, not the cost. It buys reading, and the proposal is still unwritten."
 exit 0

@@ -171,6 +171,18 @@ menu_at "" "" "https://github.com/Someone/Their-Copy"
 out="$( CLAUDE_PROJECT_DIR="${menu_dir}" bash "${here}/../.claude/hooks/anchor.sh" UserPromptSubmit </dev/null )"
 check want "could not be determined"        "neither marker leaves the question open, never guessed"
 
+# --- a directory it could not enter -------------------------------------------
+# The hook stayed where it was and measured that tree instead, so a session could
+# open with another repository's agent, posts, drift and hygiene — every field
+# well-formed and every one about somebody else. Measured 09-09-2026.
+elsewhere="${tmp}/elsewhere"; mkdir -p "${elsewhere}/memory"
+printf -- '---\nagent: Somebody Else\nposts: [steward]\n---\n' > "${elsewhere}/memory/state.md"
+out="$( cd "${elsewhere}" && CLAUDE_PROJECT_DIR="${tmp}/no-such-directory" \
+        bash "${here}/../.claude/hooks/anchor.sh" UserPromptSubmit </dev/null 2>&1 )"
+check want-not "Somebody Else"       "a directory it cannot enter is never read from where it stands"
+check want     "Anchors: UNAVAILABLE" "it says the anchors could not be taken"
+check want     "not build the time"   "and forbids building them from memory instead"
+
 # --- the post an unposted session already held -------------------------------
 # Something builds the agent, and until 1.88.0 it did so holding nothing while
 # creating a repository, a branch and a vault. A session with no agent is not a

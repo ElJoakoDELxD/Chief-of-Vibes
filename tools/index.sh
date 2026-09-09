@@ -13,7 +13,7 @@
 
 set -uo pipefail
 
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || { echo "$(basename "$0"): could not reach the repository root; nothing was measured." >&2; exit 1; }
 
 generate() {
 python3 - <<'PY'
