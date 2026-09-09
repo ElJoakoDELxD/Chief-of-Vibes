@@ -135,6 +135,10 @@ fi
 if [[ -d memory/projects ]]; then
   while IFS= read -r file; do
     rel="${file#memory/projects/}"
+    # The vault ships empty (SYSTEM.md 5), and a folder reaches a copy only with a
+    # file in it, because git tracks no empty directory. The placeholder IS the
+    # shape rather than something loose inside it.
+    [[ "${rel}" == ".gitkeep" ]] && continue
     depth="$(awk -F/ '{print NF}' <<<"${rel}")"
     if (( depth == 1 )); then
       echo "${file} sits loose in memory/projects/. Every file belongs to a topic and a thread inside it (SYSTEM.md 5)."
