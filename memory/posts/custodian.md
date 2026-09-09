@@ -3,7 +3,7 @@ post: Custodian
 definition: posts/custodian.md on main
 held_since: 14-08-2026
 models: claude-opus-5
-verified: exercised through releases 1.65.0 to 1.80.0, the last four of them merged under one approval and the two after it under a second
+verified: exercised through releases 1.65.0 to 1.85.0, in runs of four, two and one under three approvals
 ---
 
 # The custodian post, as this agent has held it
@@ -21,7 +21,7 @@ The definition lives in `posts/custodian.md` on `main` and is the same for anybo
 | `sync-the-template` | after every merge, 1.65.0 through 1.70.0, both versions read rather than assumed |
 | `sweep-the-repository` | twenty branches became seven on 07-09-2026: fourteen deleted, six kept |
 | `receive-a-proposal` | **never.** No copy has sent one to this repository |
-| `teach` | 1.85.0 built the tool it runs. Its first real exercise is the next session that explains something from the tree instead of from memory |
+| `teach` | 1.85.0 built the tool it runs, and it answered its first question about itself on the branch it landed on |
 
 ## Which models may exercise it, and the gate that was never built
 
