@@ -87,6 +87,14 @@ out="$(run canon-mem "${CANON}")"
 check      "a filled vault bound for main is rejected" "memory/journal/2026-01-01.md is outside the template" "${out}"
 check_code "and it exits 1 even though the version was bumped" 1 "$(code canon-mem "${CANON}")"
 
+# The third catalogue directory. A release that could not carry privileges/ would
+# refuse the release that creates it.
+build canon-priv 1.0.0 "${CANON}"
+mkdir -p "${tmp}/canon-priv/privileges"
+printf -- '---\nprivilege: something\nenforced_by: nothing\n---\n' > "${tmp}/canon-priv/privileges/a-grant.md"
+printf '**Version 1.1.0.** spec\n' > "${tmp}/canon-priv/SYSTEM.md"; commit canon-priv
+check_code "privileges/ is template and passes" 0 "$(code canon-priv "${CANON}")"
+
 # The other half. The vault ships as an empty form (SYSTEM.md section 5), so those
 # exact paths are template and a release may carry them. Rejecting them would refuse
 # the release that ships the form.
