@@ -173,3 +173,27 @@ was one, measured at 21 of 26 files over a line nothing enforced.
 **The tell to watch for.** A sentence of mine that closes a gap by naming what a tool cannot do. The
 tool's limit is a measurement. The gap's disposition is a decision, and it is never the tool's.
 
+---
+
+## 09-09-2026 — a number published without its method
+
+**What was claimed.** That thirteen releases added +2724 words of specification prose and +1046
+lines of shell.
+
+**What is true.** The direction and the magnitude. Not the figure. A monitor re-derived it and got
++2479/+957; the tool's own definition gives +2841/+1102. Three methods, three numbers, because the
+set of files being counted was never stated.
+
+**The shape.** *Verify before assert* is not satisfied by measuring. It is satisfied by measuring
+**reproducibly**, and a number whose method is unstated cannot be checked by the person it is shown
+to — which is the whole point of showing it.
+
+**Where the fix went.** The definition is written into `tools/ready.sh`, so the number and its
+method ship together and every later figure is the same figure.
+
+**The second half, and it is worse.** The sensor built to enforce §8 broke §3 in four ways, none of
+which I found: it reported the whole tree as growth when it could not compare, it could not see a
+deletion at all, its two sides used different file sets, and it counted an untracked file as
+nothing. **A sensor is not exempt from the rules it reports on**, and a monitor is what found that
+out — self-grading would not have.
+
