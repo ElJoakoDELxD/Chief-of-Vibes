@@ -1,6 +1,6 @@
 ---
 post: Custodian
-authorizes: prepare-the-door, keep-the-benches, sync-the-template, sweep-the-repository, receive-a-proposal
+authorizes: prepare-the-door, keep-the-benches, sync-the-template, sweep-the-repository, receive-a-proposal, teach
 held_by: the agent of a blueprint, and no other
 verified: held, and its functions exercised through a run of releases
 ---

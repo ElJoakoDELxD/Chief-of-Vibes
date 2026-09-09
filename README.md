@@ -117,6 +117,8 @@ The specification is [SYSTEM.md](SYSTEM.md) and the `system/` folder beside it. 
 
 ## Contributing
 
+Ask it anything about itself with `bash tools/explain.sh <term>`: it answers from the files, with the line each answer came from, and says plainly when the repository does not carry the thing you asked about.
+
 To use the system, press **Use this template** and work in your copy. To change the system itself, open a pull request here. One change per pull request. Every merge is a release and bumps the version line in `SYSTEM.md`. [CONTRIBUTING.md](CONTRIBUTING.md) has the rules, what each guard checks, and a worked example. Issues are welcome too. The useful ones name where the system did the wrong thing and which rule you expected to stop it.
 
 ## Lineage
