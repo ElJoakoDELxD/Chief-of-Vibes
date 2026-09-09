@@ -21,7 +21,7 @@
 #   2. `main` already contains its tip, so deleting the ref loses a name and no
 #      commit. This is re-tested here rather than read from a list, because a
 #      list is true when it is written and not when it runs.
-#   3. It carries no `memory/state.md`. That file is an agent's identity (§5),
+#   3. Its `memory/state.md` names no agent. That file is an agent's identity (§5),
 #      and a branch holding one is somebody's memory whatever git says about
 #      its commits. Rule 2 alone would already spare a live agent branch. This
 #      one is here for the case rule 2 stops covering: a memory branch whose
@@ -147,8 +147,14 @@ while IFS= read -r branch; do
     continue
   fi
 
-  if git cat-file -e "${sha}:memory/state.md" 2>/dev/null; then
-    printf 'keep    %-44s %s  (carries memory/state.md)\n' "${branch}" "${sha:0:8}"
+  # A FILLED form, never a present file. The vault ships empty on main (§5), so
+  # every branch carries memory/state.md and only an agent's names an agent.
+  # Measured 09-09-2026: the first sweep after the form landed protected two dead
+  # release branches, because the file they inherited looked like an identity.
+  named="$(git cat-file -p "${sha}:memory/state.md" 2>/dev/null \
+    | sed -n 's/^agent:[[:space:]]*//p' | head -n1 | sed 's/[[:space:]]*#.*$//; s/[[:space:]]*$//')"
+  if [[ -n "${named}" ]]; then
+    printf 'keep    %-44s %s  (names an agent in memory/state.md)\n' "${branch}" "${sha:0:8}"
     kept=$(( kept + 1 ))
     continue
   fi

@@ -63,14 +63,27 @@ q merge --no-ff --no-edit memory-landed
 q push origin main
 q fetch origin
 
+# The empty form is on every branch once the vault ships (SYSTEM.md 5), so a
+# landed release branch inherits it. Testing that the file exists protected two
+# dead branches on the first sweep after the form landed.
+q checkout -b form-landed
+mkdir -p memory; printf -- '---\nagent:                     # the agent name\n---\n' > memory/state.md
+q add .; q commit -m "the empty form"
+q push origin form-landed
+q checkout main
+q merge --no-ff --no-edit form-landed
+q push origin main
+q fetch origin
+
 out="$(bash "${here}/sweep-branches.sh" origin 2>&1)"
+check want     "delete  form-landed"         "a landed branch carrying only the empty form is swept"
 check want     "delete  merged-one"          "a branch main contains is named for deletion"
 check want     "keep    ahead-one"           "a branch with its own commit is kept"
 check want     "not contained in main"       "the keep says why"
 check want     "keep    memory-landed"       "a merged branch carrying a vault is kept"
-check want     "carries memory/state.md"     "that keep names the vault as its reason"
+check want     "names an agent in memory/state.md" "that keep names the vault as its reason"
 check want-not "delete  main"                "the default branch is never named"
-check want     "1 to delete, 2 kept."        "the count matches the rules"
+check want     "2 to delete, 2 kept."        "the count matches the rules"
 
 before="$(git ls-remote --heads origin | wc -l | tr -d ' ')"
 out="$(bash "${here}/sweep-branches.sh" origin 2>&1)"
