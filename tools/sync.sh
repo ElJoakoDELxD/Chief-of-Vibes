@@ -33,6 +33,27 @@ fi
 
 git fetch origin main || { echo "sync.sh: could not fetch origin/main." >&2; exit 1; }
 
+# **The sync runs the rules it is bringing in, not the ones it is replacing.**
+# A release that changes this file was, until now, applied by the version without
+# the change. Measured 09-09-2026: 1.81.0 made memory/ keep the branch's version
+# on a conflict, and the sync that carried it used the older rule and overwrote
+# the agent's vault — its identity, its open work, and its correction log. The
+# rule landed in the same merge it was needed for.
+#
+# So where main carries a different copy of this script, run that one instead.
+# COV_SYNC_HANDOFF stops it happening twice, so a genuine disagreement surfaces
+# as a second run rather than a loop.
+if [[ -z "${COV_SYNC_HANDOFF:-}" ]]; then
+  incoming="$(git show origin/main:tools/sync.sh 2>/dev/null)" || incoming=""
+  if [[ -n "${incoming}" ]] && ! printf '%s' "${incoming}" | cmp -s - "$0"; then
+    echo "sync.sh: main carries a newer copy of this script. Running that one, so"
+    echo "         the merge is resolved by the rules it is bringing in (SYSTEM.md 6)."
+    tmp_sync="$(mktemp)"; printf '%s' "${incoming}" > "${tmp_sync}"
+    COV_SYNC_HANDOFF=1 bash "${tmp_sync}" "$@"; code=$?
+    rm -f "${tmp_sync}"; exit "${code}"
+  fi
+fi
+
 if git merge-base --is-ancestor origin/main HEAD; then
   echo "Template up to date."
   exit 0

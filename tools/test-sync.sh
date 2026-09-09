@@ -114,6 +114,30 @@ check "main's version wins" 'v2' "$(cat SYSTEM.md)"
 check 'reports the override' 'yes' "$(grep -q "took main's version" <<<"${out}" && echo yes || echo no)"
 check 'names the lost edit' 'yes' "$(grep -q 'SYSTEM.md' <<<"${out}" && echo yes || echo no)"
 
+say 'memory keeps this branch on a conflict, and the incoming rules decide'
+# 1.81.0 made memory/ keep the branch's version. The sync carrying that release
+# ran the version without it and overwrote the agent's vault, because a release
+# changing this script was applied by the script it replaced (SYSTEM.md 6).
+build
+git checkout -q main
+mkdir -p memory; printf 'main is empty here\n' > memory/state.md
+git add -A; git commit -qm 'the empty form ships'; git push -q origin main
+git checkout -q AGENT
+out="$(bash "${SYNC}" 2>&1)"; rc=$?
+check 'exits 0' 0 "${rc}"
+check 'the vault keeps this branch' 'agent state' "$(cat memory/state.md)"
+
+say 'a newer sync.sh on main is the one that runs'
+build
+git checkout -q main
+mkdir -p tools
+printf '#!/usr/bin/env bash\necho INCOMING-RAN\nexit 0\n' > tools/sync.sh
+git add -A; git commit -qm 'main carries a different sync'; git push -q origin main
+git checkout -q AGENT
+out="$(bash "${SYNC}" 2>&1)"
+check 'it hands off to the copy it is bringing in' 'yes' "$(grep -q 'INCOMING-RAN' <<<"${out}" && echo yes || echo no)"
+check 'and says it did'                            'yes' "$(grep -q 'newer copy of this script' <<<"${out}" && echo yes || echo no)"
+
 say 'refuses to run with a dirty tree'
 build
 advance_main SYSTEM.md v2 'template v2'
