@@ -37,6 +37,11 @@
 
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.." || { echo "$(basename "$0"): could not reach the repository root; nothing was measured." >&2; exit 1; }
+# Arriving is not the same as arriving *here*. A cd that succeeds into a
+# directory without these runs the tool against a tree that is not this system's,
+# and every count it prints is about that one — measured by a monitor, which
+# found a full confident report reading "0 of 0 benches green".
+[[ -f SYSTEM.md && -d tools ]] || { echo "$(basename "$0"): $(pwd) is not this repository (no SYSTEM.md and tools/); nothing was measured." >&2; exit 1; }
 
 # Characters per token. Stated rather than hidden, because every token figure
 # below is this divisor's opinion and not a measurement. 3.8 is the ratio this
@@ -120,28 +125,66 @@ echo "                    reads it there and compares, or says it could not."
 # Section 8: **if a change grows the machinery and the prose both, it has not
 # finished.** That test was rung 4 and applied to one release at a time, so a run
 # of them could add to both and no release was ever the one that broke the rule.
-# Measured 09-09-2026 over thirteen: +2724 words of specification and +1046 lines
-# of shell, with nothing having reported it. Reading it is still judgment; the
-# labour of looking is what moves here.
-prose_now=0; prose_was=0; code_now=0; code_was=0
-for f in SYSTEM.md CLAUDE.md README.md CONTRIBUTING.md $(ls system/*.md 2>/dev/null); do
-  [[ -f "${f}" ]] && prose_now=$(( prose_now + $(wc -w < "${f}") ))
-  was="$(git show "origin/main:${f}" 2>/dev/null | wc -w)" || was=0
-  prose_was=$(( prose_was + was ))
-done
-while IFS= read -r f; do
-  [[ -f "${f}" ]] && code_now=$(( code_now + $(wc -l < "${f}") ))
-done < <(ls tools/*.sh .claude/hooks/*.sh .claude/hooks/lib/*.sh .github/*.sh 2>/dev/null)
-while IFS= read -r f; do
-  [[ -z "${f}" ]] && continue
-  was="$(git show "origin/main:${f}" 2>/dev/null | wc -l)" || was=0
-  code_was=$(( code_was + was ))
-done < <(git ls-tree -r --name-only origin/main 2>/dev/null | grep -E '^(tools|\.claude/hooks|\.claude/hooks/lib|\.github)/.*\.sh$')
-dp=$(( prose_now - prose_was )); dc=$(( code_now - code_was ))
-printf '  Growth against main: prose %+d words, machinery %+d lines.\n' "${dp}" "${dc}"
-if (( dp > 0 && dc > 0 )); then
-  echo "                       Both grew. Section 8 calls that unfinished: say what was"
-  echo "                       removed and make the case, or pay one of them down."
+# Reading the numbers is still judgment; the labour of looking is what moves.
+#
+# Three things this got wrong on its first attempt, each caught by a monitor:
+#   - with no origin/main it reported the whole tree as growth, as a fact. A
+#     measure that cannot compare says so (section 3), because a fabricated
+#     reading inside a sensor is worse than no sensor.
+#   - it walked the working tree only, so deleting a file moved the number by
+#     zero. A measure that cannot see a payment-down cannot ask for one.
+#   - its two sides used different file sets. Both sides read one list now.
+if ! git rev-parse --verify -q origin/main >/dev/null 2>&1; then
+  echo "  Growth against main: UNAVAILABLE (no origin/main to compare against). Say the measure did not run."
+else
+  python3 - <<'GROWTH'
+import subprocess, glob, os
+
+PROSE = ["SYSTEM.md", "CLAUDE.md", "README.md", "CONTRIBUTING.md"]
+def prose_paths(names):
+    return [n for n in names if n in PROSE or (n.startswith("system/") and n.endswith(".md"))]
+def code_paths(names):
+    return [n for n in names
+            if n.endswith(".sh") and (n.startswith("tools/") or n.startswith(".claude/hooks/")
+                                      or n.startswith(".github/"))]
+
+def old_names():
+    out = subprocess.run(["git", "ls-tree", "-r", "--name-only", "origin/main"],
+                         capture_output=True, text=True).stdout.split()
+    return out
+def new_names():
+    # Tracked AND untracked-but-not-ignored. A release adds files, and one that is
+    # written but not yet staged is still growth; counting only the tracked side
+    # reported +0 for a new tool. Caught by this measure's own bench.
+    out = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"],
+                         capture_output=True, text=True).stdout.split()
+    return out
+
+def old_body(path):
+    r = subprocess.run(["git", "show", f"origin/main:{path}"], capture_output=True, text=True)
+    return r.stdout if r.returncode == 0 else ""
+def new_body(path):
+    try:
+        return open(path, encoding="utf-8", errors="replace").read()
+    except OSError:
+        return ""
+
+# The union of both sides. A path present on one side and absent on the other is
+# exactly what a deletion or an addition looks like, and it must count.
+old_all, new_all = old_names(), new_names()
+union = sorted(set(old_all) | set(new_all))
+
+pw_old = sum(len(old_body(f).split()) for f in prose_paths(union))
+pw_new = sum(len(new_body(f).split()) for f in prose_paths(union))
+cl_old = sum(old_body(f).count("\n") for f in code_paths(union))
+cl_new = sum(new_body(f).count("\n") for f in code_paths(union))
+
+dp, dc = pw_new - pw_old, cl_new - cl_old
+print(f"  Growth against main: prose {dp:+d} words, machinery {dc:+d} lines.")
+if dp > 0 and dc > 0:
+    print("                       Both grew. Section 8 calls that unfinished: say what was")
+    print("                       removed and make the case, or pay one of them down.")
+GROWTH
 fi
 
 echo

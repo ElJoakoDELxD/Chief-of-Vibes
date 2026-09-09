@@ -17,6 +17,11 @@
 
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.." || { echo "$(basename "$0"): could not reach the repository root; nothing was measured." >&2; exit 1; }
+# Arriving is not the same as arriving *here*. A cd that succeeds into a
+# directory without these runs the tool against a tree that is not this system's,
+# and every count it prints is about that one — measured by a monitor, which
+# found a full confident report reading "0 of 0 benches green".
+[[ -f SYSTEM.md && -d tools ]] || { echo "$(basename "$0"): $(pwd) is not this repository (no SYSTEM.md and tools/); nothing was measured." >&2; exit 1; }
 
 GATE=1.5
 
