@@ -11,7 +11,8 @@ What gets done. What was already done lives in the journal, not here.
   fields and none names what the branch is for, so every constraint the custodian states about
   itself is prose no hook reads. Settled by the Principal on 07-09-2026 into posts and functions;
   the design is in `memory/projects/universal-core/posts and functions/proposal.md`.
-  Candidate for upstream. #propagate:07-09-2026
+  **Landed as 1.69.0 and 1.70.0.** Posts, functions, and the header field that carries them. The
+  tag is cleared: this finding produced its release and stopped being a candidate.
 - **Nothing detects an unsynced agent branch.** The session-start drift check covers hop one,
   canon into a copy's `main`. On the canon it is skipped by construction — the canon cannot drift
   from itself — so this repository has no version sensor on the branch where all its work happens.
@@ -26,14 +27,18 @@ What gets done. What was already done lives in the journal, not here.
   exist. Plus a fourth `tools/hygiene.sh` check for two branches carrying one agent's vault, which
   is what cost this session six hours. Measured in
   `memory/projects/universal-core/the vault that is not there/proposal.md`.
-  Candidate for upstream. #propagate:07-09-2026
+  **Mostly landed.** The two-branch check in 1.67.0, `memory/posts/` and `memory/functions/` in
+  1.69.0, and 1.81.0 shipped the whole vault as an empty form, `memory/projects/` included. What is
+  left is the top-level `projects/` folder, which §5 names twice and nothing builds. Retagged for
+  that remnant alone. #propagate:09-09-2026
 - **Write the knowledge entry: a cloud session cannot delete a ref, and a runner is the route.**
   §5 says an entry gets written the first time a procedure is worked out, not later. This session
   spent hours rediscovering something `stacks.yml` and `create-release.yml` had already solved,
   and their header comments were the only record. An entry in `knowledge/` on the canon makes the
   pattern findable instead of archaeological: what the git proxy refuses, how it was measured, and
   the runner shape as the answer. Held out of pull request #78 deliberately, because widening a
-  pull request under review costs the review. Candidate for upstream. #propagate:07-09-2026
+  pull request under review costs the review. **Written as 1.84.0**, pull request 96, with the
+  proxy distinction and the stale-tool trap the route has since produced. Tag cleared.
 
 - **A proposal does not stop where it is accepted, and nothing watches for it.** Set by the
   Principal on 07-09-2026: work is tested outside its own `main`, proposed upward, and a copy does
@@ -50,7 +55,8 @@ What gets done. What was already done lives in the journal, not here.
   reads `verified: not yet held anywhere`, which is true and is the honest state: no copy exists.
   The first copy that adopts it fills its own `memory/posts/steward.md`, and what that agent
   learns about holding it is what would earn a change to the definition. Nothing to do until then.
-  #propagate:07-09-2026
+  **Untagged.** It says so itself: there is no action until a copy exists, so the sensor raising it
+  every session is a decision nobody is making (SYSTEM.md §5).
 
 - **Run the weekly guard once, end to end, and publish the report.** Wired since 14-08-2026 and it
   has never produced one. A schedule with no output is indistinguishable from a schedule that
