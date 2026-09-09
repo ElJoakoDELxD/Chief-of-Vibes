@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.84.0**
+Specification version: **1.85.0**
 
 ## The specification
 
@@ -44,7 +44,7 @@ work reaches them. Each section is one address.
 - A script measures. It does not decide, and its silence decides nothing.
 - The Principal's voice is the Principal's.
 - The Principal never looks for what they must read.
-- Involve and teach.
+- Involve and teach, from the tree and never from memory.
 
 ## Capabilities
 
@@ -69,6 +69,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/candidates.sh` | Reports findings the agent kept instead of sending upstream. |
 | `tools/clocks.sh` | Reports when this platform's clock is not yet in CLOCKS.md, the reach record |
 | `tools/environment.sh` | Reports the session's environment: what it can reach, what it keeps, and what |
+| `tools/explain.sh` | Answers "what is X, here" from the tree, with the address of every answer. |
 | `tools/hygiene.sh` | Reports three ways the agent's memory goes out of sync. The first two returned |
 | `tools/index.sh` | Generates INDEX.md: where every rule is stored, and what this repository can do. |
 | `tools/models.sh` | Compares the model that actually served this session against the models the |
@@ -87,6 +88,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/test-clocks.sh` | Bench for tools/clocks.sh, the sensor behind CLOCKS.md. It pins both |
 | `tools/test-command-lib.sh` | Bench for .claude/hooks/lib/command.sh. It pins the one question the rails |
 | `tools/test-environment.sh` | Bench for tools/environment.sh. It pins the two things the report must never |
+| `tools/test-explain.sh` | Bench for tools/explain.sh. The tool's whole value is that an explanation is |
 | `tools/test-guard-identity.sh` | Bench for .claude/hooks/guard-identity.sh. It pins both directions: what must |
 | `tools/test-guard-install.sh` | Test bench for .claude/hooks/guard-install.sh. |
 | `tools/test-guard-main.sh` | Test bench for .claude/hooks/guard-main.sh. |
