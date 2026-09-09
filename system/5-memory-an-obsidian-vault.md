@@ -25,7 +25,8 @@ fills it. So the agent branch is not `main` *plus* the vault. It is `main` **wit
 same paths, same shape, and only the content differs.
 
 **An agent is a filled form, never a present file.** `memory/state.md` is on every branch, so the
-test is whether `agent:` carries a value. Reading presence instead would call every branch an
+test is whether `agent:` carries a value, in every tool that asks — the anchor hook, the guard's
+scope, the vault sensor, and the branch sweep. Reading presence instead would call every branch an
 agent's, and the checks that skip an agent's branch would skip everywhere while reporting success.
 `tools/pr-guard.sh` holds the other half: the empty forms are the only paths under `memory/` a
 release may carry, so a filled one bound for `main` is refused by name rather than by anyone
