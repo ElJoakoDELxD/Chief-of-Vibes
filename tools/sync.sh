@@ -57,7 +57,11 @@ took_theirs=()
 kept_ours=()
 
 for f in "${conflicted[@]}"; do
-  if [[ "${f}" == "README.md" ]]; then
+  # memory/ and projects/ join README.md in keeping this branch's version. The vault
+  # ships as an empty form (§5), so main's copy of any path there is empty by
+  # construction: taking it would delete the agent's memory on the first sync after
+  # the form landed, and report it as a template file the branch did not own.
+  if [[ "${f}" == "README.md" || "${f}" == memory/* || "${f}" == projects/* ]]; then
     git checkout --ours -- "${f}" && git add -- "${f}" && kept_ours+=("${f}")
   else
     git checkout --theirs -- "${f}" && git add -- "${f}" && took_theirs+=("${f}")

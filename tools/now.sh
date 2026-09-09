@@ -37,9 +37,16 @@ want_origin=0
 zone="UTC"
 defaulted=1
 if [[ -f memory/state.md ]]; then
+  # The form ships empty with a comment on every field (SYSTEM.md section 5), so
+  # the value is what is left after the comment is cut. Taking $2 read the `#` as
+  # a zone and no time printed at all, on every branch carrying the form.
   configured="$(awk '
     /^---[[:space:]]*$/ { fence++; next }
-    fence == 1 && $1 == "timezone:" { gsub(/["'\''`]/, "", $2); print $2; exit }
+    fence == 1 && $1 == "timezone:" {
+      sub(/^[^:]*:[[:space:]]*/, ""); sub(/[[:space:]]*#.*$/, "");
+      gsub(/["'\''`]/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "");
+      print; exit
+    }
   ' memory/state.md)"
   if [[ -n "${configured}" ]]; then zone="${configured}"; defaulted=0; fi
 fi

@@ -80,18 +80,28 @@ check      "a template change with no bump is rejected" "bump SYSTEM.md's versio
 check_code "and it exits 1" 1 "$(code canon-nobump "${CANON}")"
 
 build canon-mem 1.0.0 "${CANON}"
-mkdir -p "${tmp}/canon-mem/memory"
-printf 'notes\n' > "${tmp}/canon-mem/memory/backlog.md"
+mkdir -p "${tmp}/canon-mem/memory/journal"
+printf 'notes\n' > "${tmp}/canon-mem/memory/journal/2026-01-01.md"
 printf '**Version 1.1.0.** spec\n' > "${tmp}/canon-mem/SYSTEM.md"; commit canon-mem
 out="$(run canon-mem "${CANON}")"
-check      "agent memory bound for main is rejected" "memory/backlog.md is outside the template" "${out}"
+check      "a filled vault bound for main is rejected" "memory/journal/2026-01-01.md is outside the template" "${out}"
 check_code "and it exits 1 even though the version was bumped" 1 "$(code canon-mem "${CANON}")"
+
+# The other half. The vault ships as an empty form (SYSTEM.md section 5), so those
+# exact paths are template and a release may carry them. Rejecting them would refuse
+# the release that ships the form.
+build canon-form 1.0.0 "${CANON}"
+mkdir -p "${tmp}/canon-form/memory/journal"
+printf -- '---\nagent:\n---\n' > "${tmp}/canon-form/memory/state.md"
+: > "${tmp}/canon-form/memory/journal/.gitkeep"
+printf '**Version 1.1.0.** spec\n' > "${tmp}/canon-form/SYSTEM.md"; commit canon-form
+check_code "the empty vault form is template and passes" 0 "$(code canon-form "${CANON}")"
 
 # The reason this stopped being two workflow steps. Steps are fail-fast, so a
 # rejected path used to hide whatever the version check would have said.
 build canon-both 1.0.0 "${CANON}"
-mkdir -p "${tmp}/canon-both/memory"
-printf 'notes\n' > "${tmp}/canon-both/memory/backlog.md"
+mkdir -p "${tmp}/canon-both/memory/journal"
+printf 'notes\n' > "${tmp}/canon-both/memory/journal/2026-01-02.md"
 printf 'changed\n' >> "${tmp}/canon-both/SYSTEM.md"; commit canon-both
 out="$(run canon-both "${CANON}")"
 check "two failures are both reported, not just the first" "bump SYSTEM.md's version" "${out}"

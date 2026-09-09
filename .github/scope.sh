@@ -17,8 +17,13 @@
 
 set -uo pipefail
 
-if [[ -f memory/state.md ]]; then
-  echo "This branch carries memory/state.md, so it is an agent's workspace."
+# An agent is a FILLED form, never a present file. The vault ships empty on main
+# (SYSTEM.md section 5), so every branch carries memory/state.md and only an agent's
+# carries a value in `agent:`. Testing existence here would skip the guard jobs on
+# every pull request and report success while checking nothing.
+if [[ -f memory/state.md ]] \
+   && [[ -n "$(sed -n 's/^agent:[[:space:]]*//p' memory/state.md 2>/dev/null | head -n1 | sed 's/[[:space:]]*#.*$//')" ]]; then
+  echo "memory/state.md names an agent, so this branch is an agent's workspace."
   echo "The guard jobs check template work and are skipped here (SYSTEM.md section 6)."
   echo "skip=true" >> "${GITHUB_OUTPUT:-/dev/stdout}"
 else

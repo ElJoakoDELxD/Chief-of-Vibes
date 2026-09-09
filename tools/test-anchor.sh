@@ -82,6 +82,21 @@ check want "Agent: Bench Agent"      "the agent is read from the vault, never re
 check want "Posts held: [steward]"   "and the posts it holds ride with it"
 check want "post/function"           "with the instruction to declare which one is exercised"
 
+# --- a defaulted clock is still a clock ---------------------------------------
+# tools/now.sh exits 2 when it had to fall back to UTC, and prints the time anyway.
+# The hook has to keep that reading rather than throw it away with the exit code:
+# a header saying the clock is unavailable, on a machine whose clock answered, is
+# the fabricated reading section 3 forbids, pointed the other way.
+printf -- '---\nagent: Bench Agent\nposts: [steward]\n---\n' > "${tmp}/memory/state.md"
+out="$(run UserPromptSubmit '{}')"
+check want-not "CLOCK UNAVAILABLE"  "a defaulted reading is not reported as no reading"
+if printf '%s' "${out}" | grep -qE 'time=[0-9]{2}-[0-9]{2}-[0-9]{4} [0-9]{2}:[0-9]{2}'; then
+  printf 'ok    %s\n' "the anchor carries the defaulted time"
+else
+  printf 'FAIL  %s\n' "the anchor carries the defaulted time"; fails=$((fails + 1))
+fi
+printf -- '---\nagent: Bench Agent\ntimezone: UTC\nposts: [steward]\n---\n' > "${tmp}/memory/state.md"
+
 rm -f "${tmp}/memory/state.md"
 out="$(run SessionStart '{"hook_event_name":"SessionStart","source":"clear"}')"
 check want-not "initialUserMessage"                 "a chat with no agent is left alone"

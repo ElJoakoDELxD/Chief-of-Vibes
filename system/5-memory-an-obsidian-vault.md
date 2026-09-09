@@ -11,10 +11,31 @@ memory/
 ├── corrections.md       # what the Principal already fixed — read before routing the next one
 ├── handoff/
 │   └── <thread title>-handoff.md   # live state of a thread in flight, for resuming in a fresh chat
+├── posts/                # the filled form for each post this agent holds (§9)
+├── functions/            # a function this agent wrote and no catalogue holds yet
+├── quarantine/           # what belongs to somebody else, waiting on a receipt
 └── projects/
     └── <topic>/          # one line of work — brief.md here when it is a §7 project
         └── <thread>/     # one chat's workplace, named the way that chat titles itself
 ```
+
+**This tree ships, empty, on `main`.** It is a form, and a form is direction: identical in every
+copy, describing nobody. The agent does not build it and cannot build it wrong — it receives it and
+fills it. So the agent branch is not `main` *plus* the vault. It is `main` **with the forms filled**:
+same paths, same shape, and only the content differs.
+
+**An agent is a filled form, never a present file.** `memory/state.md` is on every branch, so the
+test is whether `agent:` carries a value. Reading presence instead would call every branch an
+agent's, and the checks that skip an agent's branch would skip everywhere while reporting success.
+`tools/pr-guard.sh` holds the other half: the empty forms are the only paths under `memory/` a
+release may carry, so a filled one bound for `main` is refused by name rather than by anyone
+remembering the rule.
+
+**No copy fills these forms on a template branch — its own or the canon's — whatever that branch is
+named.** Renaming the default branch changes nothing: the rule follows the branch's job and not its
+name. And where filling is found on one, **it is repositioned rather than deleted.** It is somebody's
+work: it belongs on an agent branch, in the vault, and moving it there is the repair. Deleting it
+would lose what nobody else holds, which is the same reasoning `memory/quarantine/` runs on.
 
 Two folders carry the word *projects*. `memory/projects/` is the thinking: the brief and its scope log, and the notes of every thread that worked the topic. The deliverables live in a top-level `projects/<name>/` on the agent branch, and that tree stays flat, because session structure is not part of a product. Memory is what the agent knows, and `projects/` is what it made.
 
@@ -34,19 +55,10 @@ Journal notes are appended, never rewritten. Links between notes are relative Ma
 
 `memory/state.md` frontmatter, all of it:
 
-```yaml
----
-agent: Chief of Vibes      # the agent's name
-principal: Director        # how it addresses you
-language: en               # replies are ALWAYS in this language, never mirroring input
-timezone: UTC              # IANA zone; drives every timestamp. Outranks $COV_TZ,
-                           # which answers only where this file cannot be read
-goal: <one sentence>       # the standing objective all priorities serve
-branch: <agent-branch>     # the agent's home branch
-posts: [steward]           # the posts this agent holds, by name from posts/ (§9)
-created: YYYY-MM-DD
----
-```
+The file on `main` is the schema, so nothing here restates it. Read `memory/state.md` on the
+template: every field, with the comment that says what it takes, and no values. An example carrying
+one agent's name and one Principal's title would be a filled form on `main`, which is the thing this
+section forbids.
 
 ### `posts/` and `functions/` — what this agent may do
 

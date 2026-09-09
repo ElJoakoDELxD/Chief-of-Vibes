@@ -151,6 +151,25 @@ out="$(cd "${nostate}" && bash ./now.sh 2>&1)"; code=$?
   && report "with neither source, the default names both places it looked" yes "" \
   || report "with neither source, the default names both places it looked" no "exit=${code} out=${out:-<empty>}"
 
+# The shipped empty form. Every field carries a comment and no value (SYSTEM.md
+# section 5), so a parser taking the second word reads `#` as the zone and prints
+# no time at all — on every branch in every copy, which is where the header's
+# most visible promise lives. Measured 08-09-2026, by the hook reporting CLOCK
+# UNAVAILABLE on the branch that first carried the form.
+form="${tmp}/form"; rm -rf "${form}"; mkdir -p "${form}/memory"
+cp "${here}/now.sh" "${form}/now.sh"
+printf -- '---\nagent:                     # the agent name\ntimezone:                  # IANA zone; drives every timestamp\n---\n' \
+  > "${form}/memory/state.md"
+out="$(cd "${form}" && bash ./now.sh 2>&1)"; code=$?
+[[ "${out}" == *"UTC default"* && ${code} -eq 2 ]] \
+  && report "the shipped empty form still prints a time" yes "" \
+  || report "the shipped empty form still prints a time" no "exit=${code} out=${out:-<empty>}"
+
+out="$(cd "${form}" && COV_TZ=America/Santiago bash ./now.sh 2>&1)"
+[[ "${out}" == *"${santiago}"* ]] \
+  && report "an empty timezone field lets COV_TZ answer" yes "" \
+  || report "an empty timezone field lets COV_TZ answer" no "out=${out:-<empty>}"
+
 # state.md outranks the environment. A machine must not relocate an agent that
 # has already declared where it is.
 both="$(build both America/Santiago)"
@@ -159,10 +178,12 @@ out="$(cd "${both}" && COV_TZ=Asia/Tokyo bash ./now.sh 2>&1)"
   && report "state.md outranks COV_TZ" yes "" \
   || report "state.md outranks COV_TZ" no "out=${out:-<empty>}"
 
-# The hook has to keep that value rather than throw it away with the exit code.
-grep -q 'now_exit' "${here}/../.claude/hooks/anchor.sh" \
-  && report "the anchor hook reads the exit code instead of discarding output" yes "" \
-  || report "the anchor hook reads the exit code instead of discarding output" no "anchor.sh drops an exit-2 reading"
+# The hook keeping this value rather than discarding it with the exit code is
+# pinned where it happens, in tools/test-anchor.sh, by running the hook against a
+# vault with no zone. A grep for a variable name in another tool's source stood
+# here until 1.82.0: it ran nothing, it passed while the name survived a broken
+# rewrite, and it failed on an honest rename. A bench asserts a behaviour or it
+# asserts nothing.
 
 if (( fail )); then
   echo "tools/now.sh: bench FAILED"
