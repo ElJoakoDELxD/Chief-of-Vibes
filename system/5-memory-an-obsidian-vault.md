@@ -61,14 +61,28 @@ template: every field, with the comment that says what it takes, and no values. 
 one agent's name and one Principal's title would be a filled form on `main`, which is the thing this
 section forbids.
 
-### `posts/` and `functions/` — what this agent may do
+### `posts/`, `functions/` and `privileges/` — what this agent may do
 
-An agent **holds a post**, and a post **authorizes functions**. A session exercises one of them
-and says which (§9). The split is what makes authority checkable: **a function no post authorizes
-cannot be exercised**, which is a sentence a rule can be written against. One word doing both jobs
-could never produce it.
+An agent **holds a post**. A post **authorizes functions** and **grants privileges**. A session
+exercises one function and says which (§9). The split is what makes authority checkable: **a
+function no post authorizes cannot be exercised**, which is a sentence a rule can be written
+against. One word doing all three jobs could never produce it.
 
-**The definitions ship and the grant does not.** `posts/` and `functions/` on `main` are the
+**A function is work. A privilege is permission.** *Teach*, *keep the benches*, *prepare the door*
+are things an agent does. *Merge the template*, *hold a post*, *publish* are things it may or may
+not do at all, and they were scattered across four sections with nothing collecting them, so the
+answer to *may this session do that* had no address.
+
+**Every privilege names what enforces it, and `nothing` is an allowed answer.** That field is the
+reason the catalogue is worth having rather than decoration: a grant written down where nothing
+backs it reads exactly like a control, which is rung 5 wearing rung 2's clothes (§8). `publish` is
+in the catalogue while **no post grants it**, because a privilege nobody holds is worth more
+written than silent — silence is where a future session reasons its way in, finding no rule where
+authority is read.
+
+§4 is the complement and stays where it is: what is never granted to anybody, by any post.
+
+**The definitions ship and the grant does not.** `posts/`, `functions/` and `privileges/` on `main` are the
 catalogue, inherited like every skill in `.claude/skills/`, because an agent must hold a post from
 the moment it is created and cannot hold one nothing defines. Which posts *this* agent holds is
 the `posts:` line above, and that never travels. A copy carries the definition of a post it does

@@ -1,6 +1,7 @@
 ---
 post: Steward
 authorizes: prepare-the-door, keep-the-benches, sync-the-template, sweep-the-repository, propose-upstream, receive-a-proposal, teach
+grants: merge-the-template, hold-a-post, delete-durable-state
 held_by: the agent of a copy, by default, from the moment it is created
 verified: not yet held anywhere
 ---
