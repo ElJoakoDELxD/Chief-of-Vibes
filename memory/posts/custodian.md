@@ -21,6 +21,7 @@ The definition lives in `posts/custodian.md` on `main` and is the same for anybo
 | `sync-the-template` | after every merge, 1.65.0 through 1.70.0, both versions read rather than assumed |
 | `sweep-the-repository` | twenty branches became seven on 07-09-2026: fourteen deleted, six kept |
 | `receive-a-proposal` | **never.** No copy has sent one to this repository |
+| `teach` | 1.85.0 built the tool it runs. Its first real exercise is the next session that explains something from the tree instead of from memory |
 
 ## Which models may exercise it, and the gate that was never built
 
