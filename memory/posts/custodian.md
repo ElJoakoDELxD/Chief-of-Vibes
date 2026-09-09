@@ -3,7 +3,7 @@ post: Custodian
 definition: posts/custodian.md on main
 held_since: 14-08-2026
 models: claude-opus-5
-verified: exercised through releases 1.65.0 to 1.85.0, in runs of four, two and one under three approvals
+verified: exercised through releases 1.65.0 to 1.88.0, under five approvals
 ---
 
 # The custodian post, as this agent has held it
