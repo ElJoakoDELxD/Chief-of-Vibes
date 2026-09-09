@@ -178,10 +178,12 @@ out="$(cd "${both}" && COV_TZ=Asia/Tokyo bash ./now.sh 2>&1)"
   && report "state.md outranks COV_TZ" yes "" \
   || report "state.md outranks COV_TZ" no "out=${out:-<empty>}"
 
-# The hook has to keep that value rather than throw it away with the exit code.
-grep -q 'now_exit' "${here}/../.claude/hooks/anchor.sh" \
-  && report "the anchor hook reads the exit code instead of discarding output" yes "" \
-  || report "the anchor hook reads the exit code instead of discarding output" no "anchor.sh drops an exit-2 reading"
+# The hook keeping this value rather than discarding it with the exit code is
+# pinned where it happens, in tools/test-anchor.sh, by running the hook against a
+# vault with no zone. A grep for a variable name in another tool's source stood
+# here until 1.82.0: it ran nothing, it passed while the name survived a broken
+# rewrite, and it failed on an honest rename. A bench asserts a behaviour or it
+# asserts nothing.
 
 if (( fail )); then
   echo "tools/now.sh: bench FAILED"
