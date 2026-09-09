@@ -76,6 +76,10 @@ fail=0
 # to a path pattern. This guard checks the path and says nothing about the
 # entry.
 allow='^((SYSTEM|CLAUDE|README|CONTRIBUTING|LANGUAGES|CLOCKS|INDEX)\.md|LICENSE|repomix\.config\.json|\.gitignore|\.canon)$|^(\.claude|\.github|tools|system|knowledge|posts|functions)/'
+# The vault ships as an empty form, so exactly those paths are template and nothing
+# else under memory/ is. A filled form is identity and never reaches main (§5), and
+# this is the rail that says so rather than a rule anybody has to remember.
+allow="${allow}"'|^memory/(state|backlog|corrections)\.md$|^memory/(journal|handoff|projects|posts|functions|quarantine)/\.gitkeep$'
 scope='outside the template'
 
 while IFS= read -r -d '' f; do

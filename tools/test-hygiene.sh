@@ -222,6 +222,9 @@ git clone -q "${origin}" "${work}" 2>/dev/null
   mkdir -p memory
   printf 'x\n' > memory/backlog.md
   printf 'a correction\n' > memory/corrections.md
+  # The trunk carries the empty form, as main does once the vault ships
+  # (SYSTEM.md section 5). A check testing presence would name every branch.
+  printf -- '---\nagent:                     # the agent name\n---\n' > memory/state.md
   git add -A && git commit -q -m spec && git push -q -u origin trunk
 
   git switch -q -c agent-one
@@ -231,7 +234,8 @@ git clone -q "${origin}" "${work}" 2>/dev/null
 ) >/dev/null 2>&1
 
 out="$(cd "${work}" && bash "${here}/hygiene.sh")"
-check_absent "one vault is left alone" "More than one branch carries" "${out}"
+check_absent "one vault is left alone" "More than one branch names" "${out}"
+check_absent "the empty form on the trunk is not a vault" "origin/trunk" "${out}"
 
 (
   cd "${work}"
@@ -242,7 +246,7 @@ check_absent "one vault is left alone" "More than one branch carries" "${out}"
 ) >/dev/null 2>&1
 
 out="$(cd "${work}" && bash "${here}/hygiene.sh")"
-check "two vaults are reported" "More than one branch carries memory/state.md" "${out}"
+check "two vaults are reported" "More than one branch names an agent in memory/state.md" "${out}"
 check "the report names both branches" "origin/agent-two" "${out}"
 
 if (( fail )); then
