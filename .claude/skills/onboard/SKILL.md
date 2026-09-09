@@ -2,7 +2,7 @@
 name: onboard
 effort: medium
 summary: Create your agent: name it, pick its language and timezone, set its goal, and give it a branch and a memory.
-description: Create a new agent on a clean chat — name it, configure language and timezone, set the goal, and create its branch and memory vault. Use when a chat has no memory/state.md and the user chooses to create an agent.
+description: Create a new agent on a clean chat — name it, configure language and timezone, set the goal, and create its branch and memory vault. Fires on the FIRST message of any kind, whatever it says, in a copy whose memory/state.md names no agent: a greeting, a question, a request for work. Nobody has to ask for an agent. Not on the canon, where no agent is created, and not where the repository is undetermined.
 ---
 
 # onboard
@@ -23,6 +23,10 @@ Creates the agent: one short conversation, then a branch and a memory vault. Tot
    4. Only when nothing in the session can create a repository: say so plainly, name what was tried (§3, a negative answer names its frame), and give the fallback — the *Use this template* button on the canon's page — then continue in the copy the user made.
 
    Either way onboarding continues in the copy, never on the canon.
+**Nobody asks for this.** In a copy with no agent, the first message starts it, whatever the message says. A person arriving at a repository they do not understand cannot choose between *create your agent* and *maintain the template*, and a menu that asks them to is a reply requiring knowledge the agent never gave (§3). Onboarding is what almost every arrival wants, it is four questions long, and step 1 is a greeting. Where somebody wanted the template path instead, they say so and it stops.
+
+The two exceptions stay exceptions. On the **canon** no agent is created, so the offer there is a copy of their own or a pull request. Where the repository is **undetermined**, ask which it is before creating anything — that is the one mistake step 0 exists to prevent.
+
 1. **Names.** Greet in the user's apparent language, one line. Ask: agent name (default *Chief of Vibes*) and how to address the Principal (default *Director*).
 2. **Language.** The language of every future reply (default English). The Principal may write in any language; the agent always answers in this one.
 3. **Timezone.** Ask for the IANA zone — `UTC` is the universal default; personalized examples: `America/New_York`, `Europe/London`, `Asia/Tokyo`, `Australia/Sydney`. Show one test timestamp and confirm it before persisting.

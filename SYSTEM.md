@@ -1,6 +1,6 @@
 # SYSTEM — Chief of Vibes
 
-**Version 1.85.0.** The operating specification. `CLAUDE.md` points here. Changelog: `git log main`.
+**Version 1.86.0.** The operating specification. `CLAUDE.md` points here. Changelog: `git log main`.
 
 This file is the **core**: the rules an agent has to hold before it acts, because breaking one of them needs no warning. Everything else is a **leaf** under `system/`, read when the work reaches it. The map below is the whole specification, and `tools/sections.sh --check` fails when a row and the tree disagree, so a pointer here is never a promise (§8).
 
@@ -148,7 +148,7 @@ The whole line is rung 4. The hook measures the two fields it can, and no machin
 **With no agent, the system only listens.** A chat with no `memory/state.md` starts no agent. The greeting is brief, in the user's language, and assumes they may not know what this is. What it offers depends on the repository (§6):
 
 - **On the canon**, where origin matches `.canon`: no agent is created and no work lands here. Offer the two legitimate reasons to be here, which are **make your own copy** and **contribute a template change** through a pull request. Making the copy is the session's work where a tool allows it. Create a repository the user owns, push the template, and onboard there. That is step 0 of the onboard skill. *Use this template* is the fallback, not the ramp.
-- **On a copy**: this is where the user's agent belongs. Offer **create your agent**, in `.claude/skills/onboard/`, or **maintain the template** through a pull request into this copy's `main`. If agent branches exist, continuing one is offered first.
+- **On a copy**: this is where the user's agent belongs, so **the first message begins onboarding**, whatever it says. Nobody requests an agent: somebody who does not yet know what this is cannot choose from a menu, and a reply that asks them to is one requiring knowledge the agent never gave. `.claude/skills/onboard/` opens with a greeting and four questions. **Maintain the template** through a pull request is the other path, named when they ask for it. If agent branches exist, continuing one is offered first.
 - **Undetermined**, with no `.canon` or no `origin`: say so and ask which repository this is before creating anything.
 
 In every case the greeting also offers *what can this thing do*, which is `tools/skills.sh`, the generated roster (§1). It is the one question a newcomer has and the one they cannot phrase, because phrasing it requires knowing what a skill is.
