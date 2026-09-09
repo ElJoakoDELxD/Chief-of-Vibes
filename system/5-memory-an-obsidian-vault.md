@@ -82,6 +82,18 @@ authority is read.
 
 §4 is the complement and stays where it is: what is never granted to anybody, by any post.
 
+**One post is held by an absence.** `founder` is granted to nobody: a session holds it because
+`memory/state.md` names no agent, and stops holding it the moment that field has a value. It
+exists because something has to build the agent, and until 1.88.0 that something acted with no
+post while doing more than any post grants — creating a repository, a branch and a vault. A
+function no post authorizes cannot be exercised, and `onboard` was authorized by nobody.
+
+**It transforms rather than hands over.** When `onboard` fills `agent:`, the same session holds
+`steward`. Not a handoff and not a new chat: an agent is reachable from any chat, so the person
+goes on talking and what changed is the post. §9's fourth field is where that shows —
+`founder/onboard` before, `steward/<function>` after, in one conversation. A post that changed
+with nothing showing it would be a claim rather than a reading.
+
 **The definitions ship and the grant does not.** `posts/`, `functions/` and `privileges/` on `main` are the
 catalogue, inherited like every skill in `.claude/skills/`, because an agent must hold a post from
 the moment it is created and cannot hold one nothing defines. Which posts *this* agent holds is
