@@ -171,6 +171,23 @@ menu_at "" "" "https://github.com/Someone/Their-Copy"
 out="$( CLAUDE_PROJECT_DIR="${menu_dir}" bash "${here}/../.claude/hooks/anchor.sh" UserPromptSubmit </dev/null )"
 check want "could not be determined"        "neither marker leaves the question open, never guessed"
 
+# --- the post an unposted session already held -------------------------------
+# Something builds the agent, and until 1.88.0 it did so holding nothing while
+# creating a repository, a branch and a vault. A session with no agent is not a
+# session with no post: it holds `founder`, granted by the absence.
+menu_at .blueprint "Owner/Canon" "https://github.com/Someone/Their-Copy"
+out="$( CLAUDE_PROJECT_DIR="${menu_dir}" bash "${here}/../.claude/hooks/anchor.sh" UserPromptSubmit </dev/null )"
+check want     "Posts held: [founder]"      "a session with no agent is told which post it holds"
+check want     "becomes steward"            "and that the post changes rather than hands over"
+check want-not "Posts held: []"             "the empty list that claimed no authority is gone"
+
+# And the filled form still reports the agent's own posts, unchanged. The fixture
+# lost its vault to an earlier case, so it is restored rather than assumed.
+printf -- '---\nagent: Bench Agent\ntimezone: UTC\nposts: [steward]\n---\n' > "${tmp}/memory/state.md"
+out="$(run UserPromptSubmit '{}')"
+check want     "Posts held: [steward]"      "an agent's own posts are still what it is told"
+check want-not "founder"                    "and an agent is never told it holds the founding post"
+
 # --- what a newcomer meets, on their first message ----------------------------
 # The menu is the first thing a person who does not know what this is reads, and
 # nothing pinned its content until 1.86.0. A copy begins onboarding rather than

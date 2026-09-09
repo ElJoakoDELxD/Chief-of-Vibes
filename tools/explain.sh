@@ -77,7 +77,7 @@ printf 'What this tree says about: %s\n' "${term}"
 
 section "The specification — the rule itself" SYSTEM.md system/*.md
 section "Knowledge — a procedure somebody worked out" knowledge/*/*.md
-section "The catalogue — a post or a function" posts/*.md functions/*.md
+section "The catalogue — a post, a function, a privilege" posts/*.md functions/*.md privileges/*.md
 section "Capabilities — a skill that runs" .claude/skills/*/SKILL.md
 section "Machinery — a tool or a hook" tools/*.sh .claude/hooks/*.sh .github/*.sh
 

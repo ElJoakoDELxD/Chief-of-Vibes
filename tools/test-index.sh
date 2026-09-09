@@ -31,6 +31,16 @@ check want "tools/index.sh"              "the generator lists itself, because it
 check want "5s"                          "a skill is listed"
 check want "documents, memory, tree"     "a skill's leaves are named, so the agent knows what loads on demand"
 
+# Authority was never indexed until 1.87.0, and it is where "may this session do
+# that" is answered. A privilege names what enforces it, and `nothing` being a
+# legal answer is the whole reason the column earns its place.
+check want "## Authority"               "the catalogue is indexed at all"
+check want "custodian"                  "a post is listed"
+check want "merge-the-template"         "and what it grants, not only what it authorizes"
+check want "enforced by"                "a privilege carries the mechanism that backs it"
+check want "the credential the agent does not hold" \
+                                        "including one no post grants, which is why it is written down"
+
 # Every skill directory must appear. A skill that exists is listed by construction.
 missing=""
 for d in "${root}"/.claude/skills/*/; do

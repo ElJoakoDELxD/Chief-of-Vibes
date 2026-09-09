@@ -80,6 +80,29 @@ if sec3:
     for n in names:
         w(f"- {n.strip()}")
 
+# The catalogue was never indexed, and it is where "may this session do that" is
+# answered. Three directories, one line each, read from their own frontmatter.
+w("\n## Authority\n")
+w("A post authorizes functions and grants privileges. The definitions ship; which\n"
+  "post an agent holds never does (SYSTEM.md section 5).\n")
+for kind, field, extra in (("posts", "post", ("authorizes", "grants")),
+                           ("functions", "function", ()),
+                           ("privileges", "privilege", ("enforced_by",))):
+    files = g(f"{kind}/*.md")
+    if not files:
+        continue
+    w(f"\n**`{kind}/`**\n")
+    heads = ["Name", field.replace("_", " ").capitalize()] + [e.replace("_", " ") for e in extra]
+    w("| " + " | ".join(heads) + " |")
+    w("|" + "---|" * len(heads))
+    for f in files:
+        text = open(f, encoding="utf-8").read()
+        def fld(k):
+            m = re.search(rf"(?m)^{k}:\s*(.+)$", text)
+            return m.group(1).strip() if m else "—"
+        row = [f"`{os.path.basename(f)[:-3]}`", fld(field)] + [fld(e) for e in extra]
+        w("| " + " | ".join(row) + " |")
+
 w("\n## Capabilities\n")
 w("Read from `.claude/skills/`, the same source `tools/skills.sh` reads.\n")
 w("| Skill | Summary | Leaves |")
