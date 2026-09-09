@@ -171,6 +171,29 @@ menu_at "" "" "https://github.com/Someone/Their-Copy"
 out="$( CLAUDE_PROJECT_DIR="${menu_dir}" bash "${here}/../.claude/hooks/anchor.sh" UserPromptSubmit </dev/null )"
 check want "could not be determined"        "neither marker leaves the question open, never guessed"
 
+# --- what a newcomer meets, on their first message ----------------------------
+# The menu is the first thing a person who does not know what this is reads, and
+# nothing pinned its content until 1.86.0. A copy begins onboarding rather than
+# offering it: somebody who cannot yet tell the two paths apart cannot pick one,
+# and a reply asking them to is one requiring knowledge never given (§3).
+menu_at .blueprint "Owner/Canon" "https://github.com/Someone/Their-Copy"
+out="$( CLAUDE_PROJECT_DIR="${menu_dir}" bash "${here}/../.claude/hooks/anchor.sh" UserPromptSubmit </dev/null )"
+check want     "Begin onboarding now"       "a copy is told to begin, not to offer"
+check want     "whatever this first message says" "and that the message's content does not gate it"
+check want-not "offer: create their agent"  "the menu that waited to be chosen is gone"
+
+# The two exceptions stay exceptions, and this is the half that keeps the change
+# honest: a canon that began onboarding would create an agent where none may live.
+menu_at .canon "Owner/Canon" "https://github.com/Owner/Canon"
+out="$( CLAUDE_PROJECT_DIR="${menu_dir}" bash "${here}/../.claude/hooks/anchor.sh" UserPromptSubmit </dev/null )"
+check want-not "Begin onboarding now"       "the canon never begins onboarding"
+check want     "no agent is created here"   "and says so"
+
+menu_at "" "" "https://github.com/Someone/Their-Copy"
+out="$( CLAUDE_PROJECT_DIR="${menu_dir}" bash "${here}/../.claude/hooks/anchor.sh" UserPromptSubmit </dev/null )"
+check want-not "Begin onboarding now"       "an undetermined repository never begins onboarding"
+check want     "ask which it is"            "and asks which repository this is first"
+
 if (( fails )); then
   printf '\n%d failed\n' "${fails}"; exit 1
 fi
