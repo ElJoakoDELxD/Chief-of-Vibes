@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.87.0**
+Specification version: **1.88.0**
 
 ## The specification
 
@@ -57,6 +57,7 @@ post an agent holds never does (SYSTEM.md section 5).
 | Name | Post | authorizes | grants |
 |---|---|---|---|
 | `custodian` | Custodian | prepare-the-door, keep-the-benches, sync-the-template, sweep-the-repository, receive-a-proposal, teach | merge-the-template, hold-a-post, delete-durable-state |
+| `founder` | Founder | onboard | create-the-repository, hold-a-post |
 | `steward` | Steward | prepare-the-door, keep-the-benches, sync-the-template, sweep-the-repository, propose-upstream, receive-a-proposal, teach | merge-the-template, hold-a-post, delete-durable-state |
 
 **`functions/`**
@@ -64,6 +65,7 @@ post an agent holds never does (SYSTEM.md section 5).
 | Name | Function |
 |---|---|
 | `keep-the-benches` | Keep the benches green |
+| `onboard` | Create the agent |
 | `prepare-the-door` | Prepare the door |
 | `propose-upstream` | Propose upstream |
 | `receive-a-proposal` | Receive a proposal |
@@ -75,6 +77,7 @@ post an agent holds never does (SYSTEM.md section 5).
 
 | Name | Privilege | enforced by |
 |---|---|---|
+| `create-the-repository` | Create a repository the user will own | the tooling the session happens to hold, and nothing else — where none can, the fallback is a button the user presses |
 | `delete-durable-state` | Destroy something that would otherwise outlive the session | the git proxy refuses a ref deletion from a hosted session; a quarantined item needs a signed receipt; sync keeps the vault's own version of every memory path |
 | `hold-a-post` | Exercise a post at all | tools/models.sh, on a three-way exit where no reading is a refusal |
 | `merge-the-template` | Land a change in the template branch | branch protection and the required checks at the remote, plus the Principal's approval, which is judgment and cannot climb |

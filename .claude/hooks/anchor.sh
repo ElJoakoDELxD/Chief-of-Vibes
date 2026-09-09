@@ -72,7 +72,15 @@ agent="$(field agent)"
 posts="$(field posts)"
 identity=""
 [[ -n "${agent}" ]] && identity=" Agent: ${agent}."
-[[ -n "${posts}" ]] && identity="${identity} Posts held: ${posts}. Declare which one this session exercises, and put it in the header as post/function (SYSTEM.md section 9)."
+# A session with no agent is not a session with no post. It holds `founder`,
+# because the absence is what grants it, and it does more than any other post
+# grants while doing it (SYSTEM.md section 5). Naming it here is what makes the
+# header's fourth field readable before an agent exists.
+if has_agent; then
+  [[ -n "${posts}" ]] && identity="${identity} Posts held: ${posts}. Declare which one this session exercises, and put it in the header as post/function (SYSTEM.md section 9)."
+else
+  identity="${identity} Posts held: [founder], granted by the absence of an agent and by nothing else. It authorizes one function, onboard, and becomes steward the moment memory/state.md names an agent — same session, same chat, different post (SYSTEM.md section 5)."
+fi
 
 # The model gate cannot read what the runtime served, so the obligation to fetch
 # it is stated here where a session cannot miss it. Silence let an unlisted model
