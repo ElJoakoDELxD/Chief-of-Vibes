@@ -75,8 +75,9 @@ What gets done. What was already done lives in the journal, not here.
   six functions and none of them covers explaining the system to somebody using it. The Principal
   asked where to open a chat on 08-09-2026 and the honest header was `custodian/no function
   declared`. Either a function joins the catalogue or the post stops claiming the duty. The gate
-  working is what made the gap visible rather than tolerable. Candidate for upstream.
-  #propagate:08-09-2026
+  working is what made the gap visible rather than tolerable. **Landed as 1.85.0**: `functions/teach.md`
+  with `tools/explain.sh` behind it, authorized on both posts. Tag cleared — the sensor raising a
+  decided finding is a decision nobody is making (SYSTEM.md §5).
 
 ## Principal
 
