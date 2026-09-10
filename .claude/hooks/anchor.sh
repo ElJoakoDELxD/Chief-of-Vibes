@@ -27,7 +27,22 @@ set -uo pipefail
 
 event="${1:?usage: anchor.sh <SessionStart|UserPromptSubmit>}"
 
-cd "${CLAUDE_PROJECT_DIR:-.}"
+# **A cd that fails must not be followed by measurements.** Without this guard the
+# hook stayed in whatever directory it inherited and read that tree's vault, so a
+# session could open with another repository's agent name, its posts, its drift
+# and its hygiene — every field well-formed and every one about somebody else.
+# Measured 09-09-2026 by pointing CLAUDE_PROJECT_DIR at a path that does not
+# exist, from inside a second repository: the header named the other agent.
+#
+# Silence would be worse than the lie is: a session with no anchors builds them
+# from memory, which section 3 forbids. So it says what it could not do, in the
+# vocabulary the clock and the drift check already use.
+if ! cd "${CLAUDE_PROJECT_DIR:-.}" 2>/dev/null; then
+  HOOK_EVENT="${event}" \
+  HOOK_CONTEXT="Anchors: UNAVAILABLE. The project directory (CLAUDE_PROJECT_DIR=${CLAUDE_PROJECT_DIR:-unset}) could not be entered, so nothing here was measured and no value was read from any tree. Say the anchors could not be taken. Do not build the time, the branch, the agent or the posts from memory or from another directory (SYSTEM.md section 3)." \
+  python3 -c 'import json,os; print(json.dumps({"hookSpecificOutput":{"hookEventName":os.environ["HOOK_EVENT"],"additionalContext":os.environ["HOOK_CONTEXT"]}}))'
+  exit 0
+fi
 
 # How this session began. The runtime sends it as `source` on stdin, and the
 # values are startup, resume, clear, compact and fork. A runtime that sends

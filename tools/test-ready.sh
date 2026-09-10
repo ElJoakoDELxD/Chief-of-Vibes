@@ -19,6 +19,12 @@ check() {
        echo "     got: ${got:-<empty>}"; fail=1; fi
 }
 
+check_absent() {
+  local name="$1" forbidden="$2" got="$3"
+  if [[ "${got}" != *"${forbidden}"* ]]; then echo "ok   ${name}"
+  else echo "FAIL ${name}"; echo "     must not contain: ${forbidden}"; fail=1; fi
+}
+
 # A repository with a version, an optional origin/main at another version, and
 # one bench that passes or fails on demand.
 build() {
@@ -95,6 +101,44 @@ check "--fee is one line and carries both numbers" "chars, about" "${out}"
 ( cd "${tmp}/red" && bash tools/ready.sh >/dev/null 2>&1 )
 [[ $? -eq 0 ]] && echo "ok   a red tree still exits 0, because this reports" \
   || { echo "FAIL a red tree still exits 0"; fail=1; }
+
+# --- a tree that is not this one ---------------------------------------------
+# The first version of this guard fired only where the directory was gone. A
+# monitor copied the tool into a valid *wrong* directory and got a full confident
+# report — "0 of 0 benches green" — which is the class the guard was named for.
+wrong="${tmp}/wrongtree"; rm -rf "${wrong}"; mkdir -p "${wrong}/tools"
+cp "${here}/ready.sh" "${wrong}/tools/ready.sh"
+( cd "${wrong}" && git init -q . ) >/dev/null 2>&1
+out="$( cd "${wrong}" && bash tools/ready.sh 2>&1 )"
+check "a directory that is not this repository is refused" "is not this repository" "${out}"
+check_absent "and no count is printed from it"             "benches green"          "${out}"
+
+# --- what this change grows, and the three ways it got that wrong -------------
+# Section 8's test was applied one release at a time. The measure that reports it
+# shipped with three defects, each caught by a monitor rather than by this bench,
+# which is why the bench exists now.
+
+# 1. Nothing to compare against is not a growth of everything. A fabricated
+#    reading inside a sensor is worse than no sensor (section 3).
+solo="$(build solo 1.0.0 "" 0)"
+check "with no origin/main the measure says so" "Growth against main: UNAVAILABLE" "$(run "${solo}")"
+check_absent "and never prints a number instead" "prose +" "$(run "${solo}")"
+
+# 2. A deletion has to move it. A measure that walks the working tree only cannot
+#    see a payment-down, which is the one thing it exists to ask for.
+paid="$(build paid 1.1.0 1.0.0 0)"
+( cd "${paid}" && git rm -q system/1-purpose.md ) >/dev/null 2>&1
+out="$(run "${paid}")"
+printf '%s' "${out}" | grep -qE 'prose -[0-9]+ words' \
+  && printf 'ok    a removed file shows as prose paid down\n' \
+  || { printf 'FAIL  a removed file moved the number by nothing\n'; fail=1; }
+check_absent "and one side falling is never called unfinished" "Both grew" "${out}"
+
+# 3. Both growing is the case the rule is about, and it says so.
+grew="$(build grew 1.1.0 1.0.0 0)"
+( cd "${grew}" && printf 'a much longer leaf with many more words than before\n' >> system/1-purpose.md \
+   && printf '#!/usr/bin/env bash\n# another line\n' > tools/extra.sh ) >/dev/null 2>&1
+check "both growing is named as unfinished" "Both grew" "$(run "${grew}")"
 
 if (( fail )); then
   echo "tools/ready.sh: bench FAILED"
