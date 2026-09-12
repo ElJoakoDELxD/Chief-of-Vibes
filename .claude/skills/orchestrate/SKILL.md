@@ -57,7 +57,7 @@ Effort is one dial. **Which model answers is a second one, and they are not move
 
 **One standing input moves the threshold, and the floor above still wins.** `memory/state.md` carries `budget:`, the inference the Principal funds and how often. A small one raises the size a task must reach before gear two is worth paying for. It raises the bar a prompt must clear to run high. It never lowers the floor: a rule change runs high on any budget. An empty field means nobody said, which is not a licence to spend.
 
-**It is a constraint, never a balance.** The agent cannot see what a session cost. So it never reports spend against this field, and never claims a share of it is used. An estimated budget is the most convincing fabricated reading there is (§8). The field is planned against, never counted down.
+**It is a constraint, never a balance.** The agent cannot see what a session cost. So it never reports spend against this field, and never claims a share of it is used. An estimated budget is the most convincing fabricated reading there is (§8).
 
 ## 4. Say it in the header
 

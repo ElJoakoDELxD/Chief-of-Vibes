@@ -39,6 +39,8 @@ build() {
   printf 'entry point\n' > CLAUDE.md
   printf 'index\n' > INDEX.md
   printf 'leaf\n' > system/1-purpose.md
+  mkdir -p .claude/skills/thing
+  printf 'skill prose\n' > .claude/skills/thing/SKILL.md
   printf 'state\n' > memory/state.md
   # A healthy bench reports a case and exits 0. Exit code alone is not health:
   # one that dies before its first assertion also exits 0 (SYSTEM.md section 8).
@@ -134,7 +136,18 @@ printf '%s' "${out}" | grep -qE 'prose -[0-9]+ words' \
   || { printf 'FAIL  a removed file moved the number by nothing\n'; fail=1; }
 check_absent "and one side falling is never called unfinished" "Both grew" "${out}"
 
-# 3. Both growing is the case the rule is about, and it says so.
+# 3. A skill is prose. Counting only system/ reported +0 for a release that added
+#    a step to onboard and two paragraphs to orchestrate, which is the reading a
+#    session actually pays. Caught in 1.90.0, by the release it under-reported.
+skill="$(build skill 1.1.0 1.0.0 0)"
+( cd "${skill}" && printf 'many more words of skill prose than were here before\n' \
+    >> .claude/skills/thing/SKILL.md ) >/dev/null 2>&1
+out="$(run "${skill}")"
+printf '%s' "${out}" | grep -qE 'prose \+[1-9][0-9]* words' \
+  && printf 'ok    a skill that grew shows as prose\n' \
+  || { printf 'FAIL  a skill that grew moved the number by nothing\n'; fail=1; }
+
+# 4. Both growing is the case the rule is about, and it says so.
 grew="$(build grew 1.1.0 1.0.0 0)"
 ( cd "${grew}" && printf 'a much longer leaf with many more words than before\n' >> system/1-purpose.md \
    && printf '#!/usr/bin/env bash\n# another line\n' > tools/extra.sh ) >/dev/null 2>&1
