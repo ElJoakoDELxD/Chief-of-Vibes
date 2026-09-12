@@ -141,8 +141,15 @@ else
 import subprocess, glob, os
 
 PROSE = ["SYSTEM.md", "CLAUDE.md", "README.md", "CONTRIBUTING.md"]
+# Every prose surface the template ships, not only the specification. A skill,
+# a post and a privilege are read by sessions exactly as a section is, and until
+# 1.90.0 this counted none of them: a release could add hundreds of words of
+# skill and the measure reported +0. INDEX.md is generated, so it is not charged
+# to a release, and memory/ never ships filled.
+PROSE_DIRS = ("system/", ".claude/skills/", "posts/", "privileges/", "knowledge/")
 def prose_paths(names):
-    return [n for n in names if n in PROSE or (n.startswith("system/") and n.endswith(".md"))]
+    return [n for n in names
+            if n in PROSE or (n.endswith(".md") and n.startswith(PROSE_DIRS))]
 def code_paths(names):
     return [n for n in names
             if n.endswith(".sh") and (n.startswith("tools/") or n.startswith(".claude/hooks/")
