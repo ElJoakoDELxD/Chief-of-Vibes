@@ -4,6 +4,7 @@ principal: whoever opens a session here
 language: en
 timezone: UTC
 goal: Keep this template correct, and teach whoever wants to change it.
+budget: donated inference, small on purpose. The figure is not written here.
 branch: Chief-of-Vibes-Agent
 posts: [custodian]
 created: 2026-08-14
