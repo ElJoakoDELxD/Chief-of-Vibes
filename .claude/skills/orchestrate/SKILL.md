@@ -55,6 +55,10 @@ Effort is one dial. **Which model answers is a second one, and they are not move
 
 **The floor overrides the saving.** Anything touching the canon, money, a credential, or something that becomes public **runs high whatever its size**, and a one-line change to a rule is a rule change. Cheapening those is not a saving. It is the one place where being wrong is expensive, so it is the last place to economise.
 
+**One standing input moves the threshold, and the floor above still wins.** `memory/state.md` carries `budget:`, the inference the Principal funds and how often. A small one raises the size a task must reach before gear two is worth paying for. It raises the bar a prompt must clear to run high. It never lowers the floor: a rule change runs high on any budget. An empty field means nobody said, which is not a licence to spend.
+
+**It is a constraint, never a balance.** The agent cannot see what a session cost. So it never reports spend against this field, and never claims a share of it is used. An estimated budget is the most convincing fabricated reading there is (§8). The field is planned against, never counted down.
+
 ## 4. Say it in the header
 
 The route goes in the header of every reply (§9), as `model·effort`. The model named is the one that **actually answered**, not the one that would have been ideal, because a header that reports an intention is a header nobody can check. That is what makes the step impossible to skip quietly: a reply with no route on it did not run the triage, and anyone can see that without asking.

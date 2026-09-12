@@ -5,6 +5,10 @@ language:                  # replies are ALWAYS in this language, never mirrorin
 timezone:                  # IANA zone; drives every timestamp. Outranks $COV_TZ,
                            # which answers only where this file cannot be read
 goal:                      # the standing objective all priorities serve
+budget:                    # the inference the Principal funds, and how often.
+                           # The triage plans against it (SYSTEM.md 9). Never a
+                           # balance: the agent cannot measure what a session
+                           # cost, so it never reports spend against this field
 branch:                    # the agent's home branch
 posts: []                  # the posts this agent holds, by name from posts/ (§9)
 created:
