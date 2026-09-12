@@ -2,7 +2,7 @@
 quarantined: 08-09-2026
 belongs_to: the Principal's own copy, and its agent
 goes_to: that agent's `memory/state.md`, as a standing commitment it plans against
-received:
+received: 12-09-2026 — recorded in the copy's `memory/state.md` as a standing commitment
 ---
 
 # The funding arrangement
