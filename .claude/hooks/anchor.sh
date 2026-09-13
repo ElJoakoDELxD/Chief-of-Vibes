@@ -195,8 +195,40 @@ if [[ "${event}" == "SessionStart" ]]; then
       canon_version="$(git show FETCH_HEAD:SYSTEM.md 2>/dev/null | version_of)" || true
     fi
 
+    # Do the two histories share an ancestor at all? Everything below this line
+    # assumes they do. A version number orders releases inside ONE lineage; across
+    # two it is a coincidence of digits. Measured 10-09-2026 on a live copy: it read
+    # 1.117.0 against a canon at 1.89.0 and was told AHEAD with nothing to sync,
+    # while `git merge-base` exited 1 — no shared root — and twelve template files
+    # the canon carried were simply absent there. `sort -V` cannot see that, and it
+    # is the same defect from the other side when both lineages land on one number:
+    # that copy's 1.89.0 and this one's were two different releases.
+    #
+    # Only a full clone can answer. A shallow one is missing the commits where the
+    # ancestor would be, so its silence is an artifact and never a finding (§3).
+    shared="unknown"
+    if git rev-parse --verify --quiet HEAD >/dev/null 2>&1 \
+       && git rev-parse --verify --quiet FETCH_HEAD >/dev/null 2>&1; then
+      if git merge-base FETCH_HEAD HEAD >/dev/null 2>&1; then
+        shared="yes"
+      elif [[ "$(git rev-parse --is-shallow-repository 2>/dev/null)" == "true" ]]; then
+        # A shallow clone is missing the commits where the ancestor would be, so
+        # its merge-base failure is an artifact of the fetch depth. It cannot tell
+        # a fork from a shared root beyond the horizon, and that is the whole
+        # question — so it reports the numbers without a direction, and names the
+        # command that settles it.
+        shared="unverifiable"
+      else
+        shared="no"
+      fi
+    fi
+
     if [[ -z "${canon_version}" ]]; then
       drift=" Template drift check: UNAVAILABLE (could not read the canon's SYSTEM.md; this copy is at ${here_version:-unknown}). Say the check did not run rather than assuming this copy is current."
+    elif [[ "${shared}" == "unverifiable" && "${canon_version}" != "${here_version}" ]]; then
+      drift=" Template drift check: DIRECTION UNVERIFIABLE. This copy is at ${here_version:-unknown} and the canon is at ${canon_version}. The numbers differ, and this clone is shallow, so \`git merge-base\` cannot tell whether the two share a history at all — and a version only orders releases inside one history. Report both numbers and do NOT say ahead or behind: over a fork both are false. To settle it: \`git fetch --unshallow\` (or a bounded \`git fetch --deepen=1000\`), then \`git merge-base FETCH_HEAD HEAD\` — exit 1 means forked, and a file diff against the canon answers what a merge cannot."
+    elif [[ "${shared}" == "no" ]]; then
+      drift=" Template FORK: this copy is at ${here_version:-unknown} and the canon is at ${canon_version}, and the two histories share NO common ancestor (git merge-base exits 1). This copy is neither ahead nor behind — the numbers name two separate lineages, so the same number can sit on both sides carrying different releases. Do not sync, and do not report a direction. What answers here is a file-level comparison of the template against the canon (SYSTEM.md, CLAUDE.md, INDEX.md, system/, tools/, knowledge/, .claude/), in both directions, because each side can hold work the other never received. Tell the Principal the copy is forked, with both numbers."
     elif [[ "${canon_version}" != "${here_version}" ]]; then
       # A gap has a direction and the two are opposite situations. Behind is a
       # defect: this session runs superseded rules with the old rails wired in.

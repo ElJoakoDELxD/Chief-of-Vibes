@@ -223,6 +223,52 @@ out="$( CLAUDE_PROJECT_DIR="${menu_dir}" bash "${here}/../.claude/hooks/anchor.s
 check want-not "Begin onboarding now"       "an undetermined repository never begins onboarding"
 check want     "ask which it is"            "and asks which repository this is first"
 
+# A fork: two lineages with no shared root. The numbers still order, and that is
+# exactly the trap — 1.49.0 sorts above 1.47.0 and means nothing across histories.
+# Measured 10-09-2026 on a live copy: AHEAD with nothing to sync, while twelve
+# template files this canon carried were absent there. Both sides need real
+# commits, because merge-base cannot answer about a tree that has none.
+fork_dir="${tmp}/fork"
+rm -rf "${fork_dir}"; mkdir -p "${fork_dir}/tools" "${fork_dir}/memory"
+cp "${here}/now.sh" "${fork_dir}/tools/now.sh"
+cp "${here}/clocks.sh" "${fork_dir}/tools/clocks.sh"
+printf 'Owner/Canon\n' > "${fork_dir}/.canon"
+printf '**Version 1.49.0.** spec\n' > "${fork_dir}/SYSTEM.md"
+printf -- '---\ntimezone: UTC\n---\n' > "${fork_dir}/memory/state.md"
+( cd "${fork_dir}" && git init -q . \
+  && git config user.email bench@example.com && git config user.name bench \
+  && git remote add origin https://github.com/someone/their-copy \
+  && git add -A && git commit -q -m "unrelated root" ) >/dev/null 2>&1
+
+out="$(CLAUDE_PROJECT_DIR="${fork_dir}" CHIEF_CANON_REMOTE="${canon_dir}" \
+  bash "${here}/../.claude/hooks/anchor.sh" SessionStart \
+  <<< '{"hook_event_name":"SessionStart","source":"startup"}' 2>/dev/null)"
+check want     "Template FORK"        "unrelated histories are reported as a fork"
+check want     "neither ahead nor behind" "and no direction is claimed"
+check want-not "this copy is AHEAD"   "a fork is never reported as a lead"
+check want-not "offer to sync"        "and the sync is not offered across a fork"
+
+# The environment the rail actually runs in. Cloud sessions clone shallow, so the
+# first version of this check skipped itself there and fell through to comparing
+# numbers — it reported a confident AHEAD over a fork for a full day before anybody
+# measured it. A guard that never fires is worse than none: the next reader trusts
+# that the question is covered.
+shallow_dir="${tmp}/shallow"
+rm -rf "${shallow_dir}"; mkdir -p "${shallow_dir}"
+git clone -q --depth 1 "file://${fork_dir}" "${shallow_dir}/copy" >/dev/null 2>&1
+if [[ "$(git -C "${shallow_dir}/copy" rev-parse --is-shallow-repository 2>/dev/null)" == "true" ]]; then
+  cp "${here}/now.sh" "${here}/clocks.sh" "${shallow_dir}/copy/tools/" 2>/dev/null
+  ( cd "${shallow_dir}/copy" && git remote set-url origin https://github.com/someone/their-copy ) >/dev/null 2>&1
+  out="$(CLAUDE_PROJECT_DIR="${shallow_dir}/copy" CHIEF_CANON_REMOTE="${canon_dir}" \
+    bash "${here}/../.claude/hooks/anchor.sh" SessionStart \
+    <<< '{"hook_event_name":"SessionStart","source":"startup"}' 2>/dev/null)"
+  check want     "DIRECTION UNVERIFIABLE"  "a shallow clone is told the direction cannot be read"
+  check want     "fetch --unshallow"       "and is given the command that settles it"
+  check want-not "this copy is AHEAD"      "and is never handed a direction it cannot support"
+else
+  printf 'skip  shallow clone could not be built here\n'
+fi
+
 if (( fails )); then
   printf '\n%d failed\n' "${fails}"; exit 1
 fi
