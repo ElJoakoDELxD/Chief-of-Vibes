@@ -57,5 +57,21 @@ else
   report "every line it prints exists at the address it gives" no "addr=${addr:-none}"
 fi
 
+# A class the repository does not carry must be named, never passed over. The
+# catalogue is the canon's; a copy has no posts/, functions/ or privileges/, and
+# before this the tool searched them, found nothing, and said nothing — which
+# reads exactly like a search that came back empty. Measured 11-09-2026 on a copy.
+bare="$(mktemp -d)/bare"
+rm -rf "${bare}"; mkdir -p "${bare}/tools"
+cp "${here}/explain.sh" "${bare}/tools/explain.sh"
+printf '# Core\n\nA line about zzprobetermzz.\n' > "${bare}/SYSTEM.md"
+
+out="$(bash "${bare}/tools/explain.sh" zzprobetermzz 2>&1)"; code=$?
+[[ ${code} -eq 0 ]] && report "a tree missing whole classes still answers" yes "" \
+                    || report "a tree missing whole classes still answers" no "exit=${code}"
+[[ "${out}" == *"Not searched"* && "${out}" == *"catalogue"* ]] \
+  && report "and names the class it could not search" yes "" \
+  || report "and names the class it could not search" no "no absent-class line"
+
 if (( fails )); then echo "tools/explain.sh: bench FAILED"; exit 1; fi
 echo "tools/explain.sh: bench passed"

@@ -55,11 +55,20 @@ START
 fi
 
 hits=0
+absent=()
 section() {  # section <title> <files...>
   local title="$1"; shift
   local found
   # INDEX.md is generated from the tree, so it would answer twice. This file is
   # excluded too: its own usage examples are not evidence about the term.
+  # Only ask about paths that exist. A copy does not carry every folder the canon
+  # does — the catalogue is the canon's — and a glob that matches nothing made the
+  # answer look like a search that found nothing. Those are different answers, and
+  # section 3 says the tool must not blur them.
+  local present=(); local p
+  for p in "$@"; do [[ -e "${p}" ]] && present+=("${p}"); done
+  (( ${#present[@]} )) || { absent+=("${title}"); return 0; }
+  set -- "${present[@]}"
   found="$(grep -rniE -- "${term}" "$@" 2>/dev/null \
     | grep -vE '^(INDEX\.md|tools/explain\.sh|tools/test-explain\.sh):' | head -8)" || true
   [[ -z "${found}" ]] && return 0
@@ -80,6 +89,13 @@ section "Knowledge — a procedure somebody worked out" knowledge/*/*.md
 section "The catalogue — a post, a function, a privilege" posts/*.md functions/*.md privileges/*.md
 section "Capabilities — a skill that runs" .claude/skills/*/SKILL.md
 section "Machinery — a tool or a hook" tools/*.sh .claude/hooks/*.sh .github/*.sh
+
+# A class this tree does not carry is named, always. Silence about it reads as a
+# search that came back empty, and the two are different answers (section 3).
+if (( ${#absent[@]} )); then
+  printf '\nNot searched, because this repository does not carry it:\n'
+  for a in "${absent[@]}"; do printf '  %s\n' "${a}"; done
+fi
 
 if (( hits == 0 )); then
   printf '\nNothing in this tree names it.\n'
