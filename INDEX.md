@@ -3,7 +3,7 @@
 Where a rule is stored, and what this repository can do. `tools/index.sh` generates
 this file from the tree. Do not edit it: CI regenerates it and fails when it is stale.
 
-Specification version: **1.90.0**
+Specification version: **1.91.0**
 
 ## The specification
 
@@ -98,6 +98,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `propagate` | Notice when something learned here would help everyone, and turn it into a proposal to the shared template — or decide it should not. | propose, review, sync |
 | `reset` | Empty a full chat window without losing the thread: distil what only the conversation knows into memory, push it, then hand the window back clean. | — |
 | `ste-writing` | The controlled language this system writes in by default, and the linter that scores it. | — |
+| `uptodate` | Bring this copy to what the canon carries, and say the relation, what changed, and what is still not there. | — |
 
 ## Machinery
 
