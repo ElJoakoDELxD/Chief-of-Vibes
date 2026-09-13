@@ -248,6 +248,27 @@ check want     "neither ahead nor behind" "and no direction is claimed"
 check want-not "this copy is AHEAD"   "a fork is never reported as a lead"
 check want-not "offer to sync"        "and the sync is not offered across a fork"
 
+# The environment the rail actually runs in. Cloud sessions clone shallow, so the
+# first version of this check skipped itself there and fell through to comparing
+# numbers — it reported a confident AHEAD over a fork for a full day before anybody
+# measured it. A guard that never fires is worse than none: the next reader trusts
+# that the question is covered.
+shallow_dir="${tmp}/shallow"
+rm -rf "${shallow_dir}"; mkdir -p "${shallow_dir}"
+git clone -q --depth 1 "file://${fork_dir}" "${shallow_dir}/copy" >/dev/null 2>&1
+if [[ "$(git -C "${shallow_dir}/copy" rev-parse --is-shallow-repository 2>/dev/null)" == "true" ]]; then
+  cp "${here}/now.sh" "${here}/clocks.sh" "${shallow_dir}/copy/tools/" 2>/dev/null
+  ( cd "${shallow_dir}/copy" && git remote set-url origin https://github.com/someone/their-copy ) >/dev/null 2>&1
+  out="$(CLAUDE_PROJECT_DIR="${shallow_dir}/copy" CHIEF_CANON_REMOTE="${canon_dir}" \
+    bash "${here}/../.claude/hooks/anchor.sh" SessionStart \
+    <<< '{"hook_event_name":"SessionStart","source":"startup"}' 2>/dev/null)"
+  check want     "DIRECTION UNVERIFIABLE"  "a shallow clone is told the direction cannot be read"
+  check want     "fetch --unshallow"       "and is given the command that settles it"
+  check want-not "this copy is AHEAD"      "and is never handed a direction it cannot support"
+else
+  printf 'skip  shallow clone could not be built here\n'
+fi
+
 if (( fails )); then
   printf '\n%d failed\n' "${fails}"; exit 1
 fi
