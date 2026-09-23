@@ -138,6 +138,18 @@ The executor records every spike result in the PR description, with the command 
 
 This is one run with a model's self-report, so it is evidence and not proof. The rebuild takes the fallback for (b) and (c): memory is imported from `CLAUDE.md` or the agent body, and the first turn comes from a SessionStart hook. (a) holds. A session can choose among several agents on the web only by changing the `agent` key, and a mechanism for that is still open (§10 N2).
 
+**S4, first run (23-09-2026, web): adopting an agent by reading.** Branch `spike/s4-adopt`, result commit `3420746`. The session read the agent file, declared it with `header --declare agent=scout`, and a PreToolUse hook enforced the file's `disallowedTools`.
+
+| Check | Result |
+|---|---|
+| The hook and Bash see the same session identity | **Yes.** The session ID is the same in both, and the declaration file is found |
+| `Write` before the declaration (control) | Passed |
+| `Write` and `WebFetch` after the declaration | **Blocked**, with the agent and the file named in the error |
+| The header shows the adopted agent | **Yes** (`scout`) |
+| A file write through Bash while `Write` is banned | **Succeeded.** A ban on a tool is not a ban on an effect |
+
+Two gaps follow, and neither is specific to adopting by reading. (1) Banning a tool by name leaves the same effect open through Bash; this is equally true of Claude Code's native `disallowedTools`. A permission that must hold is written against the effect: a Bash command pattern or a path, as `guard-install.sh` already does. (2) Not yet measured: the session makes its own declaration, so an agent could declare a different agent to escape its bans. The first declaration must be final for the session.
+
 ### 5.1 Tree — canon `main` (the scaffold)
 
 ```
