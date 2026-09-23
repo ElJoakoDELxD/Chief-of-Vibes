@@ -27,7 +27,14 @@ decl="${TMPDIR:-/tmp}/cov-header-${CLAUDE_CODE_SESSION_ID:-${PPID}}"
 if [[ "${1-}" == "--declare" ]]; then
   shift
   for kv in "$@"; do
-    [[ "${kv}" =~ ^(function|workplace)=.+$ ]] || { echo "header: expected function=... or workplace=..., got '${kv}'" >&2; exit 1; }
+    if [[ "${kv}" == agent=* ]]; then
+      have="$(sed -n 's/^agent=//p' "${decl}" 2>/dev/null | head -1)"
+      if [[ -n "${have}" && "${have}" != "${kv#agent=}" ]]; then
+        echo "header: this chat already runs as '${have}'. One chat, one agent: open a new chat for '${kv#agent=}'." >&2
+        exit 1
+      fi
+    fi
+    [[ "${kv}" =~ ^(agent|function|workplace)=.+$ ]] || { echo "header: expected function=... or workplace=..., got '${kv}'" >&2; exit 1; }
     grep -v "^${kv%%=*}=" "${decl}" 2>/dev/null > "${decl}.tmp"; printf '%s\n' "${kv}" >> "${decl}.tmp"; mv "${decl}.tmp" "${decl}"
   done
   exit 0
@@ -39,7 +46,7 @@ if [[ -z "${stamp}" ]]; then echo "header: no time on stdin; run 'clock | header
 field() { awk -v k="$1:" '/^---[[:space:]]*$/{f++;next} f==1 && $1==k{sub(/^[^:]*:[[:space:]]*/,"");sub(/[[:space:]]*#.*$/,"");gsub(/[\[\]"]/,"");sub(/,.*/,"");gsub(/^[[:space:]]+|[[:space:]]+$/,"");print;exit}' "${root}/memory/state.md" 2>/dev/null; }
 declared() { sed -n "s/^$1=//p" "${decl}" 2>/dev/null | tail -1; }
 
-agent="$(field agent)"
+agent="$(declared agent)"; [[ -n "${agent}" ]] || agent="$(field agent)"
 branch="$(git -C "${root}" branch --show-current 2>/dev/null)"; [[ -n "${branch}" ]] || { branch="?"; echo "header: no branch (detached HEAD or no git)." >&2; }
 function="$(declared function)"; function="${function:-no function declared}"
 
