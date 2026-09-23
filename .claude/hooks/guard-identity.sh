@@ -4,7 +4,7 @@
 # commit identity inline.
 #
 # The two flags that name an author are both refused, and the second is not an
-# afterthought. The Principal ruled on 03-09-2026 that the agent **observes** its
+# afterthought. The rule (system/7-projects.md) is that the agent **observes** its
 # identity and never sets it: the environment configures it and a session-start
 # hook pins it, because the signing key is registered to that address. Whether
 # the value an override substitutes is a good one is not the question.

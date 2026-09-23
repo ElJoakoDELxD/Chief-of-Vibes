@@ -30,4 +30,4 @@ The shape and lifecycle live in SYSTEM.md §5. This skill is the act: the note g
 
 ## Provenance
 
-Born 02-08-2026 in a copy: the Principal typed `/handoff` at the end of a working day, and the system had the ritual in §5 but no command that runs it. The first real result is the note that closed that same session.
+Born 02-08-2026 in a copy: `/handoff` was asked for at the end of a working day, and the system had the ritual in §5 but no command that runs it. The first real result is the note that closed that same session.

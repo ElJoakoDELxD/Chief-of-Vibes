@@ -176,7 +176,7 @@ run should spend its tokens elsewhere.
 
 ## Provenance
 
-Gear one was set by the Principal on 13-08-2026: measure every incoming prompt, route it to a model and an effort level that fit, and spend less of their budget doing it. The improvement step goes first.
+Gear one was set on 13-08-2026: measure every incoming prompt, route it to a model and an effort level that fit, and spend less doing it. The improvement step goes first.
 
 Gear two is distilled from the worker-and-monitor pair in `.claude/skills/5s/`, which was the first place
 this system separated doing from judging, and from the 13-08-2026 memory run where that

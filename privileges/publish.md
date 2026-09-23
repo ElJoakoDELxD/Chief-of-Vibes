@@ -16,9 +16,8 @@ to be in the way because nobody wrote the rule where authority is read.
 
 ## What is mechanical, and why that matters more than the rule
 
-An earlier version let the agent act alone on its own profile and in replies. The rule was
-written, declared to the platform, and followed, and the account was banned anyway. What
-replaced it is stronger for one reason: **it does not ask the agent to remember a line, it
+A rule that lets the agent act alone asks it to remember a line. This one is stronger for one
+reason: **it does not ask the agent to remember a line, it
 removes the button.** Without the credential the wrong call is not one the agent can make.
 
 ## The trap this catalogue entry is for

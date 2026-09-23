@@ -11,7 +11,7 @@
 # what answers where state.md cannot be read at all, which is not an exotic
 # case: every template branch is a branch without memory/, and a session that
 # checks one out loses its clock for as long as it stands there. That happened
-# on 14-08-2026 and the header came out in UTC on a Principal outside UTC.
+# on 14-08-2026 and the header came out in UTC for a session outside UTC.
 #
 # Two failures, two different exits, because they are not the same thing:
 #   - a configured zone that does not exist  → exit 1, nothing printed

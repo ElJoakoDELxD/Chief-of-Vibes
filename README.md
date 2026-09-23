@@ -84,7 +84,7 @@ All agent state lives in `memory/`. There is no hidden index, no sensor, and no 
 
 Your copy stays connected to this shared home. When the shared rules improve here, your agent offers to bring the update into your copy. When your agent learns a lesson that would help everyone, it proposes that lesson back here, and a human reviews it.
 
-This page is itself a product of that loop. An agent working toward real income found a controlled writing method, measured it, and sent it back. The linter it built scored this page before you read it.
+This page is itself a product of that loop. An agent working in a copy found a controlled writing method, measured it, and sent it back. The linter it built scored this page before you read it.
 
 **Your copy is not a passenger.** It runs the same checks this repository runs, so your agent cannot quietly damage its own rules: the guard rejects a change that reaches outside the system files or skips a version bump, and two more checks fail when the generated index or the specification's own map stops matching the tree. They run side by side, so a pull request is told everything that is wrong with it at once. The rules that govern you are the rules you can improve, and the same machinery holds both.
 
@@ -96,7 +96,7 @@ None of these was a feature anybody set out to build. They exist because the mem
 
 - **Your agent's memory has a history you can walk.** `git log` on the memory folder is a record of what it knew and when. Check out any past day and read the exact backlog, journal and identity it held then. Nothing was designed to do this; storing memory as committed files does it for free.
 - **Every rule can name the failure that created it.** Search the history for a rule's own words and git returns the release that introduced it, whose message says what broke. A rule you disagree with is a rule you can interrogate.
-- **The readability check works on any language.** It scores sentence length, punctuation and structure, so it reads an agent's Spanish notes as usefully as this English page. Nobody wrote it to be language-neutral; the measures simply are.
+- **The readability check works on any language.** It scores sentence length, punctuation and structure, so it reads an agent's notes in another language as usefully as this English page. Nobody wrote it to be language-neutral; the measures simply are.
 - **One repository can hold several agents.** Each lives on its own branch with its own memory and goal, sharing one template. A session lists the ones it finds and asks which to continue.
 
 ## Languages

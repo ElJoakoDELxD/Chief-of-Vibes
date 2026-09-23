@@ -9,7 +9,6 @@ is the only kind of signal this system counts (`SYSTEM.md` §7).
 | Language | First recorded |
 |---|---|
 | English | 2026-07-13 |
-| Spanish | 2026-08-02 |
 
 ## What a line means, exactly
 
