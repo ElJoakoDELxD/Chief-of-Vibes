@@ -128,6 +128,16 @@ Nothing else is in the user's path.
 
 The executor records every spike result in the PR description, with the command it ran and what it returned.
 
+**S1, first run (23-09-2026, web).** Branch `spike/s1-agent`, commit `a424299`. The probe agent reported only what was in its context, and it was forbidden to read files:
+
+| Part | Result |
+|---|---|
+| (a) `"agent": "probe"` makes the web session run as that agent | **Works.** The session saw the codename that exists only in the agent body |
+| (b) `memory: project` loads `MEMORY.md` into the prompt | **Did not work.** The marker was "not in context" |
+| (c) `initialPrompt` fires as the first turn | **Did not work.** The marker was "not in context" |
+
+This is one run with a model's self-report, so it is evidence and not proof. The rebuild takes the fallback for (b) and (c): memory is imported from `CLAUDE.md` or the agent body, and the first turn comes from a SessionStart hook. (a) holds. A session can choose among several agents on the web only by changing the `agent` key, and a mechanism for that is still open (§10 N2).
+
 ### 5.1 Tree — canon `main` (the scaffold)
 
 ```
