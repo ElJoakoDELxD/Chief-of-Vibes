@@ -55,7 +55,7 @@ The rebuild uses what holds, and it builds the rest as small, benched parts.
 | D2 | **Audience:** persistent memory for a person who does not program. Everything that serves only template maintainers leaves the user's path | Principal, 22-09-2026 |
 | D3 | **An agent is one file: `.claude/agents/<name>.md`.** The body is its personality. `effects:` in the frontmatter are its permissions (D11). `skills:` are its abilities. This replaces `posts/`, `functions/` and `privileges/` | Principal, 22–23-09-2026 |
 | D4 | **Copies:** exactly one is known, the Principal's. 2.0.0 may break compatibility. That one copy gets a one-time migration (§6.2) | Principal, 22-09-2026 |
-| D5 | **History is archived with tags, and living memory stays on a branch.** A *tag* is a fixed label: it marks one commit forever, and nobody works on it. A *branch* is a moving label: every new commit advances it. Every stale branch becomes an `archive/*` tag | Drafter's recommendation; the Principal delegated the choice, 22-09-2026 |
+| D5 | **The custodian's memory lives on its own branch, `custodian`, and never on the canon's `main`.** Its looser work happens in disposable branches that are deleted after merge. A *branch* is a moving label: every new commit advances it. A *tag* is a fixed label: it marks one commit forever. History that must stay is archived as a tag | Principal, 23-09-2026, chosen over keeping the custodian's memory in issues and pull requests |
 | D6 | **Language:** English for the template and this spec | Principal, 22-09-2026 |
 | D7 | **Three layers, one shape.** Each layer is a `main` curated by a custodian. (1) The canon's `main` holds the scaffold only: template files plus empty forms, and no filled memory. GitHub branch protection guards it. (2) A copy's `main` is home for one person, and all of that person's agents and memory live there. (3) One branch per person, each acting as that person's own `main`, while the copy's `main` is curated for all of them | Principal, 23-09-2026. **2.0 builds layers 1 and 2.** Layer 3 is the documented extension path, and it is built when a second person uses the same copy. The Principal did not object to this deferral; it is recorded here as an assumption |
 | D8 | **Size limits ratchet.** There is no fixed target to cut toward. The executor removes everything that fails the removal test (§5.9) and keeps everything that passes it. The measured result becomes the ceiling in CI, and it may go down later but never silently up | Principal, 22-09-2026 |
@@ -63,6 +63,8 @@ The rebuild uses what holds, and it builds the rest as small, benched parts.
 | D10 | **The custodian's mandate.** In the Principal's words, translated: *the canon always has the structure of a product, public and easy to use, and it never deviates from that. It is a public repository, so it must always look, feel and work like a professional product: a stable release, usable, with the fewest possible failures, contradictions, repetitions, and cases of the same thing said differently.* §5.4 says how each property is held | Principal, 23-09-2026 |
 | D11 | **Effects declare their permission.** An agent's permissions are the effects it declares, in positive form: *the agent writes its memory in `X`*, never *the agent may not write outside `X`*. What is not declared is closed. The sentence that describes an effect is the permission for it, so nothing is said twice. An agent never holds an effect over its own definition, and a chat's first declaration of its agent is final | Principal, 23-09-2026 |
 | D12 | **One chat, one agent.** A chat runs as exactly one agent from its start to its end. A new chat chooses an existing agent or creates one. One person may have many agents | Principal, 23-09-2026 |
+| D14 | **The canon's custodian is named Plumb.** A plumb line shows true vertical, and the custodian's work is to keep `main` true by measurement. The agent chose the name; the Principal asked it to. The name belongs to the instance, so it lives only in `memory/custodian/` on the `custodian` branch. The role file `custodian.md` stays nameless, and a copy's custodian takes whatever name its person gives it | Principal and agent, 23-09-2026 |
+| D15 | **Nothing private in any ref.** The repository is public, and so is every branch, including a disposable one. Its head also survives in the pull request's ref after the branch is deleted. So no branch carries the Principal's name, contact, location, zone, funding or accounts, and template fixtures use neutral values. The loose writing D5 allows in disposable branches is loose in form, never in privacy | Principal, 23-09-2026 |
 | D13 | **A chat adopts its agent by reading.** At the start, the chat reads the agent file and the agent's memory index, then declares the agent with `header --declare agent=<name>`. A hook enforces the agent's effects from that point on. The web measurements support this route (Appendix A: S1, S4, S5) | Principal, 23-09-2026 |
 
 **Why D5 and D7 fit together.** GitHub's *Use this template* copies only the default branch. The canon's custodian therefore keeps its filled memory on a `custodian` branch, which no copy ever receives. The executor verifies this behaviour before relying on it (spike S2).
@@ -291,15 +293,10 @@ No line is cut to reach a number, and no line is kept to protect one.
 
 ### 6.1 Canon
 
-1. Tag, then delete, the stale branches. Push every tag before deleting anything.
-
-   | Branch | Tag |
-   |---|---|
-   | `Chief-of-Vibes-Agent` | `archive/custodian-2026-09` |
-   | each `claude/*`, `custodian/*` and `spike/*` branch | `archive/<name>` |
+1. Run the privacy audit (D15) over every branch tip before archiving anything. A tag freezes what it points to. Then archive `Chief-of-Vibes-Agent` as `archive/custodian-2026-09` and delete that branch. Delete the other stale branches (`claude/*`, `custodian/*`, `spike/*`) without tagging them: their heads already live in their pull requests' refs, and a tag would only add one more permanent copy.
 
 2. Close PRs #102–#105 with one comment each that points to the 2.0.0 pull request. Carry over the #102 fix per §5.7.
-3. After the merge, create the `custodian` branch from `main`. Seed `memory/custodian/` with what the rescue (§5.8) assigned to the custodian, and nothing else.
+3. After the merge, create the `custodian` branch from `main`. Seed `memory/custodian/` with the instance name (D14) and what the rescue (§5.8) assigned to the custodian, and nothing else.
 4. The Principal enables branch protection on `main` (a GitHub setting). The executor writes the exact steps in the PR description.
 
 ### 6.2 The Principal's copy (after 2.0.0 lands)
@@ -346,6 +343,7 @@ The grader scores each criterion independently, as pass or fail, with evidence. 
 | R14 | `custodian.md` carries D10 word for word, and each means in §5.4 exists: a named CI step, a checklist line, or a file | Parse the file, then cross-check `ci.yml` and the tree |
 | R15 | No fact lives in two public files. The `redundancy.py` report over all public prose is attached, and every pair above the threshold has a recorded verdict | PR description |
 | R16 | A `5s documents` pass by a fresh-context subagent over the public files is attached, and it has no open item | PR description |
+| R18 | The privacy audit (D15) passes over every branch tip. The audit reads its patterns from a CI secret, never from the repository, because a list of the Principal's private terms is itself private | The CI step's output |
 | R17 | The `agent-permissions.sh` bench pins every S5 result: a declared path is allowed, an undeclared path is blocked, the agent's own file is blocked, `..` traversal is blocked, and a second declaration is refused | Run the bench |
 
 ---
