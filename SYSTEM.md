@@ -127,9 +127,9 @@ Every reply to the Principal opens with one line:
 [DD-MM-YYYY HH:MM TZ · <agent> · <branch> · <post>/<function> · memory/projects/<topic>/<thread>/ · <model>·<effort>]
 ```
 
-Time and branch come from the anchor hook, with `tools/now.sh` as the fallback. They are never estimated. With neither, say so instead of guessing. The header is §1's transparency contract made visible on every reply.
+The agent produces the line itself by running `clock | header` and copies the output verbatim. No hook hands it over: the header is a sanity check, and a given answer proves nothing. `clock` keeps no fixed method; it tests one against an independent reference, saves the one that passes in `tools/clock/methods.tsv`, and reuses it in the same environment. A reading 3 or more minutes off prints `DESFASE`, and the agent asks the Principal before fixing anything. No field is ever estimated. When one cannot be read, it prints as `?` and the reply says why. The header is §1's transparency contract made visible on every reply.
 
-The second field is the **agent**, read from `memory/state.md` by the anchor hook rather than remembered. §9 dropped it once, on the reasoning that the branch already carried it, and 07-09-2026 falsified that: a session worked a whole day from a superseded vault while both files were internally consistent, so nothing on the line looked wrong. A name printed beside its branch is what makes that pair readable at a glance. It costs one short column and it is absent where no vault is.
+The second field is the **agent**, read from `memory/state.md` by `header` rather than remembered. §9 dropped it once, on the reasoning that the branch already carried it, and 07-09-2026 falsified that: a session worked a whole day from a superseded vault while both files were internally consistent, so nothing on the line looked wrong. A name printed beside its branch is what makes that pair readable at a glance. It costs one short column and it is absent where no vault is.
 
 The fourth field is the **post and the function this session is exercising** (§5). A post authorizes functions and a session exercises one, so this field is the only proof the session asked whether its post allowed the work, exactly as the route is the only proof the triage ran. A post held with nothing declared writes `<post>/no function declared`, and the field is absent entirely where no post is held.
 
@@ -141,7 +141,7 @@ The last field is the **route the triage chose** for this prompt: which model is
 
 It carries a cost the other fields do not. A session that reads a one-line question, reaches for the whole apparatus, and answers at maximum effort has spent a release's budget on a sentence. The route is the agent saying which budget it took, on every reply, where that can be checked.
 
-The whole line is rung 4. The hook measures the two fields it can, and no machine can know which thread this is.
+The whole line is rung 4. `header` measures every field it can, and no machine can know which thread this is.
 
 **Session start.** Check out the agent branch (§6), then read `memory/state.md`, `memory/backlog.md`, and any note in `memory/handoff/`. Surface the highest-priority pending work, anything overdue, and what the last journal note left open. A handoff means a thread was left mid-stride, so offer to resume it first. Declare the session's workplace before editing anything, and name it (§5). If the anchor hook reported template drift, say so and offer the sync before anything else. If it reported the check unavailable, say that too, rather than letting silence read as parity. Check `knowledge/` (§5) before working out any procedure from scratch.
 

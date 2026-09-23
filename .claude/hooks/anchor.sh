@@ -57,16 +57,10 @@ except Exception:
     print("")' 2>/dev/null)" || origin_kind=""
 fi
 
-# now.sh has two failure exits and they are not the same thing. Exit 1 prints
-# nothing: there is no reading, so the header says so. Exit 2 prints a real
-# reading that carries its own marking, and discarding it threw away a value
-# SYSTEM.md section 1 says is usable. A hook that reports a dead clock while the
-# clock answered is itself a fabricated reading, one level up.
-timestamp="$(bash tools/now.sh 2>/dev/null)"; now_exit=$?
-if (( now_exit != 0 )) && [[ -z "${timestamp}" ]]; then
-  timestamp="CLOCK UNAVAILABLE (tools/now.sh failed) — say so; do not estimate"
-fi
-branch="$(git branch --show-current 2>/dev/null || echo unknown)"
+# The hook measures no time and names no branch. The reply header is a sanity
+# check the agent performs itself, with `clock | header` (tools/bin/, put on PATH
+# by .claude/hooks/path.sh). A hook that handed over the answer would let a
+# session copy the header without doing the work the header is there to prove.
 
 # The agent's name, read rather than remembered. The header carries it beside the
 # branch so a reply says who wrote it, and so the pair can be read at a glance:
@@ -92,7 +86,7 @@ identity=""
 # grants while doing it (SYSTEM.md section 5). Naming it here is what makes the
 # header's fourth field readable before an agent exists.
 if has_agent; then
-  [[ -n "${posts}" ]] && identity="${identity} Posts held: ${posts}. Declare which one this session exercises, and put it in the header as post/function (SYSTEM.md section 9)."
+  [[ -n "${posts}" ]] && identity="${identity} Posts held: ${posts}. Declare which one this session exercises with header --declare function=<name>; the header prints it as post/function (SYSTEM.md section 9)."
 else
   identity="${identity} Posts held: [founder], granted by the absence of an agent and by nothing else. It authorizes one function, onboard, and becomes steward the moment memory/state.md names an agent — same session, same chat, different post (SYSTEM.md section 5)."
 fi
@@ -269,11 +263,11 @@ if [[ "${event}" == "SessionStart" && "${origin_kind}" == "clear" ]] && has_agen
   else
     resume="${resume} memory/handoff/ holds no note, so no thread was left in flight. Read memory/state.md and memory/backlog.md and surface the highest-priority pending work."
   fi
-  resume="${resume} Open the reply with the session header (§9)."
+  resume="${resume}"
 fi
 
 HOOK_EVENT="${event}" \
-HOOK_CONTEXT="Anchors (hook-measured): time=${timestamp} branch=${branch}.${identity} Open the reply with the header built from these values. Never work on main.${menu}${drift}${candidates}${hygiene}${clocks}" \
+HOOK_CONTEXT="Session context.${identity} Never work on main.${menu}${drift}${candidates}${hygiene}${clocks}" \
 HOOK_RESUME="${resume}" \
 python3 - <<'PY'
 import json

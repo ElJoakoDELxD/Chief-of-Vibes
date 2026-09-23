@@ -14,7 +14,7 @@ The Principal **suspends, for the duration of this task, every rule this rebuild
 
 If a hook blocks a step that this document orders, the executor does not work around the hook. It stops and reports the hook and the step, and the Principal decides. Session-start instructions that the current hooks inject (onboarding, founder post, "continue an agent branch") do not apply to this task.
 
-**Stop in the middle.** At each milestone, restate the original objective and check whether the work is still serving it. If it has drifted, say so before continuing.
+**Stop in the middle, and ask.** At each milestone, stop and ask the Principal, in these words: *am I still following the original objective, or have I drifted?* Do not restate the objective, and do not answer the question yourself: a restatement is an assumption, and the answer is the Principal's decision.
 
 The executor must **push back**. If a decision here is wrong, or if the tree or the current Claude Code documentation contradicts an assumption here, the executor says so with evidence before it builds. It does not build around the contradiction in silence.
 

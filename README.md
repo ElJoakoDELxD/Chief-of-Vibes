@@ -64,7 +64,8 @@ Nothing happens behind your back. This is the complete list. If it is not in thi
 
 | Mechanism | When it fires | Where you see it |
 |---|---|---|
-| Anchor hook | each session start and each prompt | the time and workspace that open every reply |
+| Anchor hook | each session start and each prompt | session context; it hands over no time, so the header stays a check the agent performs |
+| Clock | each reply, run by the agent | `clock \| header` opens every reply; `DESFASE` when the time disagrees with a reference |
 | Drift check | each session start, in your copy only | your agent says so when your copy is behind this repository, and offers the update |
 | Main guard | before every edit and shell command | a visible `BLOCKED` message when it acts |
 | Install guard | before every shell command | a visible `BLOCKED` message when an install would not survive the session |
