@@ -122,6 +122,7 @@ Read from `.claude/skills/`, the same source `tools/skills.sh` reads.
 | `tools/sync.sh` | Brings the template from `main` into the current agent branch by merging it. |
 | `tools/test-anchor.sh` | Bench for the resumption half of .claude/hooks/anchor.sh. It pins what must |
 | `tools/test-candidates.sh` | Bench for tools/candidates.sh. It pins what must be reported and what must be |
+| `tools/test-clock.sh` | Bench for tools/bin/clock and tools/bin/header: the format holds, a method is |
 | `tools/test-clocks.sh` | Bench for tools/clocks.sh, the sensor behind CLOCKS.md. It pins both |
 | `tools/test-command-lib.sh` | Bench for .claude/hooks/lib/command.sh. It pins the one question the rails |
 | `tools/test-environment.sh` | Bench for tools/environment.sh. It pins the two things the report must never |

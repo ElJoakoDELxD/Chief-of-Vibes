@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#
+# Reads a time from `clock` on stdin and prints the canon's default reply header:
+#
+#   [DD-MM-YYYY HH:MM TZ · <agent> · <branch> · <post>/<function> · <workplace> · <model>·<effort>]
+#
+# The agent and workplace fields are absent where memory/state.md names no agent.
+# A copy may change this format; the canon uses this one (CLAUDE.md rule 2).
+#
+# Every field is read, never remembered:
+#   agent, post   memory/state.md (no agent: the founder post, SYSTEM.md 5)
+#   branch        git
+#   function,     what this session declared with `header --declare`, kept for
+#   workplace     this session only; the defaults say nothing was declared
+#   model         the model that served this session's last turn, read from the
+#                 transcript; effort from $CLAUDE_EFFORT
+# A field that cannot be read prints as "?" and says why on stderr.
+#
+# Usage:  clock | header
+#         header --declare function=onboard workplace=memory/projects/x/y/
+
+set -uo pipefail
+
+root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+decl="${TMPDIR:-/tmp}/cov-header-${CLAUDE_CODE_SESSION_ID:-${PPID}}"
+
+if [[ "${1-}" == "--declare" ]]; then
+  shift
+  for kv in "$@"; do
+    [[ "${kv}" =~ ^(function|workplace)=.+$ ]] || { echo "header: expected function=... or workplace=..., got '${kv}'" >&2; exit 1; }
+    grep -v "^${kv%%=*}=" "${decl}" 2>/dev/null > "${decl}.tmp"; printf '%s\n' "${kv}" >> "${decl}.tmp"; mv "${decl}.tmp" "${decl}"
+  done
+  exit 0
+fi
+
+IFS= read -r stamp || stamp=""
+if [[ -z "${stamp}" ]]; then echo "header: no time on stdin; run 'clock | header'." >&2; stamp="?"; fi
+
+field() { awk -v k="$1:" '/^---[[:space:]]*$/{f++;next} f==1 && $1==k{sub(/^[^:]*:[[:space:]]*/,"");sub(/[[:space:]]*#.*$/,"");gsub(/[\[\]"]/,"");sub(/,.*/,"");gsub(/^[[:space:]]+|[[:space:]]+$/,"");print;exit}' "${root}/memory/state.md" 2>/dev/null; }
+declared() { sed -n "s/^$1=//p" "${decl}" 2>/dev/null | tail -1; }
+
+agent="$(field agent)"
+branch="$(git -C "${root}" branch --show-current 2>/dev/null)"; [[ -n "${branch}" ]] || { branch="?"; echo "header: no branch (detached HEAD or no git)." >&2; }
+function="$(declared function)"; function="${function:-no function declared}"
+
+if [[ -z "${agent}" ]]; then
+  post="founder"
+else
+  post="$(field posts)"; [[ -n "${post}" ]] || post="?"
+  workplace="$(declared workplace)"; workplace="${workplace:-no workplace declared}"
+fi
+
+transcript="${HOME}/.claude/projects/$(printf '%s' "${root}" | sed 's#[^A-Za-z0-9]#-#g')/${CLAUDE_CODE_SESSION_ID:-none}.jsonl"
+model="$(tac "${transcript}" 2>/dev/null | grep -m1 -o '"model":"[^"]*"' | cut -d'"' -f4)"
+[[ -n "${model}" ]] || { model="?"; echo "header: model unreadable (no transcript at ${transcript})." >&2; }
+effort="${CLAUDE_EFFORT:-?}"
+
+line="[${stamp}"
+[[ -n "${agent}" ]] && line+=" · ${agent}"
+line+=" · ${branch} · ${post}/${function}"
+[[ -n "${agent}" ]] && line+=" · ${workplace}"
+line+=" · ${model}·${effort}]"
+printf '%s\n' "${line}"

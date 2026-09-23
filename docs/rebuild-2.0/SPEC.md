@@ -14,6 +14,8 @@ The Principal **suspends, for the duration of this task, every rule this rebuild
 
 If a hook blocks a step that this document orders, the executor does not work around the hook. It stops and reports the hook and the step, and the Principal decides. Session-start instructions that the current hooks inject (onboarding, founder post, "continue an agent branch") do not apply to this task.
 
+**Stop in the middle.** At each milestone, restate the original objective and check whether the work is still serving it. If it has drifted, say so before continuing.
+
 The executor must **push back**. If a decision here is wrong, or if the tree or the current Claude Code documentation contradicts an assumption here, the executor says so with evidence before it builds. It does not build around the contradiction in silence.
 
 ---
@@ -167,14 +169,19 @@ Keep a hook only if S3 shows that the failure it prevents still happens, and onl
 
 | Hook | Default verdict |
 |---|---|
-| `anchor.sh` | **Reduce** to a clock: it injects the measured time, the timezone and the branch. The model cannot know the time without it. Everything else it does now moves to `initialPrompt` or disappears |
+| `anchor.sh` | **Reduce to exposure only.** It stops injecting the time. The clock is a sanity check the agent must perform, and a hook that hands over the answer turns it into something the agent can copy without doing it. `.claude/hooks/path.sh` puts `tools/bin` on PATH, and the agent runs `clock \| header` itself (§5.5) |
 | `guard-install.sh` | **Keep** if S3 confirms it. The failure is environmental (installs vanish in cloud sessions), not a model weakness |
 | `guard-identity.sh` | Keep it only if the release that introduced it (`git log -S`) names a real incident, and S3 still reproduces the failure |
 | `guard-main.sh` | **Remove.** The canon uses branch protection (D7), and in a copy `main` is home |
 
-### 5.5 Reply header
+### 5.5 Clock and reply header
 
-`[DD-MM-YYYY HH:MM TZ · <agent> · <branch>]`. The time and the branch come from the hook. The name comes from the agent file. The post, workplace and route fields are removed.
+The **format is the constant**: `[DD-MM-YYYY HH:MM TZ · <agent> · <branch> · <post>/<function> · <workplace> · <model>·<effort>]` is the canon's default. A copy may change it. **The method is not constant.** Built on 23-09-2026 as `tools/bin/clock` and `tools/bin/header`, with its bench in `tools/test-clock.sh`. The rebuild keeps them, and it adjusts the fields when posts are removed:
+
+- `clock` tests candidate methods against an independent reference, the HTTPS `Date` header. Only then does it save the passing method in `tools/clock/methods.tsv`, keyed by environment signature (OS / runtime, nothing finer). The next session in that environment reuses the saved method and re-tests it every time.
+- A reading 3 or more minutes from the reference, or a date that differs from the context date, prints `DESFASE` on stderr and changes nothing. The agent asks the Principal whether the time was right before it fixes anything.
+- UTC on the canon is expected. Only a copy with a declared or auto-detected zone can be wrong about the zone.
+- The header is a sanity check, like the brown-M&M clause: it proves that the agent did the work instead of copying a given answer. It is never handed out by a hook, and it is not the first instruction the agent reads.
 
 ### 5.6 Skills
 
