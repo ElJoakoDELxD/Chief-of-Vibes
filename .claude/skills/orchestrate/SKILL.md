@@ -2,7 +2,7 @@
 name: orchestrate
 effort: high
 summary: Split a task into planning, doing and judging, give each to a model that fits, and let the judge read the plan instead of the worker.
-description: Read every incoming prompt before answering it — restate what it asks, size it, and route it to a model and an effort level that fit, so a small question stops costing what a release costs. That triage is not optional and its verdict rides in the header of the reply. Above a threshold the same skill splits the work into three roles: a high-cognition model writes the plan, a model with sufficient capacity executes it, and a high-cognition reader that never edited anything checks the result against the plan. Use the heavy half where the agent would otherwise grade its own work, and never for a task smaller than its own plan.
+description: Read every incoming prompt before answering it — restate what it asks, size it, and route it to a model and an effort level that fit, so a small question stops costing what a release costs. That triage is not optional, and the header shows the model and effort that actually served. Above a threshold the same skill splits the work into three roles: a high-cognition model writes the plan, a model with sufficient capacity executes it, and a high-cognition reader that never edited anything checks the result against the plan. Use the heavy half where the agent would otherwise grade its own work, and never for a task smaller than its own plan.
 ---
 
 # orchestrate
@@ -57,7 +57,7 @@ Effort is one dial. **Which model answers is a second one, and they are not move
 
 ## 4. Say it in the header
 
-The route goes in the header of every reply (§9), as `model·effort`. The model named is the one that **actually answered**, not the one that would have been ideal, because a header that reports an intention is a header nobody can check. That is what makes the step impossible to skip quietly: a reply with no route on it did not run the triage, and anyone can see that without asking.
+The header's last field (§9) is `model·effort` as `header` measures it: the model that **actually answered**, never the one that would have been ideal, because a header that reports an intention is a header nobody can check. The field is measured, so its presence proves the measurement and not the triage. What the triage adds is the comparison: when the route it chose differs from what the header measured, that difference is the finding.
 
 **A route that turns out wrong is corrected out loud**, mid-task, and the reply says so. Discovering that a *low* was really a *high* is the triage working, not the triage failing.
 
