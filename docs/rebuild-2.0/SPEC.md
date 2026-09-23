@@ -1,7 +1,7 @@
 # Chief of Vibes 2.0 — Rebuild Specification
 
-**Status:** draft, revision 2. The Principal answered every open question on 22-09-2026. One spike (S1) must pass before the build.
-**Executor:** one fresh Claude Code session on branch `rebuild/2.0`, with this file as its only brief.
+**Status:** draft, revision 3 (23-09-2026): adds the north star (D9) and the custodian's mandate (D10). One spike (S1) must pass before the build.
+**Executor:** one fresh Claude Code session on branch `rebuild/2.0`, created from `claude/repository-organization-dkragp` (it already carries the clock, §5.5), with this file as its only brief.
 **Grader:** a separate session or subagent that did not edit anything. It reads this file and the diff, nothing else.
 
 This document has the shape Anthropic uses for *outcomes* in Managed Agents: a description of the end state, then a rubric of gradeable criteria. The executor iterates until the grader returns every criterion as passed, for a maximum of **3 grading rounds**. After that, it stops and reports to the Principal.
@@ -59,6 +59,8 @@ The rebuild adopts those mechanisms and deletes their hand-built equivalents.
 | D6 | **Language:** English for the template and this spec | Principal, 22-09-2026 |
 | D7 | **The canon's `main` is the scaffold only:** template files plus empty forms that show the structure, and no filled memory. GitHub branch protection guards it. The custodian's memory lives on the `custodian` branch. **In a copy, `main` is home:** the user's agent and its memory live on `main`, and template updates arrive as a pull request that touches only template paths | Principal, 22-09-2026 |
 | D8 | **Size limits ratchet.** There is no fixed target to cut toward. The executor removes everything that fails the removal test (§5.9) and keeps everything that passes it. The measured result becomes the ceiling in CI, and it may go down later but never silently up | Principal, 22-09-2026 |
+| D9 | **The north star already exists, and it moves where every session reads it.** The purpose in `system/1-purpose.md` §1 is the product's north star (§4). It was written and then violated, because it lived in a leaf that no session had to read. It moves **verbatim** to the head of `CLAUDE.md`, the one file every session loads. Nobody restates it or summarises it | Proposed 23-09-2026. The Principal built D10 on top of it. **Blocked on §10 N1:** the text as written contradicts this rebuild |
+| D10 | **The custodian's mandate.** In the Principal's words, translated: *the canon always has the structure of a product, public and easy to use, and it never deviates from that. It is a public repository, so it must always look, feel and work like a professional product: a stable release, usable, with the fewest possible failures, contradictions, repetitions, and cases of the same thing said differently.* §5.3b says how each property is held | Principal, 23-09-2026 |
 
 **Why D5 and D7 fit together.** GitHub's *Use this template* copies only the default branch, `main`. The canon's `main` therefore has to stay clean, or every new copy would inherit the custodian's memory. The `custodian` branch never reaches a copy. The executor verifies this behaviour before relying on it (spike S2).
 
@@ -92,7 +94,17 @@ All read on 22-09-2026.
 
 ## 4. Product
 
-**One sentence:** Chief of Vibes gives Claude Code a permanent, plain-text memory that the user owns, in a GitHub repository, with no git knowledge required.
+**North star (D9).** Quoted from `system/1-purpose.md` §1, not restated. The text that opens `CLAUDE.md` is this one, with only the cuts the Principal approves in §10 N1:
+
+> Chief of Vibes makes Claude Code and a git repository into a persistent AI colleague. The repository holds two parts. The **template** is this specification and its machinery. It is generic and identical for every user. The **agent** is yours. It lives on its own branch, keeps its memory in `memory/`, and puts its output in `projects/`.
+>
+> The design removes three failure modes of work with an LLM:
+>
+> 1. **Work evaporates.** A chat makes something useful, the window closes, and nothing accumulates. Here every session ends with a commit and a push, and memory compounds.
+> 2. **The AI validates itself.** Plans, frameworks, and dashboards look confident, and no outsider ever reads them. Only an unsolicited external signal counts as success (§7).
+> 3. **Process eats product.** The tool improves itself and ships nothing. Here meta-work has a bound. Given one unit of effort, and a choice between a better system and shipped work, ship the work.
+>
+> **Why this exists.** The power stays with the person. Their repository, their rules, their agent. The system is built so that its user, in the end, needs no system: free to decide, to try, and to stop. So the deepest question here is not only what the work is for. It is what the Principal is here for. That question is never asked on a schedule and never forced. It surfaces when the work raises it, and the agent lets it surface rather than filling the silence.
 
 **User journey:**
 
@@ -119,7 +131,7 @@ The executor records every spike result in the PR description, with the command 
 ### 5.1 Tree — canon `main` (the scaffold)
 
 ```
-CLAUDE.md                      short; project-wide rules only (§5.7)
+CLAUDE.md                      opens with the north star, verbatim (D9); then project-wide rules only (§5.7)
 README.md                      one screen for the user
 CHANGELOG.md                   one line per release; 2.0.0 lists every removal and why
 CONTRIBUTING.md                ≤ 1 page, for template maintainers
@@ -163,6 +175,22 @@ The copy does not use the canon's custodian. The `update` skill must never overw
   - `projects/`.
   - `handoff/`.
 
+### 5.3b The custodian and its mandate (D10)
+
+`.claude/agents/custodian.md` carries D10 word for word, and the means below. It runs on the canon only.
+
+| Property | How it is held |
+|---|---|
+| **Few failures** | Every bench runs in CI. A release is cut only from a `main` that is green and graded |
+| **Stable release** | `main` changes only by release, with semver, a `CHANGELOG.md` line and a tag. **The custodian's default action is none.** It batches fixes into releases and never ships one release per finding. This is the brake: the previous custodian had nearly this mandate (*"Keep this template correct"*) and shipped 89 releases in 5 weeks. Polish without a brake is churn, and churn is the opposite of stable |
+| **Easy to use** | R12 (onboarding end to end) runs again for every release that touches onboarding, the README, or the agent forms |
+| **No repetition, and nothing said twice in other words** | Each fact has one home, and every other mention links to it. `tools/redundancy.py` ranks the candidate pairs across all public prose, as a CI report. The custodian decides each pair and records the verdict. The tool is an instrument, not a judge |
+| **No contradictions** | No tool detects contradictions, and none may claim to. Before each release, a grader with a fresh context reads the public files together and lists the contradictions it finds. The custodian resolves each one, or records why it is not one |
+| **Looks and feels professional** | `README.md`, `LICENSE`, `CHANGELOG.md`, `CONTRIBUTING.md` and the release notes exist and agree. Public files carry no internal vocabulary (rungs, posts, sensors) that a user must learn to use the product |
+| **Measured from outside** | North star, failure 2: the custodian cannot certify its own work. The evidence that the product is usable is an outsider using it, and that is what the release notes report |
+
+The three questions of the old 5S *shine* step move into `custodian.md`: *is this said twice? do these two disagree? is this the same thing said in other words?*
+
 ### 5.4 Hooks
 
 Keep a hook only if S3 shows that the failure it prevents still happens, and only if it has a bench.
@@ -204,15 +232,20 @@ Each kept `SKILL.md` has valid `name` and `description` frontmatter.
 
 `SYSTEM.md`, `system/`, `INDEX.md`, `CLOCKS.md`, `LANGUAGES.md`, `posts/`, `functions/`, `privileges/`, `memory/` (replaced by `.claude/agent-memory/`) and `repomix.config.json`.
 
-Also removed: the tools `candidates`, `hygiene`, `explain`, `skills`, `models`, `clocks`, `environment`, `ready`, `sweep-branches`, `index`, `sections`, `prose-lint`, `prose-gate`, `redundancy.py`, `pr-guard` and `sync`, unless a kept piece calls one. The workflows `guard.yml`, `stacks.yml` and `sweep-branches.yml` are merged into `ci.yml` or removed.
+Also removed: the tools `candidates`, `hygiene`, `explain`, `skills`, `models`, `clocks`, `environment`, `ready`, `sweep-branches`, `index`, `sections`, `prose-lint`, `prose-gate`, `pr-guard` and `sync`, unless a kept piece calls one. **`tools/redundancy.py` stays:** it is the custodian's instrument for D10. The workflows `guard.yml`, `stacks.yml` and `sweep-branches.yml` are merged into `ci.yml` or removed.
 
 Every removal gets one line in `CHANGELOG.md` 2.0.0 that says why.
+
+**The north star is moved, not rescued.** Before `system/` is deleted, the purpose text goes verbatim to the head of `CLAUDE.md` (D9). Deleting `system/` without this step deletes the product's reason to exist.
 
 **Rescue before removing.** Some rules carry a real lesson that deserves to live on: "verify before assert", "a negative answer names its frame", "the agent drafts, the Principal publishes", and "confirm focus before typing into a real keyboard". Each one either becomes one line in `CLAUDE.md`, if it passes the removal test for every session, or becomes a `knowledge/` entry. Never both. The rescue reads the archive tags and never edits them (the *Dreams* pattern). The executor lists what it rescued and where it put each item.
 
 ### 5.9 The removal test (D8)
 
-For every line of prose, and for every hook, skill and tool that survives: *would removing it cause Claude to make a mistake that the current model actually makes?*
+Every line of prose, and every hook, skill and tool, answers two questions in order.
+
+1. *Does it serve the north star (D9) or the custodian's mandate (D10)?* If it serves neither, remove it, even if it prevents a mistake.
+2. *Would removing it cause Claude to make a mistake that the current model actually makes?*
 
 - **Yes, with evidence** (a spike, a bench, or an incident named in `git log`): keep it.
 - **No, or no evidence:** remove it.
@@ -276,6 +309,10 @@ The grader scores each criterion independently, as pass or fail, with evidence. 
 | R10 | Every rescued rule lives in exactly one place | Grep each rule's key phrase |
 | R11 | No open PRs except the 2.0.0 one. No stale branches remain; they exist only as `archive/*` tags | `git ls-remote` |
 | R12 | Onboarding works end to end on a throwaway copy. A web session that receives only "hi" ends with the agent file and memory created after ≤ 4 questions, committed and pushed. The next session opens as that agent and reports its backlog | **Performed by the Principal.** The executor prepares the steps. The grader cannot pass this criterion alone |
+| R13 | `CLAUDE.md` opens with the north star: the text in `system/1-purpose.md` §1 at the archive tag, minus only the cuts the Principal approved in §10 N1 | `diff` |
+| R14 | `custodian.md` carries D10 word for word, and each means in §5.3b exists: a named CI step, a checklist line, or a file | Parse the file, then cross-check `ci.yml` and the tree |
+| R15 | No fact lives in two public files. The `redundancy.py` report over all public prose is attached, and every pair above the threshold has a recorded verdict | The PR description |
+| R16 | A contradiction pass by a fresh-context grader over the public files is attached, and it has no open item | The PR description |
 
 ---
 
@@ -288,3 +325,19 @@ These go into `CONTRIBUTING.md`, in at most 10 lines:
 3. **One open template PR at a time.** Semver: a patch for fixes, a minor for features, a major for breaks.
 4. **Re-test assumptions when the model changes.** Rerun S3 for every hook, and apply the removal test to `CLAUDE.md`.
 5. **Sizes only ratchet down.** A PR that raises a CI ceiling states why in its description, and the Principal approves it.
+6. **The custodian's default is no change.** A finding alone is not a release. Fixes are batched.
+7. **Before every release:** benches green, the redundancy report decided, the contradiction pass clear, and R12 run again when onboarding, the README or the forms changed.
+
+---
+
+## 10. Open questions for the Principal
+
+**N1. The north star mixes purpose with mechanism, and the mechanism is changing.** Quoted verbatim, three parts of it would contradict the rebuilt tree in the one file every session loads. That breaks D10.
+
+| Text in the north star | What 2.0 does instead |
+|---|---|
+| *"It lives on its own branch"* | In a copy, the agent lives on `main` (D7) |
+| *"keeps its memory in `memory/`, and puts its output in `projects/`"* | Memory is in `.claude/agent-memory/<name>/` (D3) |
+| *"(§7)"* | `system/` is deleted, so the pointer leads nowhere |
+
+The drafter's proposal is to cut those three pieces and change nothing else: architecture belongs in the tree, and purpose belongs in the north star. The purpose sentences, the three failure modes and *Why this exists* stay word for word. The Principal decides. Until then, D9 is blocked, and so is R13.
