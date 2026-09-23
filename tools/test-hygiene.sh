@@ -76,12 +76,12 @@ check_absent "the threshold is honoured" "backlog.md is" "${out}"
 
 # --- a handoff older and newer than the specification ------------------------
 build "${tmp}/stale" 2026-08-05
-printf -- '---\nupdated: 01-08-2026 10:00 -04\n---\nbody\n' > "${tmp}/stale/memory/handoff/old-handoff.md"
+printf -- '---\nupdated: 01-08-2026 10:00 +00\n---\nbody\n' > "${tmp}/stale/memory/handoff/old-handoff.md"
 out="$(run "${tmp}/stale")"
 check "a handoff older than the spec is reported" "before the specification last changed" "${out}"
 
 build "${tmp}/fresh" 2026-08-05
-printf -- '---\nupdated: 09-08-2026 10:00 -04\n---\nbody\n' > "${tmp}/fresh/memory/handoff/new-handoff.md"
+printf -- '---\nupdated: 09-08-2026 10:00 +00\n---\nbody\n' > "${tmp}/fresh/memory/handoff/new-handoff.md"
 out="$(run "${tmp}/fresh")"
 check_absent "a current handoff is left alone" "before the specification" "${out}"
 

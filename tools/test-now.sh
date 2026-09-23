@@ -56,10 +56,9 @@ run() {
 }
 
 # The offset a zone is actually on right now, printed the way now.sh prints it.
-# Never hardcode one. America/Santiago is -04 in winter and -03 under daylight
-# saving, so a literal pinned the bench to half the year: it was written with
-# -04 and went red on 06-09-2026, the day Chile moved its clocks, with now.sh
-# behaving correctly throughout. `date` is the independent oracle here — it
+# Never hardcode one. A zone with daylight saving has two offsets a year, so a
+# literal pinned the bench to half the year: it went red the day the zone moved
+# its clocks, with now.sh behaving correctly throughout. `date` is the independent oracle here — it
 # reads the same zone database and none of now.sh's code.
 offset_of() {
   local z raw
@@ -134,15 +133,15 @@ out="$(run "${d}")"; code=$?
 # --- $COV_TZ: the environment answers where memory/ cannot be read ----------
 # Every template branch is a branch without memory/, so a session standing on
 # one had no clock at all until this. Measured on 14-08-2026: the header came
-# out in UTC for a Principal in -04.
+# out in UTC for a Principal outside UTC.
 
 nostate="${tmp}/nostate"
 rm -rf "${nostate}"; mkdir -p "${nostate}"
 cp "${here}/now.sh" "${nostate}/now.sh"
 
-santiago="$(offset_of America/Santiago)"
-out="$(cd "${nostate}" && COV_TZ=America/Santiago bash ./now.sh 2>&1)"; code=$?
-[[ "${out}" == *"${santiago}"* && "${out}" != *"UTC default"* && ${code} -eq 0 ]] \
+dst="$(offset_of America/New_York)"
+out="$(cd "${nostate}" && COV_TZ=America/New_York bash ./now.sh 2>&1)"; code=$?
+[[ "${out}" == *"${dst}"* && "${out}" != *"UTC default"* && ${code} -eq 0 ]] \
   && report "COV_TZ answers where state.md is absent, unmarked, exit 0" yes "" \
   || report "COV_TZ answers where state.md is absent, unmarked, exit 0" no "exit=${code} out=${out:-<empty>}"
 
@@ -165,16 +164,16 @@ out="$(cd "${form}" && bash ./now.sh 2>&1)"; code=$?
   && report "the shipped empty form still prints a time" yes "" \
   || report "the shipped empty form still prints a time" no "exit=${code} out=${out:-<empty>}"
 
-out="$(cd "${form}" && COV_TZ=America/Santiago bash ./now.sh 2>&1)"
-[[ "${out}" == *"${santiago}"* ]] \
+out="$(cd "${form}" && COV_TZ=America/New_York bash ./now.sh 2>&1)"
+[[ "${out}" == *"${dst}"* ]] \
   && report "an empty timezone field lets COV_TZ answer" yes "" \
   || report "an empty timezone field lets COV_TZ answer" no "out=${out:-<empty>}"
 
 # state.md outranks the environment. A machine must not relocate an agent that
 # has already declared where it is.
-both="$(build both America/Santiago)"
+both="$(build both America/New_York)"
 out="$(cd "${both}" && COV_TZ=Asia/Tokyo bash ./now.sh 2>&1)"
-[[ "${out}" == *"${santiago}"* && "${out}" != *"$(offset_of Asia/Tokyo)"* ]] \
+[[ "${out}" == *"${dst}"* && "${out}" != *"$(offset_of Asia/Tokyo)"* ]] \
   && report "state.md outranks COV_TZ" yes "" \
   || report "state.md outranks COV_TZ" no "out=${out:-<empty>}"
 
