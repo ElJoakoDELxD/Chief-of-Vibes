@@ -65,7 +65,7 @@ own agent and its Principal, so the agnosticism that makes the canon's custodian
 stranger's proposal does not bind the same way. The merge stays with a person either way (§6), and
 that is what covers the smaller conflict.
 
-**What does not travel:** this role's occupant, its funding arrangement, its model approvals. A
+**What does not travel:** this role's occupant, its private arrangements, its model approvals. A
 copy inherits the slot, not what sits in it.
 
 ## The naming, settled 07-09-2026

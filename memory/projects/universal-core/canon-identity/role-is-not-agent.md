@@ -54,8 +54,8 @@ keeps the agnosticism true.
 
 - The `Custodian` branch's memory folds back into the agent's vault as `memory/projects/custodian/`,
   where it is already filed.
-- Its `state.md` splits. Agent facts — language, timezone, the commit-identity rule, the funding
-  arrangement — belong in the agent's `state.md`. Role facts — agnostic, guardian, teacher, what
+- Its `state.md` splits. Agent facts — language, timezone, the commit-identity rule, private
+  arrangements — belong in the agent's `state.md`. Role facts — agnostic, guardian, teacher, what
   it never does, which model may exercise it — belong in the role's own document, which a hook or
   a skill can point at instead of a paragraph inside an identity file.
 - **The branch queued for retirement reverses.** The `Custodian` backlog names

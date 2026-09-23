@@ -92,7 +92,7 @@ that holds it is also the demonstration. In a copy, the agent holds the guardian
 that copy's own `main`, and the content differs because what it guards differs. A copy receives
 no outside proposals, so it prepares its own Principal's changes and not a stranger's.
 
-A copy inherits the role. It does not inherit the occupant, the funding, or the model approvals.
+A copy inherits the role. It does not inherit the occupant, its private arrangements, or the model approvals.
 
 ## What the role is not
 

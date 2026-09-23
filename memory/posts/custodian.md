@@ -16,7 +16,7 @@ The definition lives in `posts/custodian.md` on `main` and is the same for anybo
 | Function | Where it ran |
 |---|---|
 | `prepare-the-door` | pull requests 77 to 82, six releases in two days, then 83 to 91. On 08-09-2026 a four-layer stack landed in one approval, 1.75.0 to 1.78.0 |
-| `keep-the-benches` | a bench asserting `-04` for `America/Santiago` went red on 06-09-2026 when Chile moved its clocks, with `tools/now.sh` correct throughout |
+| `keep-the-benches` | a bench asserting a literal offset went red when its zone moved its clocks, with `tools/now.sh` correct throughout |
 | `keep-the-benches` | 1.75.0: three rails were producing false positives the benches did not cover, because the benches had been written around them. The new cases pin what must be left alone |
 | `sync-the-template` | after every merge, 1.65.0 through 1.70.0, both versions read rather than assumed |
 | `sweep-the-repository` | twenty branches became seven on 07-09-2026: fourteen deleted, six kept |

@@ -81,16 +81,6 @@ What gets done. What was already done lives in the journal, not here.
 
 ## Principal
 
-- **Hand the copy its one file** — *quarantined 08-09-2026, waiting on a receipt.*
-  `memory/quarantine/the-funding-arrangement.md` says what it is, where it goes, and carries an
-  unsigned `received:` line. The copy's agent records the commitment in its own `state.md` and
-  signs. Until then `tools/hygiene.sh` names it at every session start, and nobody deletes it.
-  The custodian post does not reach into another repository, so the signature is the only thing
-  that can end the wait. Original item: The Principal named it privately on 03-09-2026 and this is a
-  public repository, so it is not written here. The copy's agent takes
-  `memory/projects/custodian/what belongs in the copy/handover to the copy.md` as a brief: the
-  funding commitment moves there and nothing else does. This agent does not write into another
-  repository, so the last step belongs to that agent in a session of its own.
 - ~~**An unlisted model is acting as the Custodian.**~~ **Decided and built 07-09-2026.** Opus
   holds this post, by the Principal's approval, and `tools/models.sh` shipped in 1.72.0. Original
   finding: `memory/state.md` says `MODELS.md` on `main` names the approved models and

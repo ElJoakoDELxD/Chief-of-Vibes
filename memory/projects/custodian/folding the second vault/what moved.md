@@ -22,7 +22,7 @@ at every session start, and this is the repair.
 
 `memory/state.md` held agent facts and post facts in one file, which is the confusion 1.69.0
 exists to end. The agent facts moved here: the demo, the quotation rule, the commit-identity
-rule, the language and zone reasoning, the funding, and where improvements come from. The post
+rule, the language and zone reasoning, and where improvements come from. The post
 facts were already in `posts/custodian.md` on `main` and `memory/posts/custodian.md` here.
 
 Its backlog gave up two live items nothing else carried: the rail refusing an inline identity

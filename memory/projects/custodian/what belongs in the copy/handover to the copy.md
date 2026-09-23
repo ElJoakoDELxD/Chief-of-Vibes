@@ -25,21 +25,10 @@ ever syncs, so a wrong one propagates further than any repository can correct (�
 **The copy is not named in this file.** The Principal named it in session on 03-09-2026. This is
 a public repository, and the name of a private one is theirs to disclose.
 
-## 1. The funding arrangement — moves
+## 1. A private arrangement — moved
 
-`state.md` carried it from 14-08-2026: the agent runs on a slice of donated inference, one
-session a week, from the Principal who maintains this repository, and nobody should be made to
-spend more than they agreed to. Two claims welded together, and only one is agnostic.
-
-- **Agnostic, stays.** This agent runs on donated inference. The work points at the commons and
-  the fuel comes from whoever uses it. It is small on purpose.
-- **Personal, moves.** *One session a week, from this Principal.* A standing claim on one
-  person's budget does not belong in a public repository, and the agent that should hold it is
-  the one planning against that budget.
-
-**Where it goes.** The copy, in that agent's `memory/`, as a standing commitment: funds the
-canon's Custodian, one session a week. Not `knowledge/` — it is not a procedure, and never the
-canon's `knowledge/`, which every copy inherits.
+A private arrangement with the Principal moved to their own copy, and the copy recorded it on
+12-09-2026. It is not described here, because this is a public repository.
 
 ## 2. Four timezone offsets in `knowledge/` — do not move, remove
 
@@ -47,10 +36,10 @@ Not in the brief. A finding.
 
 | File | Field |
 |---|---|
-| `knowledge/el-lazo-canon-copia/sync-the-template.md` | `updated: 04-08-2026 23:10 -04` |
-| `knowledge/el-lazo-canon-copia/retargeting-a-pull-request.md` | `updated: 09-08-2026 17:4x -04` |
-| `knowledge/el-lazo-canon-copia/the-guard-reads-text-not-intent.md` | `updated: 09-08-2026 17:5x -04` |
-| `knowledge/el-entorno/the-cloud-environment.md` | `updated: 13-08-2026 23:1x -04` |
+| `knowledge/el-lazo-canon-copia/sync-the-template.md` | `updated: 04-08-2026 23:10 <offset>` |
+| `knowledge/el-lazo-canon-copia/retargeting-a-pull-request.md` | `updated: 09-08-2026 17:4x <offset>` |
+| `knowledge/el-lazo-canon-copia/the-guard-reads-text-not-intent.md` | `updated: 09-08-2026 17:5x <offset>` |
+| `knowledge/el-entorno/the-cloud-environment.md` | `updated: 13-08-2026 23:1x <offset>` |
 
 `CLOCKS.md` states the principle about itself: **a zone is a location**, so that record keeps
 machines, refuses zones, and refuses any date finer than the day. `knowledge/` is inherited by

@@ -46,8 +46,8 @@ and it was read as notation rather than as a claim about where things live.
 
 ## Still true, and independent of both misses
 
-- `test-now.sh` pinned `-04` for `America/Santiago` and expired when Chile moved its clocks on
-  06-09-2026. Fixed here; it is a template file on the wrong branch and needs a pull request.
+- `test-now.sh` pinned the literal offset of a daylight-saving zone and expired when the zone
+  moved its clocks. Fixed here; it is a template file on the wrong branch and needs a pull request.
 - The agent branch was at 1.62.0 against main's 1.64.0 with no sensor for the second hop. Synced.
 - The lineage defects — a copy of a copy syncing against the root, a fork blinding itself — were
   traced against `anchor.sh` and hold. What the remedy must add is the branch axis.
