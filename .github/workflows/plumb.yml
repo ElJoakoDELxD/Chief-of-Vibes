@@ -1,0 +1,36 @@
+# The plumb test runs here, and only here. The exam and its grader live in the
+# PLUMB_EXAM Actions secret, so no session can read them from the repository.
+# Push a branch named plumb/<anything> to receive an exam; push answers.json to
+# the same branch to receive RESULT.md. A pass also creates the tag plumb-pass/<name>.
+name: plumb
+on:
+  push:
+    branches: ['plumb/**']
+permissions:
+  contents: write
+jobs:
+  plumb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Load the private exam
+        env:
+          PLUMB: ${{ secrets.PLUMB_EXAM }}
+        run: |
+          if [ -z "$PLUMB" ]; then echo "PLUMB_EXAM secret is not set"; exit 1; fi
+          printf '%s' "$PLUMB" > "$RUNNER_TEMP/plumb.py"
+      - name: Issue or grade
+        run: |
+          git config user.name "plumb"; git config user.email "plumb@users.noreply.github.com"
+          name="${GITHUB_REF_NAME#plumb/}"
+          if [ ! -f plumb-exam/EXAM.md ]; then
+            python3 "$RUNNER_TEMP/plumb.py" new "$GITHUB_RUN_ID" plumb-exam
+            git add plumb-exam/EXAM.md plumb-exam/tasks.json
+            git commit -qm "Plumb exam issued"; git push -q origin "HEAD:$GITHUB_REF_NAME"
+          elif [ -f plumb-exam/answers.json ] && [ ! -f plumb-exam/RESULT.md ]; then
+            set +e; python3 "$RUNNER_TEMP/plumb.py" grade plumb-exam > plumb-exam/RESULT.md; code=$?; set -e
+            git add plumb-exam/RESULT.md; git commit -qm "Plumb result"; git push -q origin "HEAD:$GITHUB_REF_NAME"
+            if [ $code -eq 0 ]; then git tag "plumb-pass/$name"; git push -q origin "plumb-pass/$name"; fi
+          else
+            echo "Nothing to do"
+          fi
