@@ -13,10 +13,13 @@
 #   function,     what this session declared with `header --declare`, kept for
 #   workplace     this session only; the defaults say nothing was declared
 #   model         the model that served this session's last turn, read from the
-#                 transcript; effort from $CLAUDE_EFFORT
+#                 transcript. Effort is never measured: $CLAUDE_EFFORT is a label
+#                 that did not match the effort the model received (23-09-2026).
+#                 It prints as effort:? unless the agent passes what its own
+#                 context shows with --self N, and then it says (self)
 # A field that cannot be read prints as "?" and says why on stderr.
 #
-# Usage:  clock | header
+# Usage:  clock | header [--self <effort the agent sees in its context>]
 #         header --declare function=onboard workplace=memory/projects/x/y/
 
 set -uo pipefail
@@ -33,6 +36,8 @@ if [[ "${1-}" == "--declare" ]]; then
   exit 0
 fi
 
+self=""
+[[ "${1-}" == "--self" && -n "${2-}" ]] && self="$2"
 IFS= read -r stamp || stamp=""
 if [[ -z "${stamp}" ]]; then echo "header: no time on stdin; run 'clock | header'." >&2; stamp="?"; fi
 
@@ -53,7 +58,7 @@ fi
 transcript="${HOME}/.claude/projects/$(printf '%s' "${root}" | sed 's#[^A-Za-z0-9]#-#g')/${CLAUDE_CODE_SESSION_ID:-none}.jsonl"
 model="$(tac "${transcript}" 2>/dev/null | grep -m1 -o '"model":"[^"]*"' | cut -d'"' -f4)"
 [[ -n "${model}" ]] || { model="?"; echo "header: model unreadable (no transcript at ${transcript})." >&2; }
-effort="${CLAUDE_EFFORT:-?}"
+if [[ -n "${self}" ]]; then effort="effort:${self} (self)"; else effort="effort:?"; fi
 
 line="[${stamp}"
 [[ -n "${agent}" ]] && line+=" · ${agent}"

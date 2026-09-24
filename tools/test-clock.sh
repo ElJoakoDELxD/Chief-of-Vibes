@@ -36,7 +36,9 @@ check "context date mismatch is DESFASE" 'grep -q "context date" "${tmp}/err5"'
 check "unknown zone prints nothing" '[[ -z "$(TS_ZONE=Nowhere/Void "${bin}/clock" 2>/dev/null)" ]]'
 
 h="$(echo "01-02-2026 03:04 +00" | CLAUDE_CODE_SESSION_ID=bench CLAUDE_EFFORT=low "${bin}/header" 2>/dev/null)"
-check "header shape" '[[ "${h}" =~ ^\[01-02-2026\ 03:04\ \+00\ ·\ .+\ ·\ .+/.+\ ·\ .+·low\]$ ]]'
+check "header shape" '[[ "${h}" =~ ^\[01-02-2026\ 03:04\ \+00\ ·\ .+\ ·\ .+/.+\ ·\ .+·effort:\?\]$ ]]'
+h2="$(echo "t" | CLAUDE_CODE_SESSION_ID=bench CLAUDE_EFFORT=high "${bin}/header" --self 10 2>/dev/null)"
+check "effort is self-declared, never the label" '[[ "${h2}" == *"effort:10 (self)]" && "${h2}" != *high* ]]'
 TMPDIR="${tmp}" CLAUDE_CODE_SESSION_ID=bench "${bin}/header" --declare function=onboard
 h="$(echo "t" | TMPDIR="${tmp}" CLAUDE_CODE_SESSION_ID=bench "${bin}/header" 2>/dev/null)"
 check "declared function shows" '[[ "${h}" == *"/onboard ·"* ]]'
