@@ -54,9 +54,6 @@
       }
     ]
   },
-  "env": {
-    "PATH": "/home/user/Chief-of-Vibes/tools/sandbox/linux-x86_64:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/home/user/Chief-of-Vibes/tools/bin:/root/.local/bin:/root/.cargo/bin:/usr/local/go/bin:/opt/node22/bin:/opt/maven/bin:/opt/gradle/bin:/opt/rbenv/bin:/root/.bun/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-  },
   "sandbox": {
     "enabled": true,
     "failIfUnavailable": true

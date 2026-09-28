@@ -1,6 +1,6 @@
-# Spike S6b: same test, with sandbox.failIfUnavailable = true
+# Spike S6c: sandbox tools placed by the setup script, from this branch (failIfUnavailable = true)
 
-You are a child session. Do only this, then write `spike/s6b-result.md`, commit it, and push to `spike/s6-sandbox`. Record every command and its exact output.
+You are a child session. Do only this, then write `spike/s6c-result.md`, commit it, and push to `spike/s6-sandbox`. Record every command and its exact output.
 
 1. `which bwrap socat; echo "$PATH"` and `bwrap --version; socat -V | head -1`.
 2. Say whether your harness reports the sandbox as active for Bash (describe what you see: any sandbox notice, the tool description, or errors).
