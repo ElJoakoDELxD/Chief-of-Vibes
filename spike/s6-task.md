@@ -1,11 +1,10 @@
-# Spike S6c: sandbox tools placed by the setup script, from this branch (failIfUnavailable = true)
+# Spike S6d: the sandbox switched on mid-session by a SessionStart hook
 
-You are a child session. Do only this, then write `spike/s6c-result.md`, commit it, and push to `spike/s6-sandbox`. Record every command and its exact output.
+You are a child session. Do only this, then write `spike/s6d-<variant>-result.md` (variant from `tools/sandbox/activate.sh`), commit it, and push to your branch. Record every command and its exact output. If a Bash call is blocked, that is a result: record the exact message.
 
-1. `which bwrap socat; echo "$PATH"` and `bwrap --version; socat -V | head -1`.
-2. Say whether your harness reports the sandbox as active for Bash (describe what you see: any sandbox notice, the tool description, or errors).
-3. Bash: `echo test > "$HOME/s6-outside.txt"; echo rc=$?` (outside the project: should be blocked if the sandbox holds).
-4. Bash: `echo test > spike/s6-inside.txt; echo rc=$?` (inside the project: should succeed). Delete it afterwards.
-5. Bash: `curl -sS -o /dev/null -w '%{http_code}\n' https://api.anthropic.com` (network under the sandbox).
-6. Observations, in plain lines. Do not work around any block; report it.
-7. If Bash fails at every call, copy the exact error text: that is the result.
+1. `cat ${TMPDIR:-/tmp}/cov-sandbox-activate.log; ls -l /usr/local/bin/bwrap /usr/local/bin/socat; cat .claude/settings.local.json /etc/claude-code/managed-settings.d/cov-sandbox.json 2>&1`
+2. Say whether your harness shows any sandbox notice or error, and whether the Bash tool reports commands as sandboxed.
+3. `echo test > "$HOME/s6-outside.txt"; echo rc=$?` — outside the project: blocked means the sandbox holds.
+4. `echo test > spike/s6-inside.txt; echo rc=$?; rm -f spike/s6-inside.txt` — inside: should succeed.
+5. `curl -sS -o /dev/null -w '%{http_code}\n' https://api.anthropic.com`
+6. Observations in plain lines. Do not work around any block, and do not use dangerouslyDisableSandbox except to commit and push the result if a plain git push is blocked; say so if you did.
