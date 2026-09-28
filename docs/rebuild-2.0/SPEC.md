@@ -88,6 +88,7 @@ The rebuild uses what holds, and it builds the rest as small, benched parts.
 | D35 | **One custodian, whose reach comes from where it lives.** A single role file lives in every `main`, and it serves the `main` it stands on: the canon's for the canon, a copy's for that copy. That is innate to the role, not a per-place rule, and only the name differs (D14). On `main` alone it has no memory and no projects, so it can only orient: that is the mini-custodian, by circumstance and not by a second file. With its own branch attached, it has memory and becomes the full custodian. It replaces the separate mini-custodian file and `maintainer.md` | Principal, 28-09-2026. Resolves N2 |
 | D36 | **Layer 3 is a mode, built only when needed.** The ladder is: the canon's `main`, then a copy's `main`, then each user's own `main` (their fork or branch), then that user's agents. One person needs no third step. It is switched on and built when a second person works in the same repository, and 2.0 only describes it | Principal, 28-09-2026. Resolves N7 |
 | D37 | **The agent's file lives on its own branch, and changes only by pull request.** It never lives in `main`, which it would contaminate. Three layers hold it on any GitHub plan: a hook blocks the agent's tools from writing it; the sandbox closes the Bash route; and a CI check on every push to an agent branch fails, reverts and reports when the file changed outside an approved pull request. Protection that depends on a paid plan is not part of the design | Principal, 28-09-2026 |
+| D38 | **The sandbox's tools live on the agent's branch, and a hook turns the sandbox on.** `bwrap` and `socat` (Ubuntu 24.04 binaries, with their sources and licenses listed) sit under `tools/sandbox/linux-x86_64/`. On Linux x86_64 with a writable `/usr/local/bin`, a SessionStart hook links them there and then writes `.claude/settings.local.json`: sandbox on, the nested-container mode, auto-allow for sandboxed Bash, `git` excluded, a domain allowlist, and the container's proxy port as the sandbox's upstream. Claude Code checks for the tools when it launches, before any hook, so the switch happens only after they are in place, through the settings reload. The `socat` wrapper forces IPv4, because the sandbox's network namespace has none of IPv6. Nothing depends on the environment's setup script or on managed settings | Principal, 28-09-2026. Verified by S6 |
 
 **Why D5 and D7 fit together.** GitHub's *Use this template* copies only the default branch. The canon's custodian therefore keeps its filled memory on a `custodian` branch, which no copy ever receives. The executor verifies this behaviour before relying on it (spike S2).
 
@@ -147,14 +148,7 @@ Nothing else is in the user's path.
 
 ### 5.0 Before the build: environment and spikes
 
-**E1. The environment must be able to sandbox Bash.** This is the Principal's action, because a cloud environment's setup script is a setting that only the Principal can change. Add these lines to the setup script of the environment in claude.ai/code:
-
-```bash
-apt-get update -qq
-apt-get install -y -qq bubblewrap socat
-```
-
-Measured 23-09-2026: `bwrap: command not found` in this environment. It runs Ubuntu 24.04, and the sandbox documentation warns that AppArmor on that release can block `bubblewrap` user namespaces. Spike S6 measures whether it works.
+**E1. The sandbox turns itself on (D38).** No one edits the environment. Spike S6 found the working route on the web, on 28-09-2026 (Appendix A).
 
 | Spike | Question | Status | If it fails |
 |---|---|---|---|
@@ -163,7 +157,7 @@ Measured 23-09-2026: `bwrap: command not found` in this environment. It runs Ubu
 | **S3** | For each hook the rebuild keeps, does the current model still make the mistake the hook prevents? Disable the hook, run one ordinary session, and record the result | Open, for the executor | Remove the hook |
 | **S4** | Can a chat adopt an agent by reading, and can a hook enforce that agent's rules? | **Done.** Yes, for tool calls (Appendix A) | — |
 | **S5** | Do effects work as permissions: the declared path allowed, anything else blocked, the agent's own file blocked, and the declaration locked? | **Done** (Appendix A) | — |
-| **S6** | With E1 in place, does the sandbox limit Bash writes to the adopted agent's declared effects? | Open. It needs E1 | Bash stays unenforced, and `README.md` and `CONTRIBUTING.md` say so in one line each |
+| **S6** | Does the sandbox limit Bash writes, with no manual step? | **Done.** Yes: writes outside the workspace and to `.claude/settings.json` are refused, the network works through the container's proxy, and git commits and pushes (Appendix A, D38) | — |
 | **S7** | Can a private exam tell a capable model from a weaker one? | **Retired** by D19 | — |
 | **S8** | Can a chat attach a memory-only branch as `.agent/`, write there, and push it (D20)? What do hooks receive about the model and the effort (D23)? | **Done.** Memory: yes. Effort: yes, from `PreToolUse`. Model: no hook input carries it (Appendix A, D28) | — |
 
@@ -221,7 +215,7 @@ effects:
 - **Effects are permissions** (D11). The hook `agent-permissions.sh` enforces `writes:` for `Write`, `Edit`, `MultiEdit` and `NotebookEdit`. It blocks any path that no effect declares, and it always blocks the agent's own file, `.agent/agent.md`. The sandbox holds Bash (S6). A CI check on every push to an agent branch fails, reverts and reports a change to `agent.md` that did not arrive by an approved pull request (D37). `pushes:` needs its own rail, which the executor reads from `lib/command.sh` as `guard-main.sh` does, with a bench.
 - **Adoption** (D13). A SessionStart hook lists the agents that exist. The chat asks which one, or creates one through `onboard`; a lone agent is attached without asking, and the chat says which one it attached (D34). It attaches that agent's branch as the worktree `.agent/` (D20), reads `.agent/agent.md` and `.agent/memory/MEMORY.md`, and runs `header --declare agent=<name>`. A second declaration to a different agent is refused: *one chat, one agent; open a new chat*.
 - The agent's branch holds `agent.md` (D37), `memory/` — `MEMORY.md` (the index, at most 200 lines, curated by the agent), `backlog.md`, `journal/` (one file per day), and `handoff/` — and, beside it, `projects/` for the agent's output (D27).
-- **The limit of D11 today:** a hook reads tool calls, so a file written through Bash does not pass through it. Until S6 passes, `README.md` states this in one line.
+- **Bash is held by the sandbox** (D38). Where the sandbox cannot run (no Linux x86_64, or no writable `/usr/local/bin`), a Bash write does not pass through the hook, and `README.md` says so in one line.
 
 The S5 implementation is the starting point: `.claude/hooks/agent-permissions.sh` and `tools/bin/header` at `spike/s5-effects`. The executor ports them and adds a bench that pins every result in Appendix A.
 
@@ -350,7 +344,7 @@ The grader scores each criterion independently, as pass or fail, with evidence. 
 
 | # | Criterion | How to measure |
 |---|---|---|
-| R1 | Spikes S2, S3 and S6 ran, and each result is recorded with the command and its output. S6 may record "E1 not in place" | PR description |
+| R1 | Spikes S2, S3 and S6 ran, and each result is recorded with the command and its output. S6 is recorded in Appendix A | PR description |
 | R2 | Every surviving line, hook, skill and tool passes the removal test (§5.9). The PR lists each *removed, restorable* item | Sample 20 surviving lines at random. Each must cite its evidence, or be a hard limit from §5.7 |
 | R3 | CI records, and enforces as ceilings, the bytes loaded before the first turn and the words of governing prose. The PR states both, before and after | A `ci.yml` step. Loaded bytes = `CLAUDE.md` + SessionStart hook output. Words = `wc -w` over template `*.md` outside `knowledge/`, `docs/` and `CHANGELOG.md` |
 | R4 | Every path in §5.8 is absent | `ls` |
@@ -443,7 +437,7 @@ A second finding came from this session itself: an agent file created after a se
 | `Write` through `..` out of a declared path | **Blocked.** The path is normalized before it is matched |
 | A plain Bash write to the declaration file | **Succeeded.** The header then showed `other`. The lock holds against the tool, not against Bash |
 
-S4 and S5 lead to the same conclusion. The hook holds every effect that passes through a tool call. Bash passes around it, both for file writes and for the declaration itself. Only the operating-system sandbox closes that gap, and it needs E1 (§5.0). Until S6 passes, D11 prevents honest mistakes. It is not yet a security boundary, and the product says so.
+S4 and S5 lead to the same conclusion. The hook holds every effect that passes through a tool call. Bash passes around it, both for file writes and for the declaration itself. Only the operating-system sandbox closes that gap, and S6 closed it on the web (D38).
 
 **S8 (28-09-2026). A memory-only branch, and what hooks receive.** Branch `spike/s8-main` carries a hook that logs every input field about the model and the effort (commit `6ba5f6f`) and the result (commit `1a6d871`). Branch `spike/s8-mem` is an orphan branch that holds only `memory/MEMORY.md` (seed `afb38bc`, result `e634f90`).
 
@@ -457,3 +451,17 @@ S4 and S5 lead to the same conclusion. The hook holds every effect that passes t
 | `get_session` | The model, served and configured (`claude-opus-5-5`). **No effort field** |
 
 D20 works on the web. For D23, the effort reaches a hook and the model does not, which led to D28.
+
+**S6 (28-09-2026). The sandbox, with no manual step.** Branch `spike/s6-sandbox`, nine child sessions; final result commit `8d520c4`.
+
+| Attempt | Result |
+|---|---|
+| Tools in the repository, `sandbox.enabled` in project settings | Not found: Claude Code checks `PATH` when it launches, before project settings or hooks apply |
+| `sandbox.failIfUnavailable` | The session refused to start: *bubblewrap (bwrap) not installed, socat not installed*. The web honours the sandbox |
+| `sandbox.bwrapPath` / `socatPath` | Read only from managed settings, by design. Not used: a public template that writes machine policy as root is the pattern a security review flags |
+| A SessionStart hook links the tools, then turns the sandbox on in `.claude/settings.local.json` | Picked up mid-session. Every command failed: `apply-seccomp: write /proc/self/uid_map: Operation not permitted` |
+| Plus `enableWeakerNestedSandbox` | Outside write: `Read-only file system`. `.claude/settings.json`: `Read-only file system`. Inside write: allowed. Network: dead, `localhost:3128` refused |
+| Reproduced here | Inside the namespace `socat` failed with `socket(10, …): Address family not supported`: no IPv6. With `-4`, the tunnel opened |
+| Plus `socat -4`, the container proxy as upstream, `git *` excluded, one git command per call | Outside write refused; inside allowed; `api.anthropic.com` answered; `example.com` refused (403, by the container's egress policy); `git commit` and `git push` succeeded |
+
+Two limits stand. The domain allowlist is enforced by the container's egress proxy, not by Claude Code's own proxy, because the sandbox forwards to the container's. And `git` runs outside the sandbox, so a command made only of git calls is reviewed by the permission flow, not held by the sandbox.
