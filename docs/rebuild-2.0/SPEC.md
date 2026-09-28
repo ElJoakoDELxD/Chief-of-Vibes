@@ -82,6 +82,11 @@ The rebuild uses what holds, and it builds the rest as small, benched parts.
 | D29 | **The custodian's model is checked against a cited list.** Each listed model carries the published evaluation that qualifies it, and the model is read as in D28. A listed model acts as the custodian (D18). An unknown or unlisted model takes an intelligence test: a high score lets it suggest, and anything else stops it before any change to the canon, naming the model it measured. Reading and answering stay open to every model. This refines D19 | Principal, 28-09-2026. The test and "suggest" are open in N5 |
 | D30 | **The orchestrator stays in 2.0, to save tokens.** It plans, delegates, and checks the result against the plan. It fires only when the serving model is Opus 5.5 and the task comes out better delegated than done. It never sets the header's model or effort (D28): what it chooses and what served are different facts | Principal, 28-09-2026. Details open in N6 |
 | D31 | **Revision 5 comes before approval.** Sections 4 to 9 predate D16 and contradict later decisions in places. They are reconciled with every decision in §2 before the Principal approves the spec | Principal, 28-09-2026 |
+| D32 | **The intelligence test, its bar, and "suggest".** A public generator makes a fresh instance on every run, past the obvious bounds, and grades it mechanically, while a hook blocks tools for the length of the test. A high score is at least the lowest score a listed model reached on the same generator, recorded beside the list. To suggest is to write the proposal down, in the custodian's memory or as an issue; a listed model or the Principal turns it into a change. A suggesting model never edits the canon's files and never opens a pull request | Principal, 28-09-2026. Resolves N5 |
+| D33 | **The orchestrator's terms.** The list of models carries a column, *orchestrates*, set for Opus 5.5 today. To delegate means the same result at a lower cost; if the result would be worse, the orchestrator does the work itself. It delegates to subagents on a cheaper model, and to a child session only for a spike that needs its own hooks or branch | Principal, 28-09-2026. Resolves N6 |
+| D34 | **A lone agent is attached without asking.** When only one agent exists, the chat attaches its branch as `.agent/` and says which agent it attached | Principal, 28-09-2026. Resolves N3 |
+| D35 | **One custodian, and it serves where it stands.** A single role file lives in every `main`. On the canon's `main` it acts for the canon; on a copy's `main` it acts for that copy. That behaviour is innate to the role and is not written as a per-place rule. Only the name differs (D14). It absorbs the mini-custodian and `maintainer.md` | Principal, 28-09-2026. Resolves N2 |
+| D36 | **Layer 3 stays, as a step of the ladder.** The ladder is: the canon's `main`, then a copy's `main`, then each user's own `main` (their fork or branch), then that user's agents. The third step is how several people work in one repository | Principal, 28-09-2026. Resolves N7 |
 
 **Why D5 and D7 fit together.** GitHub's *Use this template* copies only the default branch. The canon's custodian therefore keeps its filled memory on a `custodian` branch, which no copy ever receives. The executor verifies this behaviour before relying on it (spike S2).
 
@@ -384,25 +389,17 @@ These go into `CONTRIBUTING.md`, in at most 10 lines:
 
 **N1.** Resolved by D27.
 
-**N2. One `custodian.md` for the canon and for copies (§5.4).** After D17 and D21, a copy's `main` changes only through `update` and `pending/`. Someone in the copy still runs `update` and drafts proposals to the canon, and D29's check applies to whoever does. The drafter proposes one role file for both: on the canon it is Plumb (D14), in a copy it takes the name its person gives it, and `maintainer.md` is deleted. The mini-custodian (D17) stays a separate file, because it never writes.
+**N2.** Resolved by D35.
 
-**N3. Adoption when only one agent exists.** Should the chat attach that agent's branch as `.agent/` (D20) without asking, and say which agent it attached (§5.3)? The drafter proposes yes: asking a question with one possible answer is friction. The cost is one line of output that the Principal must read to notice a wrong agent.
+**N3.** Resolved by D34.
 
 **N4.** Resolved by D28.
 
-**N5. The intelligence test and "suggest" (D29).**
+**N5.** Resolved by D32.
 
-- *Which test.* S7 showed that a model with tools can read a fixed exam's answers in the repository, and the S7 commit history leaked the name of a trap. The drafter proposes S7b's approach: a public generator that makes a fresh instance on every run, past the obvious bounds, graded mechanically, with a hook blocking tools while the test runs so the model cannot run the grader. A public test is acceptable here because the prize is only a suggestion, and every suggestion still reaches the Principal.
-- *What "high" means.* The drafter proposes a calibrated bar: at least the lowest score that a listed model reached on the same generator, recorded beside the list.
-- *What "suggest" allows.* The drafter proposes: it writes the proposal down (in the custodian's memory, or as an issue), and a listed model or the Principal turns it into a change. It never edits the canon's files and never opens a pull request.
+**N6.** Resolved by D33.
 
-**N6. The orchestrator (D30).**
-
-- *"Opus 5.5": a name, or a place on the list?* A name stops working at the next release. The drafter proposes a column in D29's list, *orchestrates*, set for Opus 5.5 today, so a new model is judged once, in one place.
-- *"Better delegated": by what measure?* The drafter proposes: delegate when the plan and the check cost less than doing the work, and the result can be checked against the plan. Otherwise do it.
-- *Delegated to what?* The drafter proposes subagents on a cheaper model, and child sessions only for a spike that needs its own hooks or branch.
-
-**N7. Layer 3 of D7.** D7 deferred layer 3, one branch per person that acts as that person's `main`. D17, D18 and D20 give every agent its own branch under a frozen `main`, so a second person needs only their own agent branches. The drafter proposes deleting layer 3 rather than deferring it, which leaves D7 with two layers: the canon's `main` and a copy's `main`.
+**N7.** Resolved by D36.
 
 ---
 
