@@ -41,3 +41,31 @@ curl: (56) CONNECT tunnel failed, response 403
 [agent-proxy] While this command ran, 1 connection through the agent proxy failed:
 - example.com:443 — connect_rejected (the egress proxy denied the CONNECT (organization policy) or could not reach the destination)
 ```
+
+## 6. `git checkout -B spike/s6-sandbox`
+
+```
+Switched to and reset branch 'spike/s6-sandbox'
+Your branch is up to date with 'origin/spike/s6-sandbox'.
+```
+
+## 7. `git add spike/s6i-local-result.md`
+
+```
+(no output)
+```
+
+## 8. `git commit -m "S6i result"`
+
+```
+[spike/s6-sandbox 2fb031e] S6i result
+ 1 file changed, 43 insertions(+)
+ create mode 100644 spike/s6i-local-result.md
+```
+
+## 9. `git push origin spike/s6-sandbox`
+
+```
+To https://github.com/ElJoakoDELxD/Chief-of-Vibes
+   a963498..2fb031e  spike/s6-sandbox -> spike/s6-sandbox
+```
