@@ -137,7 +137,7 @@ The fifth field is the **workplace this session declared** (§5). What the folde
 
 Two cases carry no folder, and neither invents one. A session with no agent (§9, below) has no memory to work in, so its header omits the agent and the folder. A session that has read but not yet chosen writes `no workplace declared` and chooses before its first edit.
 
-The last field is the **model that served**, read from the session transcript, and **the effort**, which no script can read: the environment's label did not match the effort the model received. The agent passes what its own context shows (`header --self <n>`), and the line marks it `(self)`, so a reader sees which half is measured and which is declared.
+The last field is the **model** and the **effort** that served this turn. Both come from the last reply the harness recorded in this session's own transcript, which it writes before the tool that runs `header`. They are read fresh on every call and never assumed or copied. A record older than 120 seconds belongs to an earlier turn and is never used: the field prints `?`, and `header` says why.
 
 The whole line is rung 4. `header` measures every field it can, and no machine can know which thread this is.
 

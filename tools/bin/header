@@ -12,14 +12,14 @@
 #   branch        git
 #   function,     what this session declared with `header --declare`, kept for
 #   workplace     this session only; the defaults say nothing was declared
-#   model         the model that served this session's last turn, read from the
-#                 transcript. Effort is never measured: $CLAUDE_EFFORT is a label
-#                 that did not match the effort the model received (23-09-2026).
-#                 It prints as effort:? unless the agent passes what its own
-#                 context shows with --self N, and then it says (self)
+#   model,        the last assistant record in this session's own transcript,
+#   effort        which the harness writes before the tool that runs this script.
+#                 Both are read fresh on every call, never assumed and never
+#                 copied: a record older than 120 s belongs to an earlier turn,
+#                 and an earlier turn is never used (SPEC D28)
 # A field that cannot be read prints as "?" and says why on stderr.
 #
-# Usage:  clock | header [--self <effort the agent sees in its context>]
+# Usage:  clock | header
 #         header --declare function=onboard workplace=memory/projects/x/y/
 
 set -uo pipefail
@@ -36,8 +36,7 @@ if [[ "${1-}" == "--declare" ]]; then
   exit 0
 fi
 
-self=""
-[[ "${1-}" == "--self" && -n "${2-}" ]] && self="$2"
+[[ "${1-}" == "--self" ]] && echo "header: --self is ignored; the effort is read from the transcript." >&2
 IFS= read -r stamp || stamp=""
 if [[ -z "${stamp}" ]]; then echo "header: no time on stdin; run 'clock | header'." >&2; stamp="?"; fi
 
@@ -56,9 +55,22 @@ else
 fi
 
 transcript="${HOME}/.claude/projects/$(printf '%s' "${root}" | sed 's#[^A-Za-z0-9]#-#g')/${CLAUDE_CODE_SESSION_ID:-none}.jsonl"
-model="$(tac "${transcript}" 2>/dev/null | grep -m1 -o '"model":"[^"]*"' | cut -d'"' -f4)"
-[[ -n "${model}" ]] || { model="?"; echo "header: model unreadable (no transcript at ${transcript})." >&2; }
-if [[ -n "${self}" ]]; then effort="effort:${self} (self)"; else effort="effort:?"; fi
+record="$(tac "${transcript}" 2>/dev/null | grep -m1 '"type":"assistant"')"
+pick() { printf '%s' "${record}" | grep -o "\"$1\":\"[^\"]*\"" | head -1 | cut -d'"' -f4; }
+epoch() { date -u -d "$1" +%s 2>/dev/null || python3 -c 'import sys,datetime; print(int(datetime.datetime.fromisoformat(sys.argv[1].replace("Z","+00:00")).timestamp()))' "$1" 2>/dev/null; }
+model="?"; effort="?"
+if [[ -z "${record}" ]]; then
+  echo "header: model and effort unreadable (no reply recorded in ${transcript})." >&2
+else
+  ts="$(pick timestamp)"; then_s="$(epoch "${ts}")"
+  if [[ -z "${then_s}" ]] || (( $(date -u +%s) - then_s > 120 )); then
+    echo "header: the transcript's last reply is from ${ts:-an unknown time}, not this turn; model and effort not used." >&2
+  else
+    model="$(pick model)"; model="${model:-?}"
+    effort="$(pick effort)"; effort="${effort:-?}"
+  fi
+fi
+effort="effort:${effort}"
 
 line="[${stamp}"
 [[ -n "${agent}" ]] && line+=" · ${agent}"

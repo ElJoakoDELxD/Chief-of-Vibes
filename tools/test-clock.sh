@@ -37,8 +37,15 @@ check "unknown zone prints nothing" '[[ -z "$(TS_ZONE=Nowhere/Void "${bin}/clock
 
 h="$(echo "01-02-2026 03:04 +00" | CLAUDE_CODE_SESSION_ID=bench CLAUDE_EFFORT=low "${bin}/header" 2>/dev/null)"
 check "header shape" '[[ "${h}" =~ ^\[01-02-2026\ 03:04\ \+00\ ·\ .+\ ·\ .+/.+\ ·\ .+·effort:\?\]$ ]]'
-h2="$(echo "t" | CLAUDE_CODE_SESSION_ID=bench CLAUDE_EFFORT=high "${bin}/header" --self 10 2>/dev/null)"
-check "effort is self-declared, never the label" '[[ "${h2}" == *"effort:10 (self)]" && "${h2}" != *high* ]]'
+tdir="${tmp}/home/.claude/projects/$(printf '%s' "$PWD" | sed 's#[^A-Za-z0-9]#-#g')"; mkdir -p "${tdir}"
+reply() { printf '{"type":"assistant","message":{"model":"m-test","content":[{"type":"text","text":"say \\"model\\":\\"m-quoted\\""}]},"effort":"xhigh","timestamp":"%s"}\n' "$1"; }
+{ reply "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)"; printf '{"type":"user","content":"\\"type\\":\\"assistant\\",\\"model\\":\\"m-old\\""}\n'; } > "${tdir}/fresh.jsonl"
+reply "$(date -u -d '-10 min' +%Y-%m-%dT%H:%M:%S.000Z)" > "${tdir}/stale.jsonl"
+h2="$(echo "t" | HOME="${tmp}/home" CLAUDE_CODE_SESSION_ID=fresh CLAUDE_EFFORT=low "${bin}/header" --self 10 2>/dev/null)"
+check "model and effort from this turn's record" '[[ "${h2}" == *"· m-test·effort:xhigh]" ]]'
+check "effort never the label or self-declared" '[[ "${h2}" != *low* && "${h2}" != *10* ]]'
+h3="$(echo "t" | HOME="${tmp}/home" CLAUDE_CODE_SESSION_ID=stale "${bin}/header" 2>"${tmp}/err6")"
+check "an earlier turn is never used" '[[ "${h3}" == *"· ?·effort:?]" ]] && grep -q "not this turn" "${tmp}/err6"'
 TMPDIR="${tmp}" CLAUDE_CODE_SESSION_ID=bench "${bin}/header" --declare function=onboard
 h="$(echo "t" | TMPDIR="${tmp}" CLAUDE_CODE_SESSION_ID=bench "${bin}/header" 2>/dev/null)"
 check "declared function shows" '[[ "${h}" == *"/onboard ·"* ]]'
