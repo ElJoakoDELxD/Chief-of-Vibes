@@ -16,7 +16,7 @@ if [[ "${VARIANT}" == "managed" ]]; then
 else
   [[ -w /usr/local/bin ]] || exit 0
   ln -sf "${here}/bwrap" /usr/local/bin/bwrap; ln -sf "${here}/socat" /usr/local/bin/socat
-  printf '{"sandbox":{"enabled":true,"autoAllowBashIfSandboxed":true,"network":{"allowedDomains":["api.anthropic.com","github.com","*.github.com","raw.githubusercontent.com"]}}}\n' > "${CLAUDE_PROJECT_DIR:-.}/.claude/settings.local.json"
+  printf '{"sandbox":{"enabled":true,"enableWeakerNestedSandbox":true,"autoAllowBashIfSandboxed":true,"network":{"allowedDomains":["api.anthropic.com","github.com","*.github.com","raw.githubusercontent.com"]}}}\n' > "${CLAUDE_PROJECT_DIR:-.}/.claude/settings.local.json"
 fi
 echo "activated ${VARIANT} $(date -u +%T)" >> "${log}"
 exit 0
