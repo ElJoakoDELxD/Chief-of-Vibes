@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
 # Claude Code hook (SessionStart): puts tools/bin on PATH for every later Bash
-# call, so `clock | header` runs as written. It only exposes the commands. It
-# measures nothing and injects no time: the agent has to run them itself.
+# call, so `clock | header` runs as written. It only exposes the commands; it
+# measures nothing and injects no time, so the agent has to run them itself.
 
 set -uo pipefail
 [[ -n "${CLAUDE_ENV_FILE:-}" ]] || exit 0

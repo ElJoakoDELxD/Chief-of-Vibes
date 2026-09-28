@@ -4,19 +4,18 @@
 #
 #   [DD-MM-YYYY HH:MM TZ · <agent> · <branch> · <post>/<function> · <workplace> · <model>·<effort>]
 #
-# The agent and workplace fields are absent where memory/state.md names no agent.
-# A copy may change this format; the canon uses this one (CLAUDE.md rule 2).
-#
-# Every field is read, never remembered:
+# The agent and workplace fields are absent where memory/state.md names no
+# agent. A copy may change this format; the canon uses this one (CLAUDE.md
+# rule 2). Every field is read, never remembered:
 #   agent, post   memory/state.md (no agent: the founder post, SYSTEM.md 5)
 #   branch        git
 #   function,     what this session declared with `header --declare`, kept for
 #   workplace     this session only; the defaults say nothing was declared
 #   model,        the last assistant record in this session's own transcript,
-#   effort        which the harness writes before the tool that runs this script.
-#                 Both are read fresh on every call, never assumed and never
-#                 copied: a record older than 120 s belongs to an earlier turn,
-#                 and an earlier turn is never used (SPEC D28)
+#   effort        written by the harness before the tool that runs this
+#                 script. Both are read fresh on every call, never assumed
+#                 and never copied: a record older than 120 s belongs to an
+#                 earlier turn, and an earlier turn is never used (SPEC D28)
 # A field that cannot be read prints as "?" and says why on stderr.
 #
 # Usage:  clock | header

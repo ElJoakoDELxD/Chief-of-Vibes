@@ -11,6 +11,8 @@
 # Usage:  bash tools/test-sweep-branches.sh
 
 set -uo pipefail
+# Throwaway commits are never signed: signing needs a service the sandbox cannot reach.
+export GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=commit.gpgsign GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=tag.gpgsign GIT_CONFIG_VALUE_1=false
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 tmp="$(mktemp -d)"
 trap 'rm -rf "${tmp}"' EXIT

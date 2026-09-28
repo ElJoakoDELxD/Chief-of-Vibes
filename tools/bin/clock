@@ -2,24 +2,25 @@
 #
 # Prints the current time as "DD-MM-YYYY HH:MM ±TZ". Pipe it into `header`.
 #
-# The format is the constant. How the time is obtained is not: it depends on the
-# environment, so this script keeps no fixed method. It tests candidate methods,
-# and it saves the first one that passes as evidence in tools/clock/methods.tsv,
-# keyed by an environment signature. The next session in the same environment
-# runs the saved method first, and tests it again before it trusts it.
+# The format is the constant; how the time is obtained is not, since that
+# depends on the environment. This script tests candidate methods and saves
+# the first one that passes as evidence in tools/clock/methods.tsv, keyed by
+# an environment signature. The next session in the same environment runs the
+# saved method first, and tests it again before trusting it.
 #
-# A test compares the method's reading with an independent reference: the Date
-# header of an HTTPS server. More than 3 minutes apart is DESFASE. DESFASE goes to
-# stderr and changes nothing: the agent asks the Principal whether the time was
-# right before it fixes anything, because the likelier error is in the check.
+# A test compares the method's reading with an independent reference: the
+# Date header of an HTTPS server. More than 3 minutes apart is DESFASE, which
+# goes to stderr and changes nothing — the agent asks the Principal whether
+# the time was right before fixing anything, because the likelier error is in
+# the check.
 #
-# Zone, in order: $TS_ZONE, the timezone field of memory/state.md, $COV_TZ, UTC.
-# UTC with no zone declared is the expected state of the canon, not an error.
-# $TS_CTX_DATE (YYYY-MM-DD, the date the agent's context claims) is optional; a
-# mismatch with the clock's own date is also DESFASE.
+# Zone, in order: $TS_ZONE, the timezone field of memory/state.md, $COV_TZ,
+# UTC (the expected state of the canon, not an error). $TS_CTX_DATE
+# (YYYY-MM-DD, the date the agent's context claims) is optional; a mismatch
+# with the clock's own date is also DESFASE.
 #
-# Test seams: COV_CLOCK_RECORD (the record file), COV_CLOCK_REFERENCE_EPOCH (a
-# fixed reference instead of the network), COV_CLOCK_SIGNATURE.
+# Test seams: COV_CLOCK_RECORD (the record file), COV_CLOCK_REFERENCE_EPOCH
+# (a fixed reference instead of the network), COV_CLOCK_SIGNATURE.
 
 set -uo pipefail
 

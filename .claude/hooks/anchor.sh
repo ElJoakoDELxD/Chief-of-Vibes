@@ -5,19 +5,19 @@
 # agent memory it also injects the start menu — which menu depends on whether
 # this repository is the canon named in .canon or a copy of it.
 #
-# Custody lives with the post, so neither marker ships in the template (section
-# 6). The canon's role branch carries .canon; a copy's carries .blueprint, naming
-# the blueprint it came from. A copy of a copy still names the blueprint: every
-# generation proposes to the same place and none proxies through its parent.
+# Custody lives with the post, so neither marker ships in the template
+# (section 6). The canon's role branch carries .canon; a copy's carries
+# .blueprint, naming the blueprint it came from. A copy of a copy still names
+# the blueprint: every generation proposes to the same place, none proxies
+# through its parent.
 #
-# At session start it additionally compares this copy's SYSTEM.md version
-# against the canon's and reports drift. One network call, SessionStart only,
-# and it reports itself unavailable rather than guessing when the canon cannot
-# be reached.
+# At session start it also compares this copy's SYSTEM.md version against the
+# canon's and reports drift: one network call, SessionStart only, reported
+# unavailable rather than guessed when the canon cannot be reached.
 #
-# On a start whose source is `clear` it also hands the thread back: the runtime
-# reports how the session began, so the resumption is a signal rather than a
-# thing the agent must notice and remember (SYSTEM.md §8, §9).
+# On a start whose source is `clear` it also hands the thread back: the
+# runtime reports how the session began, so resumption is a signal rather
+# than a thing the agent must notice and remember (SYSTEM.md §8, §9).
 #
 # Usage:  anchor.sh <SessionStart|UserPromptSubmit>
 # Input:  the runtime's hook JSON on stdin, which carries `source` at SessionStart.
@@ -27,16 +27,10 @@ set -uo pipefail
 
 event="${1:?usage: anchor.sh <SessionStart|UserPromptSubmit>}"
 
-# **A cd that fails must not be followed by measurements.** Without this guard the
-# hook stayed in whatever directory it inherited and read that tree's vault, so a
-# session could open with another repository's agent name, its posts, its drift
-# and its hygiene — every field well-formed and every one about somebody else.
-# Measured 09-09-2026 by pointing CLAUDE_PROJECT_DIR at a path that does not
-# exist, from inside a second repository: the header named the other agent.
-#
-# Silence would be worse than the lie is: a session with no anchors builds them
-# from memory, which section 3 forbids. So it says what it could not do, in the
-# vocabulary the clock and the drift check already use.
+# A cd that fails must not be followed by measurements: without this guard a
+# session could read another repository's tree and print its agent, posts and
+# drift as its own, every field well-formed and every one about somebody
+# else. Silence would be worse than saying so (SYSTEM.md section 3).
 if ! cd "${CLAUDE_PROJECT_DIR:-.}" 2>/dev/null; then
   HOOK_EVENT="${event}" \
   HOOK_CONTEXT="Anchors: UNAVAILABLE. The project directory (CLAUDE_PROJECT_DIR=${CLAUDE_PROJECT_DIR:-unset}) could not be entered, so nothing here was measured and no value was read from any tree. Say the anchors could not be taken. Do not build the time, the branch, the agent or the posts from memory or from another directory (SYSTEM.md section 3)." \
@@ -44,10 +38,9 @@ if ! cd "${CLAUDE_PROJECT_DIR:-.}" 2>/dev/null; then
   exit 0
 fi
 
-# How this session began. The runtime sends it as `source` on stdin, and the
-# values are startup, resume, clear, compact and fork. A runtime that sends
-# nothing leaves this empty, which reads as "not a clear" and keeps every
-# other path unchanged.
+# How this session began: startup, resume, clear, compact or fork, sent by
+# the runtime as `source` on stdin. A runtime that sends nothing leaves this
+# empty, which reads as "not a clear" and keeps every other path unchanged.
 origin_kind=""
 if [[ ! -t 0 ]]; then
   origin_kind="$(python3 -c 'import json,sys
@@ -58,19 +51,15 @@ except Exception:
 fi
 
 # The hook measures no time and names no branch. The reply header is a sanity
-# check the agent performs itself, with `clock | header` (tools/bin/, put on PATH
-# by .claude/hooks/path.sh). A hook that handed over the answer would let a
-# session copy the header without doing the work the header is there to prove.
+# check the agent performs itself, with `clock | header` (tools/bin/, put on
+# PATH by .claude/hooks/path.sh) — a hook that handed over the answer would
+# let a session copy the header without doing the work it is there to prove.
 
-# The agent's name, read rather than remembered. The header carries it beside the
-# branch so a reply says who wrote it, and so the pair can be read at a glance:
-# on 07-09-2026 a session worked a whole day from a superseded vault, and both
-# files were internally consistent, so only a name printed beside its branch
-# makes that kind of mismatch visible at all. Absent where no vault is.
-# The vault ships as an empty form on main (SYSTEM.md section 5), so the file is
-# present on every branch and its fields carry only their own comments. A value is
-# what a field holds once the comment is cut, and **an agent is a filled form rather
-# than a present file**: testing existence would read every branch as an agent's.
+# The agent's name, read rather than remembered, so a header naming the wrong
+# vault is visible at a glance instead of silently consistent with itself.
+# The vault ships as an empty form on main (SYSTEM.md section 5), so the file
+# is present on every branch: **an agent is a filled form, not a present
+# file** — testing existence would read every branch as an agent's.
 field() {  # field <name> -> its value in memory/state.md, comments and space removed
   sed -n "s/^$1:[[:space:]]*//p" memory/state.md 2>/dev/null \
     | head -n1 | sed 's/[[:space:]]*#.*$//; s/[[:space:]]*$//'
@@ -81,19 +70,17 @@ agent="$(field agent)"
 posts="$(field posts)"
 identity=""
 [[ -n "${agent}" ]] && identity=" Agent: ${agent}."
-# A session with no agent is not a session with no post. It holds `founder`,
-# because the absence is what grants it, and it does more than any other post
-# grants while doing it (SYSTEM.md section 5). Naming it here is what makes the
-# header's fourth field readable before an agent exists.
+# A session with no agent still holds a post: `founder`, granted by the
+# absence of an agent and by nothing else (SYSTEM.md section 5). Naming it
+# here is what makes the header's fourth field readable before an agent exists.
 if has_agent; then
   [[ -n "${posts}" ]] && identity="${identity} Posts held: ${posts}. Declare which one this session exercises with header --declare function=<name>; the header prints it as post/function (SYSTEM.md section 9)."
 else
   identity="${identity} Posts held: [founder], granted by the absence of an agent and by nothing else. It authorizes one function, onboard, and becomes steward the moment memory/state.md names an agent — same session, same chat, different post (SYSTEM.md section 5)."
 fi
 
-# The model gate cannot read what the runtime served, so the obligation to fetch
-# it is stated here where a session cannot miss it. Silence let an unlisted model
-# hold the custodian post for two days in September 2026.
+# The model gate cannot read what the runtime served, so the obligation to
+# fetch it is stated here where a session cannot miss it.
 if [[ -n "${posts}" ]] && grep -q '^models:' memory/posts/*.md 2>/dev/null; then
   identity="${identity} Before exercising a post: ask the runtime which model served this session, then run \`bash tools/models.sh <that-model> <post>\`. No reading is a refusal, not a pass."
 fi
@@ -106,17 +93,17 @@ clocks="$(bash tools/clocks.sh 2>/dev/null)" || clocks=""
 menu=""
 if ! has_agent; then
   # Canon or copy? The canon is the repository named in .canon; every other
-  # repository carrying these files is somebody's copy of it, and a copy is
-  # where agents are created. The remote is matched on its trailing
-  # owner/repo, so ssh, https, and proxied remotes all answer alike. A
-  # missing .canon or origin leaves the question unanswered — the menu says
-  # so instead of guessing (§3 never fabricate a reading).
+  # repository carrying these files is somebody's copy, and a copy is where
+  # agents are created. The remote is matched on its trailing owner/repo, so
+  # ssh, https and proxied remotes all answer alike. A missing .canon or
+  # origin leaves the question unanswered — the menu says so instead of
+  # guessing (§3 never fabricate a reading).
   origin_url="$(git remote get-url origin 2>/dev/null \
     | tr '[:upper:]' '[:lower:]' \
     | sed -E 's#^[a-z+]+://##; s#^[^/@]*@##; s#^[^/:]*[:/]##; s#\.git$##; s#/+$##')" || true
   canon_slug="$(head -n1 .canon 2>/dev/null \
     | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]' | sed -E 's#\.git$##; s#^/+##; s#/+$##')" || true
-  # .blueprint present means derived, whatever else is on disk. Absence of
+  # .blueprint present means derived, whatever else is on disk: absence of
   # provenance is what makes a repository the root, so nothing has to assert it.
   blueprint_slug="$(head -n1 .blueprint 2>/dev/null \
     | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]' | sed -E 's#\.git$##; s#^/+##; s#/+$##')" || true
@@ -137,10 +124,9 @@ if ! has_agent; then
     menu=" No agent lives here yet (memory/state.md is the empty form), and this repository is the user's own copy of the template (origin does not match .canon) — this is where their agent belongs. **Begin onboarding now** (.claude/skills/onboard/), whatever this first message says: greet in the user's language and ask its first question. Nobody has to request an agent, and a person who does not know what this is cannot choose from a menu. Maintaining the template through a pull request is the other path, named only if they ask for it."
   fi
 
-  # The continuation offer belongs to a copy, where the Principal is returning to
-  # their own agent. On the canon the person standing here is a visitor and the
-  # agent they can see is the demonstration: meeting it is the point, being handed
-  # it is not, and "act on evident intent" is what used to carry them into it.
+  # Continuing an agent belongs to a copy, where the Principal is returning to
+  # their own agent. On the canon the person standing here is a visitor and
+  # the agent they can see is the demonstration, never handed over.
   if [[ -n "${candidates}" ]]; then
     if [[ -z "${blueprint_slug}" && -n "${canon_slug}" && "/${origin_url}" == *"/${canon_slug}" ]]; then
       menu="${menu} An agent already lives here and it is the demonstration, on: ${candidates}. Name it and let them read it. Never offer to continue it — a visitor is offered their own copy or a pull request."
@@ -151,27 +137,21 @@ if ! has_agent; then
   menu="${menu} Act on evident intent without re-asking."
 fi
 
-# Template drift, at session start only (§6). A copy running an older spec than
-# the canon is an agent obeying rules that have already been superseded, and
-# the rails it is running are the old ones too — the failure is invisible
-# precisely because everything looks normal.
-#
-# One network call, at SessionStart and never on a prompt. On any failure the
-# check reports itself unavailable rather than claiming parity: §3 forbids
-# fabricating a reading, and a silent "probably fine" is exactly that.
+# Template drift, at session start only (§6): a copy running an older spec
+# than the canon obeys superseded rules with the old rails still wired in,
+# and the failure is invisible because everything looks normal. One network
+# call, at SessionStart and never on a prompt; on any failure the check
+# reports itself unavailable rather than claiming parity (§3 forbids
+# fabricating a reading).
 drift=""
 if [[ "${event}" == "SessionStart" ]]; then
   canon_slug="$(head -n1 .blueprint 2>/dev/null | tr -d '[:space:]' | sed -E 's#\.git$##; s#^/+##; s#/+$##')" || true
-  # .blueprint names where the template comes from. Without one this is the root,
-  # and .canon is read only to confirm that rather than to find a source.
+  # .blueprint names where the template comes from; without one this is the
+  # root, and .canon is read only to confirm that rather than to find a source.
   [[ -n "${canon_slug}" ]] || canon_slug="$(head -n1 .canon 2>/dev/null | tr -d '[:space:]' | sed -E 's#\.git$##; s#^/+##; s#/+$##')" || true
   origin_url="$(git remote get-url origin 2>/dev/null | tr '[:upper:]' '[:lower:]' \
     | sed -E 's#^[a-z+]+://##; s#^[^/@]*@##; s#^[^/:]*[:/]##; s#\.git$##; s#/+$##')" || true
 
-  # Two silences used to look alike here, and §1 promises only one of them:
-  # silence means parity. With no .canon, or no origin, the comparison cannot
-  # run at all, and saying nothing would read as "current" (§3 never fabricate
-  # a reading). Say the check did not run instead.
   if [[ -z "${canon_slug}" || -z "${origin_url}" ]]; then
     drift=" Template drift check: UNAVAILABLE (no .blueprint or .canon on this branch, or no origin remote, so this copy cannot be compared against anything). Say the check did not run rather than assuming this copy is current."
 
@@ -181,9 +161,9 @@ if [[ "${event}" == "SessionStart" ]]; then
     here_version="$(version_of < SYSTEM.md 2>/dev/null)" || true
 
     canon_version=""
-    # Where the canon is read from. It is the GitHub URL in every real session,
-    # and the bench points it at a local repository so the direction of the gap
-    # can be pinned without a network call (CONTRIBUTING: rails are testable).
+    # Read from the GitHub URL in every real session; the bench points it at
+    # a local repository so the direction of the gap can be pinned with no
+    # network call.
     canon_remote="${CHIEF_CANON_REMOTE:-https://github.com/${canon_slug}}"
     if timeout 20 git fetch --quiet "${canon_remote}" HEAD 2>/dev/null; then
       canon_version="$(git show FETCH_HEAD:SYSTEM.md 2>/dev/null | version_of)" || true
@@ -192,12 +172,10 @@ if [[ "${event}" == "SessionStart" ]]; then
     if [[ -z "${canon_version}" ]]; then
       drift=" Template drift check: UNAVAILABLE (could not read the canon's SYSTEM.md; this copy is at ${here_version:-unknown}). Say the check did not run rather than assuming this copy is current."
     elif [[ "${canon_version}" != "${here_version}" ]]; then
-      # A gap has a direction and the two are opposite situations. Behind is a
-      # defect: this session runs superseded rules with the old rails wired in.
-      # Ahead is the system working, because §6 says improvement is born in the
-      # copy. Reporting both as "the rules here are the older ones" told a copy
-      # carrying newer rules to sync older ones over them, which is a fabricated
-      # reading with a version number attached (§3).
+      # The gap has a direction: behind runs superseded rules with the old
+      # rails; ahead is the system working, since §6 says improvement is
+      # born in the copy — nothing to sync, and syncing would move it
+      # backwards.
       older="$(printf '%s
 %s
 ' "${here_version:-0}" "${canon_version}" | sort -V | head -n1)"
@@ -210,10 +188,10 @@ if [[ "${event}" == "SessionStart" ]]; then
   fi
 fi
 
-# Findings kept instead of sent upstream, at session start only (§1, §9).
-# The canon has no agent and no backlog, so this is silent there by construction.
-# It reports and never blocks: deciding that a finding generalizes is a judgment,
-# and a rail on a judgment lies (§8).
+# Findings kept instead of sent upstream, at session start only (§1, §9). The
+# canon has no agent and no backlog, so this is silent there by construction.
+# It reports and never blocks: deciding that a finding generalizes is a
+# judgment, and a rail on a judgment lies (§8).
 candidates=""
 if [[ "${event}" == "SessionStart" ]] && has_agent; then
   waiting="$(bash tools/candidates.sh 2 2>/dev/null)" || waiting=""
@@ -224,10 +202,8 @@ Each one reaches other copies only through a pull request to the canon (§9). Ro
   fi
 fi
 
-# Memory hygiene, in the same hole and for the same reason. The 5S run of
-# 03-08-2026 found two defects that nothing was watching for, so both returned:
-# a backlog too large to act on, and a handoff describing a session that ran
-# under superseded rules (§5). Reports, never blocks.
+# Memory hygiene, in the same hole and for the same reason: reports, never
+# blocks.
 hygiene=""
 if [[ "${event}" == "SessionStart" ]] && has_agent; then
   untidy="$(bash tools/hygiene.sh 2>/dev/null)" || untidy=""
@@ -238,17 +214,13 @@ Tell the Principal what this says, with its numbers, in this session's first rep
   fi
 fi
 
-# Resumption after a cleared window (§9 succession). A clear empties the
-# conversation and leaves no turn behind, so the notes on disk are read only if
-# the agent happens to remember to read them — rung 5, and it holds nothing.
-# The runtime names the source, so the hand-back becomes a turn the agent
-# cannot miss: `initialUserMessage` enters the conversation as if the Principal
-# had typed it.
+# Resumption after a cleared window (§9 succession): a clear empties the
+# conversation and leaves no turn behind, so the runtime's `source` turns the
+# hand-back into a turn the agent cannot miss, via `initialUserMessage`.
 #
-# `clear` only. On `compact` the runtime's summary already carries the thread,
-# and an injected turn would talk over work still in flight. On `startup` and
-# `resume` nothing was destroyed. The message names the notes by path, because
-# a reader never looks for what they must read (§3).
+# `clear` only. On `compact` the runtime's summary already carries the
+# thread; on `startup` and `resume` nothing was destroyed. The message names
+# the notes by path, because a reader never looks for what it must read (§3).
 resume=""
 if [[ "${event}" == "SessionStart" && "${origin_kind}" == "clear" ]] && has_agent; then
   notes=""
@@ -263,7 +235,6 @@ if [[ "${event}" == "SessionStart" && "${origin_kind}" == "clear" ]] && has_agen
   else
     resume="${resume} memory/handoff/ holds no note, so no thread was left in flight. Read memory/state.md and memory/backlog.md and surface the highest-priority pending work."
   fi
-  resume="${resume}"
 fi
 
 HOOK_EVENT="${event}" \

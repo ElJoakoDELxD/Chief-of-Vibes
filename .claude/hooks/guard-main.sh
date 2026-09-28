@@ -8,27 +8,23 @@
 # A rail, not a lock: it only runs in sessions that wire it, and it reads one
 # command at a time. The guarantee is branch protection plus CI.
 #
-# **It judges what the shell will run, in the position the word holds.** Three
-# grammars are already there to be read, and reading them is not a guess:
+# **It judges what the shell will run, in the position the word holds**, by
+# reading three grammars already there to be read: a here-document body bound
+# for a file is data, and each segment is a command of its own (lib/command.sh);
+# the shell's quoting marks where a word starts and ends, so a message is one
+# word and never a list of refs; and git's own subcommand decides what its
+# operands mean, so only seven of them can reach a branch at all.
 #
-#   the shell's       a here-document body bound for a file is data, and each
-#                     segment is a command of its own (lib/command.sh)
-#   the shell's       quoting marks where a word starts and ends, so a message
-#                     is one word and never a list of refs
-#   git's own         a subcommand decides what its operands mean, and only
-#                     seven of them can reach a branch at all
-#
-# So `git commit -m "do not push to main"` is a commit with one message operand,
-# and `git push origin main` is a push with a ref. The words are the same. The
-# positions are not, and the position is what this reads. Until 1.77.0 the rail
-# read the flat string and refused three of five ordinary messages.
+# So `git commit -m "do not push to main"` is a commit with one message
+# operand, and `git push origin main` is a push with a ref — same words,
+# different positions, and position is what this reads.
 #
 # Where a command cannot be tokenized, an unbalanced quote being the usual
-# reason, it falls back to matching the flat text. That direction is safe and it
-# is the only place this errs closed.
+# reason, it falls back to matching the flat text. That direction is safe and
+# it is the only place this errs closed.
 #
-# What is left over is intent, whether this checkout is the one that was meant,
-# and no rail decides that. It belongs to the post holding the session
+# What is left over is intent, whether this checkout is the one that was
+# meant, and no rail decides that. It belongs to the post holding the session
 # (SYSTEM.md section 8). tools/test-guard-main.sh pins every half.
 
 set -uo pipefail
@@ -42,18 +38,14 @@ if [[ "${branch}" == "main" ]]; then
   # The escape hatch, and it is one command wide.
   #
   # A session created from a source lands on the default branch, and denying
-  # everything here also denied the only command that leaves it. Measured
-  # 02-09-2026: a session fired with a source was paralysed in its shell from
-  # its first turn — it could not run `git checkout -b`, and it could not run
-  # `date` either. It escaped only because it happened to hold API tools that
-  # do not go through a shell; a session without them has no first move at all.
-  # A rail that traps the sessions it is meant to guide gets worked around
-  # until it protects nothing (§8).
+  # everything here also denies the only command that leaves it — a rail that
+  # traps the sessions it is meant to guide gets worked around until it
+  # protects nothing (§8).
   #
   # So exactly one shape passes: a lone branch-creating checkout. One segment,
-  # no chaining, no redirection, no substitution, and the new branch is not the
-  # default one. Everything else here is still denied, Edit and Write included —
-  # they carry no command field, so they can never match this.
+  # no chaining, no redirection, no substitution, and the new branch is not
+  # the default one. Everything else here is still denied, Edit and Write
+  # included — they carry no command field, so they can never match this.
   esc="$(printf '%s' "${command}" | tr -d "\"'")"
   if [[ "${command}" != *[\;\|\&\>\<\`\$\(]* ]] \
      && [[ "${esc}" =~ ^[[:space:]]*git[[:space:]]+(checkout|switch)[[:space:]]+(-b|-c)[[:space:]]+([^[:space:]]+)[[:space:]]*$ ]] \

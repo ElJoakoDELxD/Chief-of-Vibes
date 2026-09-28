@@ -13,6 +13,8 @@
 # Exits non-zero with the number of failures.
 
 set -uo pipefail
+# Throwaway commits are never signed: signing needs a service the sandbox cannot reach.
+export GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=commit.gpgsign GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=tag.gpgsign GIT_CONFIG_VALUE_1=false
 
 SYNC="$(cd "$(dirname "${1:-tools/sync.sh}")" && pwd)/$(basename "${1:-tools/sync.sh}")"
 [[ -f "${SYNC}" ]] || { echo "no sync.sh at ${SYNC}" >&2; exit 1; }

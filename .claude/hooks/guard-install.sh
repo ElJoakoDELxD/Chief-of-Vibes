@@ -23,15 +23,15 @@
 # working tree and can be committed (npm install, bun install, pip install -r),
 # and every read-only query.
 #
-# Three lessons from guard-main.sh are built in. Each command segment is judged
-# on its own, so a compound is not one flat haystack. A segment is judged by the
-# PROGRAM IT RUNS, not by the words it contains: `git commit -m "we cannot uv
-# tool install here"` runs git, so the install rules never look at it. Verbs like
-# install and add are ordinary English, and matching them as substrings denies
-# people the ability to talk about the rule while following it. And a
-# here-document body bound for a file is data, which .claude/hooks/lib/command.sh
-# separates out: writing a bench that holds an install line is not installing.
-# Measured 08-09-2026, when this rail refused the write of a neighbouring bench.
+# Three lessons from guard-main.sh are built in. Each command segment is
+# judged on its own, so a compound is not one flat haystack. A segment is
+# judged by the PROGRAM IT RUNS, not by the words it contains: `git commit -m
+# "we cannot uv tool install here"` runs git, so the install rules never look
+# at it — install and add are ordinary English, and matching them as
+# substrings would deny people the ability to talk about the rule while
+# following it. And a here-document body bound for a file is data, which
+# .claude/hooks/lib/command.sh separates out: writing a bench that holds an
+# install line is not installing.
 #
 # Like guard-main.sh this is a rail, not a lock: it only runs in sessions that
 # wire it, and a determined workaround (a shell script that installs, run by
@@ -59,6 +59,10 @@ segments="$(command_segments "${cmd}")"
 # since the pipe is exactly what the segment split removes.
 pipes_to_shell=0
 printf '%s' "${cmd}" | grep -qE '(curl|wget).*\|[[:space:]]*(sudo[[:space:]]+)?(ba|z|k)?sh([[:space:]]|$)' && pipes_to_shell=1
+
+# A skill or plugin written into an agent directory outside the repository,
+# checked the same way whether the writer is a file tool or a download.
+agent_dir='(~|\$HOME|/root|/home/[^/[:space:]]+)/\.(claude|codex|factory|config/opencode)(/|[[:space:]]|$)'
 
 reason=""
 while IFS= read -r seg; do
@@ -116,15 +120,13 @@ while IFS= read -r seg; do
         && reason="installs a system package"
       ;;
     git|cp|mv|ln|rsync|tar|unzip|mkdir|install)
-      # Writing a skill or plugin into an agent directory outside the repository.
-      [[ "${args}" =~ (~|\$HOME|/root|/home/[^/[:space:]]+)/\.(claude|codex|factory|config/opencode)(/|[[:space:]]|$) ]] \
+      [[ "${args}" =~ ${agent_dir} ]] \
         && reason="writes into an agent directory outside the repository"
       ;;
     curl|wget)
       [[ "${pipes_to_shell}" -eq 1 ]] \
         && reason="pipes a downloaded installer into a shell"
-      # Writing a download straight into an agent directory counts too.
-      [[ "${args}" =~ (~|\$HOME|/root|/home/[^/[:space:]]+)/\.(claude|codex|factory|config/opencode)(/|[[:space:]]|$) ]] \
+      [[ "${args}" =~ ${agent_dir} ]] \
         && reason="writes into an agent directory outside the repository"
       ;;
   esac
