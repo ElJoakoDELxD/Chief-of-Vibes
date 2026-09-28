@@ -10,8 +10,6 @@
 #
 #   nested mode   the cloud container cannot give the sandbox its own user
 #                 namespace (apply-seccomp: write /proc/self/uid_map)
-#   httpProxyPort the container reaches the internet only through its own
-#                 proxy, so the sandbox forwards to it
 #   git excluded  commit signing calls a local service the sandbox cannot reach
 #
 # Linux x86_64 only, and only where the link directory is writable; anywhere
@@ -25,9 +23,7 @@ bin="${COV_SANDBOX_BIN:-/usr/local/bin}"
 ln -sf "${here}/bwrap" "${bin}/bwrap"
 ln -sf "${here}/socat" "${bin}/socat"
 
-port="$(printf '%s' "${HTTPS_PROXY:-${https_proxy:-}}" | sed -n 's#.*:\([0-9][0-9]*\)/*$#\1#p')"
 net='"allowedDomains":["api.anthropic.com","github.com","*.github.com","raw.githubusercontent.com"]'
-[[ -n "${port}" ]] && net="${net},\"httpProxyPort\":${port}"
 printf '{"sandbox":{"enabled":true,"enableWeakerNestedSandbox":true,"autoAllowBashIfSandboxed":true,"excludedCommands":["git *"],"network":{%s}}}\n' "${net}" \
   > "${CLAUDE_PROJECT_DIR:-.}/.claude/settings.local.json"
 exit 0

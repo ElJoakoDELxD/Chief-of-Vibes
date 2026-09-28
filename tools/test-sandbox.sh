@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
 # Bench for tools/sandbox/activate.sh: on Linux x86_64 with a writable link
-# directory it links bwrap and socat and turns the sandbox on with the
-# container's proxy as upstream; with no writable directory it does nothing.
+# directory it links bwrap and socat and turns the sandbox on, with no
+# fixed proxy port; with no writable directory it does nothing.
 
 set -uo pipefail
 cd "$(dirname "$0")/.."
@@ -17,7 +17,7 @@ s="${tmp}/proj/.claude/settings.local.json"
 check "tools linked" '[[ -L "${tmp}/bin/bwrap" && -L "${tmp}/bin/socat" ]]'
 check "settings are JSON" 'python3 -m json.tool "${s}" >/dev/null'
 check "sandbox on, nested, git out" 'python3 -c "import json,sys; x=json.load(open(sys.argv[1]))[\"sandbox\"]; assert x[\"enabled\"] and x[\"enableWeakerNestedSandbox\"] and x[\"excludedCommands\"]==[\"git *\"]" "${s}"'
-check "container proxy is upstream" 'grep -q "\"httpProxyPort\":41547" "${s}"'
+check "no fixed proxy port (it changes between restarts)" '! grep -q httpProxyPort "${s}"'
 check "linked bwrap runs" '"${tmp}/bin/bwrap" --version >/dev/null'
 check "socat forces IPv4" 'grep -q "socat.bin\" -4" tools/sandbox/linux-x86_64/socat'
 
