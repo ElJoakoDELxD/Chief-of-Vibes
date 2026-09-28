@@ -6,7 +6,7 @@
 # VARIANT=local  writes .claude/settings.local.json (project-local scope)
 # VARIANT=managed writes /etc/claude-code/managed-settings.d/ (needs root)
 set -uo pipefail
-VARIANT=local
+VARIANT=managed
 here="$(cd "$(dirname "$0")" && pwd)/linux-x86_64"
 [[ "$(uname -s)/$(uname -m)" == "Linux/x86_64" && -x "${here}/bwrap" ]] || exit 0
 log="${TMPDIR:-/tmp}/cov-sandbox-activate.log"
