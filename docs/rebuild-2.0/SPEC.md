@@ -63,20 +63,25 @@ The rebuild uses what holds, and it builds the rest as small, benched parts.
 | D10 | **The custodian's mandate.** In the Principal's words, translated: *the canon always has the structure of a product, public and easy to use, and it never deviates from that. It is a public repository, so it must always look, feel and work like a professional product: a stable release, usable, with the fewest possible failures, contradictions, repetitions, and cases of the same thing said differently.* §5.4 says how each property is held | Principal, 23-09-2026 |
 | D11 | **Effects declare their permission.** An agent's permissions are the effects it declares, in positive form: *the agent writes its memory in `X`*, never *the agent may not write outside `X`*. What is not declared is closed. The sentence that describes an effect is the permission for it, so nothing is said twice. An agent never holds an effect over its own definition, and a chat's first declaration of its agent is final | Principal, 23-09-2026 |
 | D12 | **One chat, one agent.** A chat runs as exactly one agent from its start to its end. A new chat chooses an existing agent or creates one. One person may have many agents | Principal, 23-09-2026 |
+| D13 | **A chat adopts its agent by reading.** At the start, the chat reads the agent file and the agent's memory index, then declares the agent with `header --declare agent=<name>`. A hook enforces the agent's effects from that point on. The web measurements support this route (Appendix A: S1, S4, S5) | Principal, 23-09-2026 |
 | D14 | **The canon's custodian is named Plumb.** A plumb line shows true vertical, and the custodian's work is to keep `main` true by measurement. The agent chose the name; the Principal asked it to. The name belongs to the instance, so it lives only in `memory/custodian/` on the `custodian` branch. The role file `custodian.md` stays nameless, and a copy's custodian takes whatever name its person gives it | Principal and agent, 23-09-2026 |
 | D15 | **Nothing private in any ref.** The repository is public, and so is every branch, including a disposable one. Its head also survives in the pull request's ref after the branch is deleted. So no branch carries the Principal's name, contact, location, zone, funding or accounts, and template fixtures use neutral values. The loose writing D5 allows in disposable branches is loose in form, never in privacy | Principal, 23-09-2026 |
 | D16 | **2.0.0 starts with no history.** The current repository becomes a private archive. The public canon is a new repository with the same name, whose first commit is 2.0.0. Nothing of 1.x reaches it: no history, no branches, no pull requests | Principal, 25-09-2026 |
 | D17 | **Every `main` is frozen and read-only, and holds a mini-custodian.** On any `main`, canon or copy, the chat runs as the mini-custodian (`"agent": "mini-custodian"`). It never writes a file, and it only routes. On the canon it shows how to make your own copy. On a copy it sends you to your agent, or helps you create one on its own branch. It travels with every copy unchanged, until that copy takes a template update. `guard-main.sh` stays, as its enforcement | Principal, 25-09-2026 |
 | D18 | **Only the custodian agent changes the canon**, from its own branch, by pull request, and the Principal approves every merge. Every copy's agents live on their own branches as well. This supersedes D7's "`main` is home" | Principal, 25-09-2026 |
 | D19 | **Capability is judged by public industry standards, not by a private exam.** A model may act as the custodian when its published results on industry-standard evaluations meet a documented threshold. The measured model name in the header is checked against that list. Injection resistance is held by GitHub's controls: branch protection, required review, and no secrets exposed to pull requests from forks. A test is not what holds it | Principal, 25-09-2026. The S7 private-exam design is retired |
-| D20 | **An agent's branch holds only its memory; the system lives only in `main`.** A chat opens on `main` and attaches the agent's memory branch as a worktree folder (`.agent/`), the one place it writes. A template update reaches every agent at once, because no agent branch carries system files. A memory format version plus a one-time migration in `update` covers the only drift left | Principal, 25-09-2026. Verified on the web by spike S8 (Appendix A) |
+| D20 | **An agent's branch holds only what is the agent's own, its memory and its output (D27); the system lives only in `main`.** A chat opens on `main` and attaches the agent's memory branch as a worktree folder (`.agent/`), the one place it writes. A template update reaches every agent at once, because no agent branch carries system files. A memory format version plus a one-time migration in `update` covers the only drift left | Principal, 25-09-2026. Verified on the web by spike S8 (Appendix A) |
 | D21 | **System changes flow top-down, and a proposal waits in `pending/`.** A change that serves the canon goes to the canon first, by one open pull request per copy, with one commit per proposal. The copy applies the change at once and records it in `pending/<name>.md`: the pull request link, the files, and the reverse patch. If the canon accepts it, `update` reverses the patch, brings the canon's version, and deletes the record. If the canon rejects it, the agent asks: keep it in this copy, or remove it | Principal, 25-09-2026 |
 | D22 | **`CLAUDE.md` is the index.** It holds the north star, one line for each rule that always holds, and a table of "when X, read Y". It targets about 700 words, and the rest loads only when a row sends the agent there | Principal, 25-09-2026 |
-| D23 | **A hook obtains every header field**: date, time and branch by measurement; the model from the SessionStart and PostModelSwitch hook inputs; the effort from the `effort.level` field that tool-use hooks receive. The agent never writes any of them | Principal, 25-09-2026. Hook inputs per the Claude Code hooks reference, read 28-09-2026. Verification: spike S8 found the effort and not the model (Appendix A, §10 N4) |
+| D23 | **A hook obtains every header field**: date, time and branch by measurement; the model from the SessionStart and PostModelSwitch hook inputs; the effort from the `effort.level` field that tool-use hooks receive. The agent never writes any of them | Principal, 25-09-2026. Hook inputs per the Claude Code hooks reference, read 28-09-2026. Spike S8 found the effort and not the model in hook inputs (Appendix A). D28 replaces its sources for the model and the effort |
 | D24 | **Outside pull requests are reviewed as diffs.** No session ever opens on a contributor's branch, because Claude Code would load that branch's hooks and run them | Principal, 25-09-2026 |
 | D25 | **The agent checks every reading**: the date against its context, and the time against the previous reply. A mismatch is asked about, never fixed in silence | Principal, 25-09-2026 |
 | D26 | **A passed check ends the header with ✓.** A header without ✓ means the check was skipped: that absence is the sanity check. The instruction that asks for ✓ does not sit at the top of `CLAUDE.md`. It sits in the index row that describes how a reply opens | Principal, 28-09-2026 |
-| D13 | **A chat adopts its agent by reading.** At the start, the chat reads the agent file and the agent's memory index, then declares the agent with `header --declare agent=<name>`. A hook enforces the agent's effects from that point on. The web measurements support this route (Appendix A: S1, S4, S5) | Principal, 23-09-2026 |
+| D27 | **An agent's output lives on its own branch, beside its memory.** The chat writes only in `.agent/` (D20), so that is where `projects/` goes. The north star stays word for word, less the pointer "(§7)", which leads to a deleted file | Principal, 28-09-2026. Resolves N1 |
+| D28 | **The header's model and effort come fresh from this session's transcript.** Both are read from the last reply the harness recorded, on every call: never assumed, never copied, never from an older transcript or an earlier turn. A record older than 120 seconds prints `?`. They are read at a tool call, where the current reply is already recorded, and never at `UserPromptSubmit`, where the last record is the previous turn's. This replaces D23's sources for these two fields, because on the web no hook input carries the model (S8). Built as `tools/bin/header` | Principal, 28-09-2026. Resolves N4 |
+| D29 | **The custodian's model is checked against a cited list.** Each listed model carries the published evaluation that qualifies it, and the model is read as in D28. A listed model acts as the custodian (D18). An unknown or unlisted model takes an intelligence test: a high score lets it suggest, and anything else stops it before any change to the canon, naming the model it measured. Reading and answering stay open to every model. This refines D19 | Principal, 28-09-2026. The test and "suggest" are open in N5 |
+| D30 | **The orchestrator stays in 2.0, to save tokens.** It plans, delegates, and checks the result against the plan. It fires only when the serving model is Opus 5.5 and the task comes out better delegated than done. It never sets the header's model or effort (D28): what it chooses and what served are different facts | Principal, 28-09-2026. Details open in N6 |
+| D31 | **Revision 5 comes before approval.** Sections 4 to 9 predate D16 and contradict later decisions in places. They are reconciled with every decision in §2 before the Principal approves the spec | Principal, 28-09-2026 |
 
 **Why D5 and D7 fit together.** GitHub's *Use this template* copies only the default branch. The canon's custodian therefore keeps its filled memory on a `custodian` branch, which no copy ever receives. The executor verifies this behaviour before relying on it (spike S2).
 
@@ -154,7 +159,7 @@ Measured 23-09-2026: `bwrap: command not found` in this environment. It runs Ubu
 | **S5** | Do effects work as permissions: the declared path allowed, anything else blocked, the agent's own file blocked, and the declaration locked? | **Done** (Appendix A) | — |
 | **S6** | With E1 in place, does the sandbox limit Bash writes to the adopted agent's declared effects? | Open. It needs E1 | Bash stays unenforced, and `README.md` and `CONTRIBUTING.md` say so in one line each |
 | **S7** | Can a private exam tell a capable model from a weaker one? | **Retired** by D19 | — |
-| **S8** | Can a chat attach a memory-only branch as `.agent/`, write there, and push it (D20)? What do hooks receive about the model and the effort (D23)? | **Done.** Memory: yes. Effort: yes, from `PreToolUse`. Model: no hook input carries it (Appendix A, §10 N4) | — |
+| **S8** | Can a chat attach a memory-only branch as `.agent/`, write there, and push it (D20)? What do hooks receive about the model and the effort (D23)? | **Done.** Memory: yes. Effort: yes, from `PreToolUse`. Model: no hook input carries it (Appendix A, D28) | — |
 
 The executor records every spike result in the PR description, with the command it ran and what it returned.
 
@@ -377,28 +382,27 @@ These go into `CONTRIBUTING.md`, in at most 10 lines:
 
 ## 10. Open questions for the Principal
 
-**N1. The north star and the tree.** D18 and D20 made two of the three pieces first flagged here true again: an agent lives on its own branch, and its memory sits in `memory/` on that branch. Two pieces remain:
+**N1.** Resolved by D27.
 
-| Text in the north star | The conflict |
-|---|---|
-| *"puts its output in `projects/`"* | D20 says an agent's branch holds only its memory. If output lives on that branch too, the sentence stays, and D20 reads "only what is the agent's own: memory and output". If output lives elsewhere, the sentence changes |
-| *"(§7)"* | `system/` is deleted, so the pointer leads nowhere |
+**N2. One `custodian.md` for the canon and for copies (§5.4).** After D17 and D21, a copy's `main` changes only through `update` and `pending/`. Someone in the copy still runs `update` and drafts proposals to the canon, and D29's check applies to whoever does. The drafter proposes one role file for both: on the canon it is Plumb (D14), in a copy it takes the name its person gives it, and `maintainer.md` is deleted. The mini-custodian (D17) stays a separate file, because it never writes.
 
-The drafter's proposal: output lives on the agent's branch, and the pointer is cut. The rest stays word for word. The Principal decides. Until then, R13 cannot pass.
+**N3. Adoption when only one agent exists.** Should the chat attach that agent's branch as `.agent/` (D20) without asking, and say which agent it attached (§5.3)? The drafter proposes yes: asking a question with one possible answer is friction. The cost is one line of output that the Principal must read to notice a wrong agent.
 
-**N2. Two simplifications, proposed by the drafter on 23-09-2026 and not yet decided:**
+**N4.** Resolved by D28.
 
-- ~~Memory lives in the visible `memory/<name>/`, not in `.claude/agent-memory/<name>/` (§5.2).~~ Superseded by D20: memory lives on the agent's own branch.
-- One `custodian.md` curates a `main` at every layer, and it replaces `maintainer.md` (§5.4).
+**N5. The intelligence test and "suggest" (D29).**
 
-**N3. Adoption when only one agent exists.** Should the chat adopt that agent without asking, and say which agent it adopted (§5.3)? The drafter proposes yes: asking a question with one possible answer is friction. The cost is one line of output that the Principal must read to notice a wrong agent.
+- *Which test.* S7 showed that a model with tools can read a fixed exam's answers in the repository, and the S7 commit history leaked the name of a trap. The drafter proposes S7b's approach: a public generator that makes a fresh instance on every run, past the obvious bounds, graded mechanically, with a hook blocking tools while the test runs so the model cannot run the grader. A public test is acceptable here because the prize is only a suggestion, and every suggestion still reaches the Principal.
+- *What "high" means.* The drafter proposes a calibrated bar: at least the lowest score that a listed model reached on the same generator, recorded beside the list.
+- *What "suggest" allows.* The drafter proposes: it writes the proposal down (in the custodian's memory, or as an issue), and a listed model or the Principal turns it into a change. It never edits the canon's files and never opens a pull request.
 
-**N4. Where the header's model and effort come from (D23, after S8).** No hook input on the web carries the model (Appendix A, S8). Two sources remain, and only one is mechanical:
+**N6. The orchestrator (D30).**
 
-- **The transcript.** Every hook receives `transcript_path`. The harness writes each assistant message there with the `model` that the API returned, and the message that makes a tool call is already in the file when that tool runs (measured 28-09-2026). Its weakness: until S6 closes Bash, an agent could overwrite the file.
-- **The platform record**, through `get_session`. The agent has to call it and carry the answer, which is what D23 forbids.
+- *"Opus 5.5": a name, or a place on the list?* A name stops working at the next release. The drafter proposes a column in D29's list, *orchestrates*, set for Opus 5.5 today, so a new model is judged once, in one place.
+- *"Better delegated": by what measure?* The drafter proposes: delegate when the plan and the check cost less than doing the work, and the result can be checked against the plan. Otherwise do it.
+- *Delegated to what?* The drafter proposes subagents on a cheaper model, and child sessions only for a spike that needs its own hooks or branch.
 
-The drafter proposes the transcript. D23 stands, and only its source for the model changes. The effort needs no change: `PreToolUse` carries `effort.level`, and in the one session measured it matched `CLAUDE_EFFORT`. The header prints that label without interpreting it. In the drafter's own session, the environment and the platform record once disagreed (`medium` and `xhigh`), and on 28-09-2026 they agreed (`xhigh`). The Principal decides.
+**N7. Layer 3 of D7.** D7 deferred layer 3, one branch per person that acts as that person's `main`. D17, D18 and D20 give every agent its own branch under a frozen `main`, so a second person needs only their own agent branches. The drafter proposes deleting layer 3 rather than deferring it, which leaves D7 with two layers: the canon's `main` and a copy's `main`.
 
 ---
 
@@ -452,4 +456,4 @@ S4 and S5 lead to the same conclusion. The hook holds every effect that passes t
 | `effort` in `PreToolUse` | `{"level": "medium"}` in all nine calls, equal to `CLAUDE_EFFORT` |
 | `get_session` | The model, served and configured (`claude-opus-5-5`). **No effort field** |
 
-D20 works on the web. For D23, the effort reaches a hook and the model does not (§10 N4).
+D20 works on the web. For D23, the effort reaches a hook and the model does not, which led to D28.
