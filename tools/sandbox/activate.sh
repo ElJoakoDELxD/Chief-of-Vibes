@@ -1,27 +1,29 @@
 #!/usr/bin/env bash
-# SessionStart: turn on Claude Code's Bash sandbox with the tools this branch
-# carries. Claude Code checks for bwrap and socat when it launches, before this
-# hook runs, so the sandbox is switched on only after the tools are in place,
-# through a settings file that Claude Code reloads while the session runs.
-# VARIANT=local  writes .claude/settings.local.json (project-local scope)
-# VARIANT=managed writes /etc/claude-code/managed-settings.d/ (needs root)
+#
+# Claude Code hook (SessionStart): turns on Claude Code's Bash sandbox with the
+# tools this branch carries, with no manual step (SPEC D38, spike S6).
+#
+# Claude Code looks for bwrap and socat when it launches, before any hook runs,
+# so the sandbox cannot be on from the start. This hook first links the tools
+# onto PATH, then turns the sandbox on in .claude/settings.local.json, which
+# Claude Code reloads while the session runs.
+#
+#   nested mode   the cloud container cannot give the sandbox its own user
+#                 namespace (apply-seccomp: write /proc/self/uid_map)
+#   git excluded  commit signing calls a local service the sandbox cannot reach
+#
+# Linux x86_64 only, and only where the link directory is writable; anywhere
+# else it does nothing. COV_SANDBOX_BIN overrides the link directory (bench).
+
 set -uo pipefail
-VARIANT=local
 here="$(cd "$(dirname "$0")" && pwd)/linux-x86_64"
-[[ "$(uname -s)/$(uname -m)" == "Linux/x86_64" && -x "${here}/bwrap" ]] || exit 0
-log="${TMPDIR:-/tmp}/cov-sandbox-activate.log"
-if [[ "${VARIANT}" == "managed" ]]; then
-  mkdir -p /etc/claude-code/managed-settings.d 2>>"${log}" || exit 0
-  printf '{"sandbox":{"enabled":true,"bwrapPath":"%s/bwrap","socatPath":"%s/socat"}}\n' "${here}" "${here}" > /etc/claude-code/managed-settings.d/cov-sandbox.json 2>>"${log}"
-else
-  [[ -w /usr/local/bin ]] || exit 0
-  ln -sf "${here}/bwrap" /usr/local/bin/bwrap; ln -sf "${here}/socat" /usr/local/bin/socat
-  # The cloud container reaches the internet only through its own proxy;
-  # the sandbox forwards to it instead of starting a second one.
-  port="$(printf '%s' "${HTTPS_PROXY:-${https_proxy:-}}" | sed -n 's#.*:\([0-9][0-9]*\)/*$#\1#p')"
-  net='"allowedDomains":["api.anthropic.com","github.com","*.github.com","raw.githubusercontent.com"]'
-  [[ -n "${port}" ]] && net="${net},\"httpProxyPort\":${port}"
-  printf '{"sandbox":{"enabled":true,"enableWeakerNestedSandbox":true,"autoAllowBashIfSandboxed":true,"excludedCommands":["git *"],"network":{%s}}}\n' "${net}" > "${CLAUDE_PROJECT_DIR:-.}/.claude/settings.local.json"
-fi
-echo "activated ${VARIANT} $(date -u +%T)" >> "${log}"
+bin="${COV_SANDBOX_BIN:-/usr/local/bin}"
+[[ "$(uname -s)/$(uname -m)" == "Linux/x86_64" && -x "${here}/bwrap" && -w "${bin}" ]] || exit 0
+
+ln -sf "${here}/bwrap" "${bin}/bwrap"
+ln -sf "${here}/socat" "${bin}/socat"
+
+net='"allowedDomains":["api.anthropic.com","github.com","*.github.com","raw.githubusercontent.com"]'
+printf '{"sandbox":{"enabled":true,"enableWeakerNestedSandbox":true,"autoAllowBashIfSandboxed":true,"excludedCommands":["git *"],"network":{%s}}}\n' "${net}" \
+  > "${CLAUDE_PROJECT_DIR:-.}/.claude/settings.local.json"
 exit 0
