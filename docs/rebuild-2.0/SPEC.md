@@ -468,3 +468,5 @@ D20 works on the web. For D23, the effort reaches a hook and the model does not,
 | Plus `socat -4`, the container proxy as upstream, `git *` excluded, one git command per call | Outside write refused; inside allowed; `api.anthropic.com` answered; `example.com` refused (403, by the container's egress policy); `git commit` and `git push` succeeded |
 
 Two limits stand. The domain allowlist is enforced by the container's egress proxy, not by Claude Code's own proxy, because the sandbox forwards to the container's. And `git` runs outside the sandbox, so a command made only of git calls is reviewed by the permission flow, not held by the sandbox.
+
+Measured in this session once the sandbox was on (28-09-2026): `git` leaves the sandbox only as a lone, plain call. `git -C <path> …`, a chain with another command, or git beside a parallel sandboxed call stays inside, and there `git commit` fails on signing. Inside the sandbox the working tree also shows the 0-byte placeholders the sandbox mounts for denied paths (`.bashrc`, `.mcp.json`, `.claude/agents`, and others), so a sandboxed `git add -A` would stage them. The rule that follows: git is always called alone.
