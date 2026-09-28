@@ -1,0 +1,5 @@
+#!/bin/sh
+# socat from Ubuntu 24.04, with the one library that system lacks beside it.
+# -4: the sandbox's network namespace has no IPv6, and socat would try it first.
+here="$(dirname "$(readlink -f "$0")")"
+LD_LIBRARY_PATH="$here/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" exec "$here/socat.bin" -4 "$@"
