@@ -1,7 +1,7 @@
 # Chief of Vibes 2.0 — Rebuild Specification
 
-**Status:** revision 4 (23-09-2026). It consolidates every decision and spike to date. It is ready for the Principal's approval once the questions in §10 are answered. The build also needs one change to the environment (§5.0, E1).
-**Executor:** one fresh Claude Code session on branch `rebuild/2.0`, created from `claude/repository-organization-dkragp`, with this file as its only brief. That branch already carries the clock (§5.5) and an anchor hook that hands over no time.
+**Status:** revision 5 (28-09-2026). It consolidates every decision and spike to date, reconciled against §2 (D31). The questions in §10 are all resolved. It is ready for the Principal's approval. The build also needs one change to the environment (§5.0, E1).
+**Executor:** one fresh Claude Code session on branch `rebuild/2.0`, created from `claude/repository-organization-dkragp`, with this file as its only brief. That branch already carries the clock (§5.5) and an anchor hook that measures the time (D23, D25).
 **Grader:** a separate session or subagent that did not edit anything. It reads this file and the diff, nothing else.
 
 This document has the shape Anthropic uses for *outcomes* in Managed Agents: a description of the end state, then a rubric of gradeable criteria. The executor iterates until the grader returns every criterion as passed, for a maximum of **3 grading rounds**. After that, it stops and reports to the Principal.
@@ -57,7 +57,7 @@ The rebuild uses what holds, and it builds the rest as small, benched parts.
 | D4 | **Copies:** exactly one is known, the Principal's. 2.0.0 may break compatibility. That one copy gets a one-time migration (§6.2) | Principal, 22-09-2026 |
 | D5 | **The custodian's memory lives on its own branch, `custodian`, and never on the canon's `main`.** Its looser work happens in disposable branches that are deleted after merge. A *branch* is a moving label: every new commit advances it. A *tag* is a fixed label: it marks one commit forever. History that must stay is archived as a tag | Principal, 23-09-2026, chosen over keeping the custodian's memory in issues and pull requests |
 | D6 | **Language:** English for the template and this spec | Principal, 22-09-2026 |
-| D7 | **Three layers, one shape.** Each layer is a `main` curated by a custodian. (1) The canon's `main` holds the scaffold only: template files plus empty forms, and no filled memory. GitHub branch protection guards it. (2) A copy's `main` is home for one person, and all of that person's agents and memory live there. (3) One branch per person, each acting as that person's own `main`, while the copy's `main` is curated for all of them | Principal, 23-09-2026. **2.0 builds layers 1 and 2.** Layer 3 is the documented extension path, and it is built when a second person uses the same copy. The Principal did not object to this deferral; it is recorded here as an assumption |
+| D7 | **Three layers, one shape.** Each layer is a `main` curated by a custodian. (1) The canon's `main` holds the scaffold only: template files plus empty forms, and no filled memory. GitHub branch protection guards it. (2) A copy's `main` is home for one person, and all of that person's agents and memory live there. (3) One branch per person, each acting as that person's own `main`, while the copy's `main` is curated for all of them | Principal, 23-09-2026. **2.0 builds layers 1 and 2.** Layer 3 is the documented extension path, and it is built when a second person uses the same copy. The Principal did not object to this deferral; it is recorded here as an assumption. Superseded in part: D18 (a copy's `main` is not home) and D36 (layer 3 is a mode) |
 | D8 | **Size limits ratchet.** There is no fixed target to cut toward. The executor removes everything that fails the removal test (§5.9) and keeps everything that passes it. The measured result becomes the ceiling in CI, and it may go down later but never silently up | Principal, 22-09-2026 |
 | D9 | **The north star already exists, and it moves where every session reads it.** The purpose in `system/1-purpose.md` §1 goes to the head of `CLAUDE.md`, the one file every session loads, quoted and never restated | Principal, 23-09-2026. **The exact text waits on §10 N1** |
 | D10 | **The custodian's mandate.** In the Principal's words, translated: *the canon always has the structure of a product, public and easy to use, and it never deviates from that. It is a public repository, so it must always look, feel and work like a professional product: a stable release, usable, with the fewest possible failures, contradictions, repetitions, and cases of the same thing said differently.* §5.4 says how each property is held | Principal, 23-09-2026 |
@@ -67,7 +67,7 @@ The rebuild uses what holds, and it builds the rest as small, benched parts.
 | D14 | **The canon's custodian is named Plumb.** A plumb line shows true vertical, and the custodian's work is to keep `main` true by measurement. The agent chose the name; the Principal asked it to. The name belongs to the instance, so it lives only in `memory/custodian/` on the `custodian` branch. The role file `custodian.md` stays nameless, and a copy's custodian takes whatever name its person gives it | Principal and agent, 23-09-2026 |
 | D15 | **Nothing private in any ref.** The repository is public, and so is every branch, including a disposable one. Its head also survives in the pull request's ref after the branch is deleted. So no branch carries the Principal's name, contact, location, zone, funding or accounts, and template fixtures use neutral values. The loose writing D5 allows in disposable branches is loose in form, never in privacy | Principal, 23-09-2026 |
 | D16 | **2.0.0 starts with no history.** The current repository becomes a private archive. The public canon is a new repository with the same name, whose first commit is 2.0.0. Nothing of 1.x reaches it: no history, no branches, no pull requests | Principal, 25-09-2026 |
-| D17 | **Every `main` is frozen and read-only, and holds a mini-custodian.** On any `main`, canon or copy, the chat runs as the mini-custodian (`"agent": "mini-custodian"`). It never writes a file, and it only routes. On the canon it shows how to make your own copy. On a copy it sends you to your agent, or helps you create one on its own branch. It travels with every copy unchanged, until that copy takes a template update. `guard-main.sh` stays, as its enforcement | Principal, 25-09-2026 |
+| D17 | **Every `main` is frozen and read-only, and holds a mini-custodian.** On any `main`, canon or copy, the chat runs as the mini-custodian (`"agent": "mini-custodian"`). It never writes a file, and it only routes. On the canon it shows how to make your own copy. On a copy it sends you to your agent, or helps you create one on its own branch. It travels with every copy unchanged, until that copy takes a template update. `guard-main.sh` stays, as its enforcement | Principal, 25-09-2026. Superseded in part by D35: the mini-custodian is the custodian on `main` alone, not a second file |
 | D18 | **Only the custodian agent changes the canon**, from its own branch, by pull request, and the Principal approves every merge. Every copy's agents live on their own branches as well. This supersedes D7's "`main` is home" | Principal, 25-09-2026 |
 | D19 | **Capability is judged by public industry standards, not by a private exam.** A model may act as the custodian when its published results on industry-standard evaluations meet a documented threshold. The measured model name in the header is checked against that list. Injection resistance is held by GitHub's controls: branch protection, required review, and no secrets exposed to pull requests from forks. A test is not what holds it | Principal, 25-09-2026. The S7 private-exam design is retired |
 | D20 | **An agent's branch holds only what is the agent's own, its memory and its output (D27); the system lives only in `main`.** A chat opens on `main` and attaches the agent's memory branch as a worktree folder (`.agent/`), the one place it writes. A template update reaches every agent at once, because no agent branch carries system files. A memory format version plus a one-time migration in `update` covers the only drift left | Principal, 25-09-2026. Verified on the web by spike S8 (Appendix A) |
@@ -120,14 +120,14 @@ All read on 22–23-09-2026.
 
 ## 4. Product
 
-**North star (D9).** It is quoted from `system/1-purpose.md` §1 and not restated. The text that opens `CLAUDE.md` is this one, with only the cuts that the Principal approves in §10 N1:
+**North star (D9).** It is quoted from `system/1-purpose.md` §1 and not restated. The text that opens `CLAUDE.md` is this one, less only the pointer "(§7)" that D27 cuts:
 
 > Chief of Vibes makes Claude Code and a git repository into a persistent AI colleague. The repository holds two parts. The **template** is this specification and its machinery. It is generic and identical for every user. The **agent** is yours. It lives on its own branch, keeps its memory in `memory/`, and puts its output in `projects/`.
 >
 > The design removes three failure modes of work with an LLM:
 >
 > 1. **Work evaporates.** A chat makes something useful, the window closes, and nothing accumulates. Here every session ends with a commit and a push, and memory compounds.
-> 2. **The AI validates itself.** Plans, frameworks, and dashboards look confident, and no outsider ever reads them. Only an unsolicited external signal counts as success (§7).
+> 2. **The AI validates itself.** Plans, frameworks, and dashboards look confident, and no outsider ever reads them. Only an unsolicited external signal counts as success.
 > 3. **Process eats product.** The tool improves itself and ships nothing. Here meta-work has a bound. Given one unit of effort, and a choice between a better system and shipped work, ship the work.
 >
 > **Why this exists.** The power stays with the person. Their repository, their rules, their agent. The system is built so that its user, in the end, needs no system: free to decide, to try, and to stop. So the deepest question here is not only what the work is for. It is what the Principal is here for. That question is never asked on a schedule and never forced. It surfaces when the work raises it, and the agent lets it surface rather than filling the silence.
@@ -136,7 +136,7 @@ All read on 22–23-09-2026.
 
 1. The user opens Claude Code and pastes: *"Set up my agent from https://github.com/ElJoakoDELxD/Chief-of-Vibes"*.
 2. The session creates their copy and asks at most four questions: the agent's name, language, timezone, and goal.
-3. From then on, every new chat starts by choosing one of the user's agents or creating another (D12). It opens knowing that agent's state and pending work, and it closes by writing them down.
+3. From then on, every new chat starts by choosing one of the user's agents or creating another (D12), then attaches that agent's branch as `.agent/` (D20); a lone agent is attached without asking (D34). It opens knowing that agent's state and pending work, and it closes by writing them down and pushing from `.agent/`.
 
 Nothing else is in the user's path.
 
@@ -194,16 +194,13 @@ tests/                         benches
 
 The `custodian` branch is `main` plus a filled `memory/custodian/`. It merges `main` in to stay current. It sends template changes to `main` only through pull requests, and it never sends its memory.
 
-### 5.2 Tree — a copy's `main` (home for one person)
+### 5.2 Tree — a copy's `main`
 
-It is the same as the canon's `main`, plus one pair of entries for each agent that the person has:
+It is the same as the canon's `main`, plus one entry for each agent that the person has: `.claude/agents/<name>.md`, created by `onboard`. A copy's `main` is not home (D18): the agent's own memory and output never sit under it. Each agent's `memory/` and `projects/` live on that agent's own branch instead (D20, D27), seeded from `memory/_example/` and attached as `.agent/` when a chat adopts it.
 
-- `.claude/agents/<name>.md`, created by `onboard`.
-- `memory/<name>/`, created by `onboard` from `memory/_example/`.
+A copy may also hold `pending/`, one file per proposal still open with the canon (D21).
 
-**Proposed, §10 N2:** memory lives in the visible `memory/<name>/` rather than `.claude/agent-memory/<name>/`. The hidden path existed only for native memory loading, and S1 measured that loading as absent on the web. A person who does not program should find their agent's memory without knowing about hidden folders, and the Obsidian vault in `README.md` depends on it.
-
-The `update` skill never overwrites an agent file or anything under `memory/<name>/`.
+The `update` skill never overwrites an agent file, and it never touches an agent's own branch, since no agent branch carries template files (D20).
 
 ### 5.3 The agent file, and how a chat adopts it
 
@@ -212,24 +209,24 @@ The `update` skill never overwrites an agent file or anything under `memory/<nam
 name: <name>
 description: <one line>
 effects:
-  - writes: memory/<name>/
-  - writes: projects/<name>/
-  - pushes: the branch this person works on
+  - writes: .agent/memory/
+  - writes: .agent/projects/
+  - pushes: .agent/
 ---
 <personality: who the agent serves, language, timezone, goal>
 ```
 
 - **The body is the personality.** It holds nothing that `CLAUDE.md` already says.
-- **Effects are permissions** (D11). The hook `agent-permissions.sh` enforces `writes:` for `Write`, `Edit`, `MultiEdit` and `NotebookEdit`. It blocks any path that no effect declares, and it always blocks the agent's own file. S6 decides how Bash is held. `pushes:` needs its own rail, which the executor reads from `lib/command.sh` as `guard-main.sh` did, with a bench.
-- **Adoption** (D13). A SessionStart hook lists the agents that exist. The chat asks which one, or creates one through `onboard`. Then it reads the agent file and `memory/<name>/MEMORY.md`, and runs `header --declare agent=<name>`. A second declaration to a different agent is refused: *one chat, one agent; open a new chat*. **Proposed, §10 N3:** when exactly one agent exists, the chat adopts it without asking, and it says which agent it adopted.
-- The memory folder holds `MEMORY.md` (the index, at most 200 lines, curated by the agent), `backlog.md`, `journal/` (one file per day), `projects/`, and `handoff/`.
+- **Effects are permissions** (D11). The hook `agent-permissions.sh` enforces `writes:` for `Write`, `Edit`, `MultiEdit` and `NotebookEdit`. It blocks any path that no effect declares, and it always blocks the agent's own file. S6 decides how Bash is held. `pushes:` needs its own rail, which the executor reads from `lib/command.sh` as `guard-main.sh` does, with a bench.
+- **Adoption** (D13). A SessionStart hook lists the agents that exist. The chat asks which one, or creates one through `onboard`; a lone agent is attached without asking, and the chat says which one it attached (D34). It attaches that agent's branch as the worktree `.agent/` (D20), reads the agent file and `.agent/memory/MEMORY.md`, and runs `header --declare agent=<name>`. A second declaration to a different agent is refused: *one chat, one agent; open a new chat*.
+- The agent's branch holds `memory/` — `MEMORY.md` (the index, at most 200 lines, curated by the agent), `backlog.md`, `journal/` (one file per day), and `handoff/` — and, beside it, `projects/` for the agent's output (D27).
 - **The limit of D11 today:** a hook reads tool calls, so a file written through Bash does not pass through it. Until S6 passes, `README.md` states this in one line.
 
 The S5 implementation is the starting point: `.claude/hooks/agent-permissions.sh` and `tools/bin/header` at `spike/s5-effects`. The executor ports them and adds a bench that pins every result in Appendix A.
 
 ### 5.4 The custodian and its mandate (D10)
 
-**Proposed, §10 N2:** one agent file, `custodian.md`, is the curator of a `main` at every layer (D7). On the canon it curates the template. In a copy it curates that copy's `main`: it applies updates from the canon and runs 5S. This replaces the separate `maintainer.md`: one role, one name, one file.
+`custodian.md` is the one role file on every `main`, at any layer (D7, D35), reaching only as far as where it lives. Alone on `main` it has no memory and no projects, so it can only orient: the mini-custodian, by circumstance, not a second file. With its own branch attached, it has memory and is the full custodian: curating the template on the canon, or that copy's `main`, applying updates and running 5S. Only the custodian changes the canon, from its own branch, by pull request the Principal approves (D18). A model acts as custodian only when the cited list qualifies it by a published evaluation (D19, D29); an unlisted model that passes the intelligence test of D32 may only suggest, never edit the canon or open a pull request (D32). Injection resistance is GitHub's controls, not a private exam (D19); outside pull requests are reviewed as diffs, and no session opens on a contributor's branch (D24). This replaces the separate mini-custodian file and `maintainer.md`: one role, one name, one file (D35).
 
 `custodian.md` carries D10 word for word, and the means below:
 
@@ -254,10 +251,12 @@ The post field is removed together with posts. A copy may change the format.
 `tools/bin/clock` and `tools/bin/header` already exist, with the bench `tools/test-clock.sh`:
 
 - `clock` tests candidate methods against an independent reference, the HTTPS `Date` header. Only then does it save the passing method in `tools/clock/methods.tsv`, keyed by an environment signature (OS and runtime, nothing finer). The next session in that environment reuses the saved method, and it tests the method again each time.
+- Obtaining date, time and branch is mechanical: a hook measures them (D23). The agent checks every reading — the date against its context, the time against the previous reply — and asks the Principal about a mismatch, never fixing it in silence (D25).
 - A reading 3 or more minutes from the reference, or a date that differs from the context date, prints `DESFASE` on stderr and changes nothing. The agent asks the Principal whether the time was right before it fixes anything.
 - UTC on the canon is expected. Only a copy with a declared or auto-detected zone can be wrong about the zone.
-- `header` reads every field and remembers none. The agent comes from the chat's declaration (D13). The model comes from the transcript, and the effort from the environment. A field it cannot read prints as `?`, and `header` says why.
-- The header is a sanity check, like the brown-M&M clause: it proves that the agent did the work instead of copying a given answer. No hook hands it over (`.claude/hooks/path.sh` only puts `tools/bin` on PATH), and it is not the first instruction the agent reads.
+- `header` reads every field and remembers none. The agent comes from the chat's declaration (D13). The model and the effort come fresh from this session's transcript, read at a tool call and never assumed, copied, or taken from an earlier turn (D28). A field it cannot read prints as `?`, and `header` says why.
+- A passed check ends the header with ✓; its absence means the check was skipped. That instruction lives in the `CLAUDE.md` index row for how a reply opens, not at the top of the file (D26).
+- The header is a sanity check, like the brown-M&M clause: it proves that the agent did the work instead of copying a given answer.
 
 ### 5.6 Hooks
 
@@ -266,21 +265,22 @@ Keep a hook only if S3 shows that the failure it prevents still happens, and onl
 | Hook | Verdict |
 |---|---|
 | `path.sh` | **Keep.** It exposes `clock` and `header`. Web-verified on 23-09-2026 |
-| `anchor.sh` | **Reduce** to the session context that remains true in 2.0: the list of agents for adoption (D13), and the update check (§5.7). It never carries the time or the branch |
+| `anchor.sh` | **Reduce**, but it carries the header's date, time and branch again (D23, D25), plus the session context that remains true in 2.0: the list of agents for adoption (D13), and the update check (§5.7) |
 | `agent-permissions.sh` | **Add**, ported from S5, with a bench (§5.3) |
 | `guard-install.sh` | **Keep** if S3 confirms it. The failure is environmental (installs vanish in cloud sessions), not a model weakness |
 | `guard-identity.sh` | Keep it only if the release that introduced it (`git log -S`) names a real incident, and S3 still reproduces the failure |
-| `guard-main.sh` | **Remove.** The canon uses branch protection (D7), and in a copy `main` is home |
+| `guard-main.sh` | **Keep.** Every `main`, canon or copy, is frozen and read-only (D17); a copy's `main` is not home (D18) |
 
 ### 5.7 Skills, CLAUDE.md and permissions
 
 | Skill | Fate |
 |---|---|
-| `onboard` | **Keep, rewritten.** It creates the copy (with *Use this template* as the fallback), or creates a further agent in an existing copy. It asks ≤ 4 questions and writes the agent file and `memory/<name>/` from the forms, with the default effects. Then it commits and pushes |
+| `onboard` | **Keep, rewritten.** It creates the copy (with *Use this template* as the fallback), or a further agent in an existing copy. It asks ≤ 4 questions, writes the agent file on `main`, and creates that agent's own branch with `memory/` and `projects/` from the forms, with the default effects (D20, D27). Then it commits and pushes |
 | `handoff` | **Keep.** It absorbs session-end journaling |
-| `update` | **New.** It replaces `tools/sync.sh`, `propagate/references/sync.md` and the drift check. It reports whether the copy is behind the canon, and why, and it opens a pull request that touches only template paths. It folds in the fix from PR #102: a shallow clone must not skip the ancestry check |
+| `update` | **New.** It replaces `tools/sync.sh`, `propagate/references/sync.md` and the drift check. It reports whether the copy is behind the canon, and why, and it opens a pull request that touches only template paths. It folds in the fix from PR #102: a shallow clone must not skip the ancestry check. It never touches an agent branch (D20) |
 | `5s` | **Keep.** It is the custodian's procedure for D10, and its `memory` target also serves every agent. It is rewritten to the new tree |
-| `reset`, `orchestrate`, `propagate`, `principal-approves`, `help`, `ste-writing` | **Remove** (§5.8) |
+| `orchestrate` | **Keep, rewritten** to D30/D33: it plans, delegates and checks the result against the plan. It fires only when the serving model is marked *orchestrates* on the cited list, and only when the task comes out better delegated. It delegates to subagents on a cheaper model, and to a child session only for a spike that needs its own hooks or branch. It never sets the header's model or effort (D28, D30) |
+| `reset`, `propagate`, `principal-approves`, `help`, `ste-writing` | **Remove** (§5.8) |
 
 Each kept `SKILL.md` has valid `name` and `description` frontmatter.
 
@@ -316,19 +316,18 @@ No line is cut to reach a number, and no line is kept to protect one.
 
 ### 6.1 Canon
 
-1. Run the privacy audit (D15) over every branch tip before archiving anything. A tag freezes what it points to. Then archive `Chief-of-Vibes-Agent` as `archive/custodian-2026-09` and delete that branch. Delete the other stale branches (`claude/*`, `custodian/*`, `spike/*`) without tagging them: their heads already live in their pull requests' refs, and a tag would only add one more permanent copy.
-
-2. Close PRs #102–#105 with one comment each that points to the 2.0.0 pull request. Carry over the #102 fix per §5.7.
-3. After the merge, create the `custodian` branch from `main`. Seed `memory/custodian/` with the instance name (D14) and what the rescue (§5.8) assigned to the custodian, and nothing else.
-4. The Principal enables branch protection on `main` (a GitHub setting). The executor writes the exact steps in the PR description.
+1. Run the privacy audit (D15) over the current repository: every branch tip, and every pull request's ref, since a head survives there after its branch is deleted.
+2. Build 2.0.0 in the current repository as this document directs: one branch, one pull request, the Principal's merge. Close PRs #102–#105 with one comment each that points to it. Carry over the #102 fix per §5.7.
+3. Make the current repository private: it becomes the archive (D16). Create a new public repository with the same name, whose first commit is that merged result. Nothing of 1.x reaches it: no history, no branch, no pull request (D16).
+4. Create the `custodian` branch from the new repository's `main`. Seed `memory/custodian/` with the instance name (D14) and what the rescue (§5.8) assigned to the custodian, and nothing else.
+5. The Principal enables branch protection on the new repository's `main` (a GitHub setting). The executor writes the exact steps in the PR description.
 
 ### 6.2 The Principal's copy (after 2.0.0 lands)
 
 This runs as a separate, later task, with its own spec:
 
-- Convert `memory/state.md` into `.claude/agents/<name>.md`, with the default effects.
-- Move the agent's memory into `memory/<name>/`.
-- Move all of it to the copy's `main`.
+- Convert `memory/state.md` into `.claude/agents/<name>.md`, with the default effects, and put it on the copy's `main`.
+- Create that agent's own branch, holding only its migrated `memory/` and `projects/` (D20, D27).
 - Apply the 2.0.0 template through the `update` skill.
 - Archive the old agent branch as a tag.
 
@@ -338,7 +337,7 @@ This runs as a separate, later task, with its own spec:
 
 - A migration to the Managed Agents API.
 - New features.
-- Layer 3 of D7 (one branch per person), until a second person uses the same copy.
+- Layer 3 (D36): one `main` per person, until a second person uses the same copy.
 - Memory consolidation (a *Dreams*-style skill). Add it only when a measured memory-growth problem exists.
 - Translating the template.
 
@@ -356,18 +355,21 @@ The grader scores each criterion independently, as pass or fail, with evidence. 
 | R4 | Every path in §5.8 is absent | `ls` |
 | R5 | `custodian.md` and `_example.md` follow the agent-file format of §5.3, and they parse as Claude Code subagents | Parse the frontmatter |
 | R6 | Every remaining hook has a bench. All benches pass in `ci.yml` on the PR head | CI run link |
-| R7 | `clock \| header` prints exactly the §5.5 fields, each read and none remembered | Run it on a fresh clone, with and without a declared agent |
+| R7 | `clock \| header` prints exactly the §5.5 fields, each read and none remembered, and never prints ✓: the ✓ is the agent's, written only after its date and time checks pass (D25, D26) | Run it on a fresh clone, with and without a declared agent, and with a manufactured date mismatch to confirm no ✓ and a stated reason (D25) |
 | R8 | `README.md` asks the user to type no git command | Search the user steps for `git ` |
 | R9 | `CHANGELOG.md` 2.0.0 names every removed item with a one-line reason | Cross-check against §5.8 |
 | R10 | Every rescued rule lives in exactly one place | Grep each rule's key phrase |
-| R11 | No open PRs except the 2.0.0 one. No stale branches remain; they exist only as `archive/*` tags | `git ls-remote` |
-| R12 | On a throwaway copy, a web chat that receives only "hi" ends with an agent file and `memory/<name>/` created after ≤ 4 questions, committed and pushed. A second chat adopts that agent and reports its backlog. A third chat creates a second agent. A fourth chat is offered both | **Performed by the Principal.** The executor prepares the steps. The grader cannot pass this criterion alone |
-| R13 | `CLAUDE.md` opens with the north star: the text in `system/1-purpose.md` §1 at the archive tag, minus only the cuts the Principal approved in §10 N1 | `diff` |
+| R11 | The new public repository carries no history before 2.0.0: only `main` and `custodian` exist, and no branch or pull request predates it (D16) | `git ls-remote` |
+| R12 | On a throwaway copy, a web chat that receives only "hi" ends with an agent file on `main` and a new agent branch holding `memory/` and `projects/` (D20, D27), created after ≤ 4 questions, committed and pushed. A second chat adopts that agent, attaches its branch as `.agent/`, and reports its backlog. A third chat creates a second agent. A fourth chat is offered both | **Performed by the Principal.** The executor prepares the steps. The grader cannot pass this criterion alone |
+| R13 | `CLAUDE.md` opens with the north star: the text in `system/1-purpose.md` §1 at the archive tag, less only the pointer "(§7)" that D27 cuts | `diff` |
 | R14 | `custodian.md` carries D10 word for word, and each means in §5.4 exists: a named CI step, a checklist line, or a file | Parse the file, then cross-check `ci.yml` and the tree |
 | R15 | No fact lives in two public files. The `redundancy.py` report over all public prose is attached, and every pair above the threshold has a recorded verdict | PR description |
 | R16 | A `5s documents` pass by a fresh-context subagent over the public files is attached, and it has no open item | PR description |
-| R18 | The privacy audit (D15) passes over every branch tip. The audit reads its patterns from a CI secret, never from the repository, because a list of the Principal's private terms is itself private | The CI step's output |
+| R18 | The privacy audit (D15) passes over every branch tip and every pull request's ref in the current repository, before it is made private (D16). The audit reads its patterns from a CI secret, never from the repository, because a list of the Principal's private terms is itself private | The CI step's output |
 | R17 | The `agent-permissions.sh` bench pins every S5 result: a declared path is allowed, an undeclared path is blocked, the agent's own file is blocked, `..` traversal is blocked, and a second declaration is refused | Run the bench |
+| R19 | Exactly one custodian role file exists per `main`, canon or copy: no `maintainer.md`, no separate mini-custodian file (D35) | `ls .claude/agents/` on each `main` |
+| R20 | `guard-main.sh` exists and its bench passes, on the canon and on a copy (D17) | Run the bench; check the file |
+| R21 | A copy's `pending/` entry (D21) is created on a proposal, and removed with the reverse patch applied once the canon accepts it | Run the cycle once end to end |
 
 ---
 
