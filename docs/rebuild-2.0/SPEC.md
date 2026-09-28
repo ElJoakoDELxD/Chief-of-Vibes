@@ -223,7 +223,7 @@ The S5 implementation is the starting point: `.claude/hooks/agent-permissions.sh
 
 ### 5.4 The custodian and its mandate (D10)
 
-`custodian.md` is the one role file on every `main`, at any layer (D7, D17), reaching only as far as where it lives. Alone on `main` it has no memory and no projects, so it can only orient: the mini-custodian, by circumstance, not a second file. With its own branch attached, it has memory and is the full custodian: curating the template on the canon, or that copy's `main`, applying updates and running 5S. Only the custodian changes the canon, from its own branch, by pull request the Principal approves (D7). A model acts as custodian only when the cited list qualifies it by a published evaluation, and an unlisted model that passes the intelligence test may only suggest, never edit the canon or open a pull request (D19). Outside pull requests are reviewed as diffs, and no session opens on a contributor's branch (D24). This replaces the separate mini-custodian file and `maintainer.md`: one role, one name, one file (D17).
+`custodian.md` is the one role file on every `main`, at any layer (D7, D17), reaching only as far as where it lives. Alone on `main` it has no memory and no projects, so it can only orient: the mini-custodian, by circumstance, not a second file. With its own branch attached, it has memory and is the full custodian: curating the template on the canon, or that copy's `main`, applying updates and running 5S. Only the custodian changes the canon, from its own branch, by pull request the Principal approves (D7). A model acts as custodian only when the cited list qualifies it by a published evaluation, and an unlisted model that passes the intelligence test may only suggest, never edit the canon or open a pull request (D19). Outside pull requests are reviewed as diffs, and no session opens on a contributor's branch (D24).
 
 `custodian.md` carries D10 word for word, and the means below:
 
@@ -296,7 +296,7 @@ Every removal gets one line in `CHANGELOG.md` 2.0.0 that says why.
 
 **The north star is moved, not rescued.** Before `system/` is deleted, the purpose text goes to the head of `CLAUDE.md` (D9). Deleting `system/` without this step deletes the product's reason to exist.
 
-**Rescue before removing.** Some rules carry a real lesson that deserves to live on: "verify before assert", "a negative answer names its frame", "the agent drafts, the Principal publishes", and "confirm focus before typing into a real keyboard". Each one either becomes one line in `CLAUDE.md`, if it passes the removal test for every session, or becomes a `knowledge/` entry. Never both. The rescue reads the archive tags and never edits them (the *Dreams* pattern). The executor lists what it rescued and where it put each item.
+**Rescue before removing.** Some rules carry a real lesson that deserves to live on: "verify before assert", "a negative answer names its frame", and "confirm focus before typing into a real keyboard" (the drafts/publishes split is already a hard limit carried into `CLAUDE.md`, §5.7). Each one either becomes one line in `CLAUDE.md`, if it passes the removal test for every session, or becomes a `knowledge/` entry. Never both. The rescue reads the archive tags and never edits them (the *Dreams* pattern). The executor lists what it rescued and where it put each item.
 
 ### 5.9 The removal test (D8)
 
