@@ -16,7 +16,12 @@ if [[ "${VARIANT}" == "managed" ]]; then
 else
   [[ -w /usr/local/bin ]] || exit 0
   ln -sf "${here}/bwrap" /usr/local/bin/bwrap; ln -sf "${here}/socat" /usr/local/bin/socat
-  printf '{"sandbox":{"enabled":true,"enableWeakerNestedSandbox":true,"autoAllowBashIfSandboxed":true,"network":{"allowedDomains":["api.anthropic.com","github.com","*.github.com","raw.githubusercontent.com"]}}}\n' > "${CLAUDE_PROJECT_DIR:-.}/.claude/settings.local.json"
+  # The cloud container reaches the internet only through its own proxy;
+  # the sandbox forwards to it instead of starting a second one.
+  port="$(printf '%s' "${HTTPS_PROXY:-${https_proxy:-}}" | sed -n 's#.*:\([0-9][0-9]*\)/*$#\1#p')"
+  net='"allowedDomains":["api.anthropic.com","github.com","*.github.com","raw.githubusercontent.com"]'
+  [[ -n "${port}" ]] && net="${net},\"httpProxyPort\":${port}"
+  printf '{"sandbox":{"enabled":true,"enableWeakerNestedSandbox":true,"autoAllowBashIfSandboxed":true,"excludedCommands":["git *"],"network":{%s}}}\n' "${net}" > "${CLAUDE_PROJECT_DIR:-.}/.claude/settings.local.json"
 fi
 echo "activated ${VARIANT} $(date -u +%T)" >> "${log}"
 exit 0
