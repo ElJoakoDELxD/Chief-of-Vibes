@@ -1,4 +1,5 @@
 {
+  "autoMemoryDirectory": "/home/user/Chief-of-Vibes/spike-mem",
   "hooks": {
     "SessionStart": [
       {
