@@ -53,7 +53,7 @@ The rebuild uses what holds, and it builds the rest as small, benched parts.
 |---|---|---|
 | D1 | **Platform:** stay on Claude Code with a Claude subscription. Borrow the *shapes* of Managed Agents. Do not migrate to the Managed Agents API | Principal, 22-09-2026 |
 | D2 | **Audience:** persistent memory for a person who does not program. Everything that serves only template maintainers leaves the user's path | Principal, 22-09-2026 |
-| D3 | **An agent is one file: `.claude/agents/<name>.md`.** The body is its personality. `effects:` in the frontmatter are its permissions (D11). `skills:` are its abilities. This replaces `posts/`, `functions/` and `privileges/` | Principal, 22–23-09-2026 |
+| D3 | **An agent is one file: `.claude/agents/<name>.md`.** The body is its personality. `effects:` in the frontmatter are its permissions (D11). `skills:` are its abilities. This replaces `posts/`, `functions/` and `privileges/` | Principal, 22–23-09-2026. Superseded in part by D37: the file is `agent.md` on the agent's own branch |
 | D4 | **Copies:** exactly one is known, the Principal's. 2.0.0 may break compatibility. That one copy gets a one-time migration (§6.2) | Principal, 22-09-2026 |
 | D5 | **The custodian's memory lives on its own branch, `custodian`, and never on the canon's `main`.** Its looser work happens in disposable branches that are deleted after merge. A *branch* is a moving label: every new commit advances it. A *tag* is a fixed label: it marks one commit forever. History that must stay is archived as a tag | Principal, 23-09-2026, chosen over keeping the custodian's memory in issues and pull requests |
 | D6 | **Language:** English for the template and this spec | Principal, 22-09-2026 |
@@ -87,6 +87,7 @@ The rebuild uses what holds, and it builds the rest as small, benched parts.
 | D34 | **A lone agent is attached without asking.** When only one agent exists, the chat attaches its branch as `.agent/` and says which agent it attached | Principal, 28-09-2026. Resolves N3 |
 | D35 | **One custodian, whose reach comes from where it lives.** A single role file lives in every `main`, and it serves the `main` it stands on: the canon's for the canon, a copy's for that copy. That is innate to the role, not a per-place rule, and only the name differs (D14). On `main` alone it has no memory and no projects, so it can only orient: that is the mini-custodian, by circumstance and not by a second file. With its own branch attached, it has memory and becomes the full custodian. It replaces the separate mini-custodian file and `maintainer.md` | Principal, 28-09-2026. Resolves N2 |
 | D36 | **Layer 3 is a mode, built only when needed.** The ladder is: the canon's `main`, then a copy's `main`, then each user's own `main` (their fork or branch), then that user's agents. One person needs no third step. It is switched on and built when a second person works in the same repository, and 2.0 only describes it | Principal, 28-09-2026. Resolves N7 |
+| D37 | **The agent's file lives on its own branch, and changes only by pull request.** It never lives in `main`, which it would contaminate. Three layers hold it on any GitHub plan: a hook blocks the agent's tools from writing it; the sandbox closes the Bash route; and a CI check on every push to an agent branch fails, reverts and reports when the file changed outside an approved pull request. Protection that depends on a paid plan is not part of the design | Principal, 28-09-2026 |
 
 **Why D5 and D7 fit together.** GitHub's *Use this template* copies only the default branch. The canon's custodian therefore keeps its filled memory on a `custodian` branch, which no copy ever receives. The executor verifies this behaviour before relying on it (spike S2).
 
@@ -196,7 +197,7 @@ The `custodian` branch is `main` plus a filled `memory/custodian/`. It merges `m
 
 ### 5.2 Tree — a copy's `main`
 
-It is the same as the canon's `main`, plus one entry for each agent that the person has: `.claude/agents/<name>.md`, created by `onboard`. A copy's `main` is not home (D18): the agent's own memory and output never sit under it. Each agent's `memory/` and `projects/` live on that agent's own branch instead (D20, D27), seeded from `memory/_example/` and attached as `.agent/` when a chat adopts it.
+It is the same as the canon's `main`. A copy's `main` is not home (D18), and nothing of an agent sits in it: not its file (D37), not its memory, not its output. Each agent's branch holds `agent.md`, `memory/` and `projects/` (D20, D27, D37), seeded from the forms and attached as `.agent/` when a chat adopts it.
 
 A copy may also hold `pending/`, one file per proposal still open with the canon (D21).
 
@@ -217,9 +218,9 @@ effects:
 ```
 
 - **The body is the personality.** It holds nothing that `CLAUDE.md` already says.
-- **Effects are permissions** (D11). The hook `agent-permissions.sh` enforces `writes:` for `Write`, `Edit`, `MultiEdit` and `NotebookEdit`. It blocks any path that no effect declares, and it always blocks the agent's own file. S6 decides how Bash is held. `pushes:` needs its own rail, which the executor reads from `lib/command.sh` as `guard-main.sh` does, with a bench.
-- **Adoption** (D13). A SessionStart hook lists the agents that exist. The chat asks which one, or creates one through `onboard`; a lone agent is attached without asking, and the chat says which one it attached (D34). It attaches that agent's branch as the worktree `.agent/` (D20), reads the agent file and `.agent/memory/MEMORY.md`, and runs `header --declare agent=<name>`. A second declaration to a different agent is refused: *one chat, one agent; open a new chat*.
-- The agent's branch holds `memory/` — `MEMORY.md` (the index, at most 200 lines, curated by the agent), `backlog.md`, `journal/` (one file per day), and `handoff/` — and, beside it, `projects/` for the agent's output (D27).
+- **Effects are permissions** (D11). The hook `agent-permissions.sh` enforces `writes:` for `Write`, `Edit`, `MultiEdit` and `NotebookEdit`. It blocks any path that no effect declares, and it always blocks the agent's own file, `.agent/agent.md`. The sandbox holds Bash (S6). A CI check on every push to an agent branch fails, reverts and reports a change to `agent.md` that did not arrive by an approved pull request (D37). `pushes:` needs its own rail, which the executor reads from `lib/command.sh` as `guard-main.sh` does, with a bench.
+- **Adoption** (D13). A SessionStart hook lists the agents that exist. The chat asks which one, or creates one through `onboard`; a lone agent is attached without asking, and the chat says which one it attached (D34). It attaches that agent's branch as the worktree `.agent/` (D20), reads `.agent/agent.md` and `.agent/memory/MEMORY.md`, and runs `header --declare agent=<name>`. A second declaration to a different agent is refused: *one chat, one agent; open a new chat*.
+- The agent's branch holds `agent.md` (D37), `memory/` — `MEMORY.md` (the index, at most 200 lines, curated by the agent), `backlog.md`, `journal/` (one file per day), and `handoff/` — and, beside it, `projects/` for the agent's output (D27).
 - **The limit of D11 today:** a hook reads tool calls, so a file written through Bash does not pass through it. Until S6 passes, `README.md` states this in one line.
 
 The S5 implementation is the starting point: `.claude/hooks/agent-permissions.sh` and `tools/bin/header` at `spike/s5-effects`. The executor ports them and adds a bench that pins every result in Appendix A.
@@ -275,7 +276,7 @@ Keep a hook only if S3 shows that the failure it prevents still happens, and onl
 
 | Skill | Fate |
 |---|---|
-| `onboard` | **Keep, rewritten.** It creates the copy (with *Use this template* as the fallback), or a further agent in an existing copy. It asks ≤ 4 questions, writes the agent file on `main`, and creates that agent's own branch with `memory/` and `projects/` from the forms, with the default effects (D20, D27). Then it commits and pushes |
+| `onboard` | **Keep, rewritten.** It creates the copy (with *Use this template* as the fallback), or a further agent in an existing copy. It asks ≤ 4 questions, and creates that agent's own branch with `agent.md` (default effects), `memory/` and `projects/` from the forms (D20, D27, D37). Then it commits and pushes. Every later change to `agent.md` goes by pull request |
 | `handoff` | **Keep.** It absorbs session-end journaling |
 | `update` | **New.** It replaces `tools/sync.sh`, `propagate/references/sync.md` and the drift check. It reports whether the copy is behind the canon, and why, and it opens a pull request that touches only template paths. It folds in the fix from PR #102: a shallow clone must not skip the ancestry check. It never touches an agent branch (D20) |
 | `5s` | **Keep.** It is the custodian's procedure for D10, and its `memory` target also serves every agent. It is rewritten to the new tree |
@@ -326,7 +327,7 @@ No line is cut to reach a number, and no line is kept to protect one.
 
 This runs as a separate, later task, with its own spec:
 
-- Convert `memory/state.md` into `.claude/agents/<name>.md`, with the default effects, and put it on the copy's `main`.
+- Convert `memory/state.md` into `agent.md`, with the default effects, on the agent's own branch (D37).
 - Create that agent's own branch, holding only its migrated `memory/` and `projects/` (D20, D27).
 - Apply the 2.0.0 template through the `update` skill.
 - Archive the old agent branch as a tag.
@@ -360,7 +361,7 @@ The grader scores each criterion independently, as pass or fail, with evidence. 
 | R9 | `CHANGELOG.md` 2.0.0 names every removed item with a one-line reason | Cross-check against §5.8 |
 | R10 | Every rescued rule lives in exactly one place | Grep each rule's key phrase |
 | R11 | The new public repository carries no history before 2.0.0: only `main` and `custodian` exist, and no branch or pull request predates it (D16) | `git ls-remote` |
-| R12 | On a throwaway copy, a web chat that receives only "hi" ends with an agent file on `main` and a new agent branch holding `memory/` and `projects/` (D20, D27), created after ≤ 4 questions, committed and pushed. A second chat adopts that agent, attaches its branch as `.agent/`, and reports its backlog. A third chat creates a second agent. A fourth chat is offered both | **Performed by the Principal.** The executor prepares the steps. The grader cannot pass this criterion alone |
+| R12 | On a throwaway copy, a web chat that receives only "hi" ends with a new agent branch holding `agent.md`, `memory/` and `projects/`, and nothing new on `main` (D20, D27, D37), created after ≤ 4 questions, committed and pushed. A second chat adopts that agent, attaches its branch as `.agent/`, and reports its backlog. A third chat creates a second agent. A fourth chat is offered both | **Performed by the Principal.** The executor prepares the steps. The grader cannot pass this criterion alone |
 | R13 | `CLAUDE.md` opens with the north star: the text in `system/1-purpose.md` §1 at the archive tag, less only the pointer "(§7)" that D27 cuts | `diff` |
 | R14 | `custodian.md` carries D10 word for word, and each means in §5.4 exists: a named CI step, a checklist line, or a file | Parse the file, then cross-check `ci.yml` and the tree |
 | R15 | No fact lives in two public files. The `redundancy.py` report over all public prose is attached, and every pair above the threshold has a recorded verdict | PR description |
