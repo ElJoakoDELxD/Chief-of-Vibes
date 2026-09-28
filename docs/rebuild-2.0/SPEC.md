@@ -53,7 +53,7 @@ The rebuild uses what holds, and it builds the rest as small, benched parts.
 |---|---|---|
 | D1 | **Platform:** stay on Claude Code with a Claude subscription. Borrow the *shapes* of Managed Agents. Do not migrate to the Managed Agents API | Principal, 22-09-2026 |
 | D2 | **Audience:** persistent memory for a person who does not program. Everything that serves only template maintainers leaves the user's path | Principal, 22-09-2026 |
-| D3 | **An agent is one file, `agent.md`, on the agent's own branch** — never in `main`, which it would contaminate. The body is its personality. `effects:` in the frontmatter are its permissions (D11). `skills:` are its abilities. This replaces `posts/`, `functions/` and `privileges/`. Three layers protect the file on any GitHub plan: a hook blocks the agent's tools from writing it; the sandbox closes the Bash route; and a CI check on every push to an agent branch fails, reverts and reports a change that did not arrive by an approved pull request. Protection that depends on a paid plan is not part of the design | Principal, 22–23-09-2026 and 28-09-2026. Absorbs D37 (the file's location moved here from `.claude/agents/<name>.md`, plus the three protection layers) |
+| D3 | **An agent is one file, `agent.md`, on the agent's own branch** — never in `main`, which it would contaminate. The body is its personality. `effects:` in the frontmatter are its permissions (D11). `skills:` are its abilities. This replaces `posts/`, `functions/` and `privileges/`. One layer protects the file: the permission hook blocks the agent from writing it. Changes to it arrive by pull request | Principal, 22–23-09-2026 and 28-09-2026. Absorbs D37 (the file's location moved here from `.claude/agents/<name>.md`, reduced to one protection layer on 28-09-2026) |
 | D4 | **Copies:** exactly one is known, the Principal's. 2.0.0 may break compatibility. That one copy gets a one-time migration (§6.2) | Principal, 22-09-2026 |
 | D5 | **The custodian's memory lives on its own branch, `custodian`, and never on the canon's `main`.** Its looser work happens in disposable branches that are deleted after merge. A *branch* is a moving label: every new commit advances it. A *tag* is a fixed label: it marks one commit forever. History that must stay is archived as a tag | Principal, 23-09-2026, chosen over keeping the custodian's memory in issues and pull requests |
 | D6 | **Language:** English for the template and this spec | Principal, 22-09-2026 |
@@ -88,6 +88,7 @@ The rebuild uses what holds, and it builds the rest as small, benched parts.
 | D42 | **Where each memory lives.** On the agent's branch: the chat memory in `chats/<chat-id>.md`, one file per chat, so two chats of one agent never collide there; the global memory in `memory/`, the one place they can, where the agent brings in the latest global memory before it writes | Principal, 28-09-2026 |
 | D43 | **An improvement goes as far as it serves.** The agent improves itself (its global memory). A fix that changes the system does not stay in memory: it goes to the copy's `main` by pull request, which the person approves. A fix that would serve every copy is also suggested to the canon, by the proposal cycle of D21. The chat memory records which of the three it was and where it went | Principal, 28-09-2026 |
 | D44 | **A chat never reads another chat's memory.** The agent is guided only by the global memory: what is there is known, and what is not there is not. A hook enforces it: the agent's tools may read `chats/<this-chat-id>.md` and no other file under `chats/`. Bringing in the latest global memory before writing (D42) reads only `memory/` | Principal, 28-09-2026 |
+| D46 | **The simplest version wins** (the simplify loop, `SIMPLIFY.md`). Four answers from its first pass: the agent's file has one protection layer, the permission hook; a tool that is not general lives on the agent's branch, never in `main`, so the sandbox's tools sit in `.agent/tools/sandbox/` and the sandbox turns on when an agent is attached; `memory/` keeps `MEMORY.md` and `backlog.md`, while `journal/` and `handoff/` dissolve into the chat memory; self-improvement is one line in `CLAUDE.md`, and no skill carries it | Principal, 28-09-2026 |
 
 **Why D5 and D7 fit together.** GitHub's *Use this template* copies only the default branch. The canon's custodian therefore keeps its filled memory on a `custodian` branch, which no copy ever receives. The executor verifies this behaviour before relying on it (spike S2).
 
@@ -178,11 +179,11 @@ LICENSE
   hooks/                       only hooks that pass S3, each with a bench
   skills/onboard/  handoff/  update/  5s/
 memory/
-  _example/                    the empty form: MEMORY.md, chats/, projects/ <!-- Q: do backlog.md, journal/, handoff/ still belong here, or fold into chats/<chat-id>.md? D40, D42 do not say (see §5.3) -->
+  _example/                    the empty form: memory/ (MEMORY.md, backlog.md), chats/, projects/
 knowledge/                     read-only reference, shared with every copy
 tools/bin/                     clock, header
 tests/                         benches
-.github/workflows/ci.yml       every bench, the size ratchet, the version check, and the D3 agent-file guard <!-- Q: a push workflow runs from the pushed branch's own files, and an agent branch carries none (D20), so this guard cannot run "on every push to an agent branch" as D3 says; a scheduled run from main can -->
+.github/workflows/ci.yml       every bench, the size ratchet, the version check
 .github/workflows/release.yml
 ```
 
@@ -212,17 +213,17 @@ effects:
 ```
 
 - **The body is the personality.** It holds nothing that `CLAUDE.md` already says.
-- **Effects are permissions** (D11). The hook `agent-permissions.sh` enforces `writes:` for `Write`, `Edit`, `MultiEdit` and `NotebookEdit`. It blocks any path that no effect declares, and it always blocks the agent's own file, `.agent/agent.md`. Inside `.agent/chats/` it allows only this chat's own file, `chats/<this-chat-id>.md` (D44). The sandbox holds Bash (S6). A CI check on every push to an agent branch fails, reverts and reports a change to `agent.md` that did not arrive by an approved pull request (D3). `pushes:` needs its own rail, which the executor reads from `lib/command.sh` as `guard-main.sh` does, with a bench.
+- **Effects are permissions** (D11). The hook `agent-permissions.sh` enforces `writes:` for `Write`, `Edit`, `MultiEdit` and `NotebookEdit`. It blocks any path that no effect declares, and it always blocks the agent's own file, `.agent/agent.md`. Inside `.agent/chats/` it allows only this chat's own file, `chats/<this-chat-id>.md` (D44). The sandbox holds Bash (S6). `pushes:` needs its own rail, which the executor reads from `lib/command.sh` as `guard-main.sh` does, with a bench.
 - **Adoption** (D13). A SessionStart hook lists the agents that exist. The chat asks which one, or creates one through `onboard`; a lone agent is attached without asking, and the chat says which one it attached (D34). It attaches that agent's branch as the worktree `.agent/` (D20), reads `.agent/agent.md` and `.agent/memory/MEMORY.md`, and runs `header --declare agent=<name>`, which pairs the agent with this chat's identifier (D40) and starts `.agent/chats/<chat-id>.md` if it does not exist yet. A second declaration to a different agent is refused: *one chat, one agent; open a new chat* (D12).
 - **A restart is the same chat** (D39). After idleness, or an archive and unarchive, nothing is re-asked: the hook re-attaches `.agent/`, turns the sandbox on again (D38), and rereads the declaration from the transcript, which survives the machine — never from `/tmp`.
-- The agent's branch holds `agent.md` (D3); `memory/` — `MEMORY.md` (the index, at most 200 lines, curated by the agent), the global memory the agent brings forward before it writes (D42) <!-- Q: do backlog.md, journal/, handoff/ still exist as memory/ subparts, or fold into chats/<chat-id>.md? D40, D42 do not say -->; `chats/<chat-id>.md`, one file per chat (D42, D44); and, beside them, `projects/` for the agent's output (D27).
+- The agent's branch holds `agent.md` (D3); `memory/` — `MEMORY.md` (the index, at most 200 lines, curated by the agent), the global memory the agent brings forward before it writes (D42) and `backlog.md`; `journal/` and `handoff/` are gone, dissolved into the chat memory; `chats/<chat-id>.md`, one file per chat (D42, D44); and, beside them, `projects/` for the agent's output (D27).
 - **Bash is held by the sandbox** (D38). Where the sandbox cannot run (no Linux x86_64, or no writable `/usr/local/bin`), a Bash write does not pass through the hook, and `README.md` says so in one line.
 
 The S5 implementation is the starting point: `.claude/hooks/agent-permissions.sh` and `tools/bin/header` at `spike/s5-effects`. The executor ports them and adds a bench that pins every result in Appendix A.
 
 ### 5.4 The custodian and its mandate (D10)
 
-`custodian.md` is the one role file on every `main`, at any layer (D7, D17), reaching only as far as where it lives. Alone on `main` it has no memory and no projects, so it can only orient: the mini-custodian, by circumstance, not a second file. With its own branch attached, it has memory and is the full custodian: curating the template on the canon, or that copy's `main`, applying updates and running 5S. Only the custodian changes the canon, from its own branch, by pull request the Principal approves (D7). The same shape guards every agent's own file: a CI check on every push to an agent branch fails, reverts and reports a change to `agent.md` that did not arrive by an approved pull request (D3). A model acts as custodian only when the cited list qualifies it by a published evaluation, and an unlisted model that passes the intelligence test may only suggest, never edit the canon or open a pull request (D19). Outside pull requests are reviewed as diffs, and no session opens on a contributor's branch (D24). This replaces the separate mini-custodian file and `maintainer.md`: one role, one name, one file (D17).
+`custodian.md` is the one role file on every `main`, at any layer (D7, D17), reaching only as far as where it lives. Alone on `main` it has no memory and no projects, so it can only orient: the mini-custodian, by circumstance, not a second file. With its own branch attached, it has memory and is the full custodian: curating the template on the canon, or that copy's `main`, applying updates and running 5S. Only the custodian changes the canon, from its own branch, by pull request the Principal approves (D7). A model acts as custodian only when the cited list qualifies it by a published evaluation, and an unlisted model that passes the intelligence test may only suggest, never edit the canon or open a pull request (D19). Outside pull requests are reviewed as diffs, and no session opens on a contributor's branch (D24). This replaces the separate mini-custodian file and `maintainer.md`: one role, one name, one file (D17).
 
 `custodian.md` carries D10 word for word, and the means below:
 
@@ -263,12 +264,10 @@ Keep a hook only if S3 shows that the failure it prevents still happens, and onl
 | `path.sh` | **Keep.** It exposes `clock` and `header`. Web-verified on 23-09-2026 |
 | `anchor.sh` | **Reduce**, but it carries the header's date, time and branch again (D23, D25), plus the session context that remains true in 2.0: the list of agents for adoption (D13), and the update check (§5.7). On a restart it re-attaches `.agent/` and rereads the declaration from the transcript, without asking again (D39) |
 | `agent-permissions.sh` | **Add**, ported from S5, with a bench (§5.3) |
-| `tools/sandbox/activate.sh` | **Keep, web-verified 28-09-2026, benched** (`tools/test-sandbox.sh`). Links `tools/sandbox/linux-x86_64/` into `/usr/local/bin` and writes `.claude/settings.local.json`: sandbox on, nested mode, auto-allow, `git *` excluded, a domain allowlist, no fixed proxy port (D38). Runs again on every restart, so the sandbox comes back with it (D39) <!-- Q: D38's title puts the tools on the agent's branch, but this hook must turn the sandbox on before adoption can attach .agent/ when more than one agent exists (§5.3); §2 does not say where it reads the tools from in that case --> |
+| `tools/sandbox/activate.sh` | **Keep, web-verified 28-09-2026, benched** (`tools/test-sandbox.sh`). Links `tools/sandbox/linux-x86_64/` into `/usr/local/bin` and writes `.claude/settings.local.json`: sandbox on, nested mode, auto-allow, `git *` excluded, a domain allowlist, no fixed proxy port (D38). Runs again on every restart, so the sandbox comes back with it (D39) It runs when an agent's branch is attached, at adoption and on every restart, and reads the tools from `.agent/tools/sandbox/`: a tool that is not general lives on the agent's branch, never in `main`. Until an agent is attached, the chat runs without the sandbox |
 | `guard-install.sh` | **Keep** if S3 confirms it. The failure is environmental (installs vanish in cloud sessions), not a model weakness |
 | `guard-identity.sh` | Keep it only if the release that introduced it (`git log -S`) names a real incident, and S3 still reproduces the failure |
 | `guard-main.sh` | **Keep.** Every `main`, canon or copy, is frozen and read-only (D17); a copy's `main` is not home (D7) |
-
-A CI check, not a hook, closes the last layer of D3: on every push to an agent branch it fails, reverts and reports a change to `agent.md` that did not arrive by an approved pull request.
 
 ### 5.7 Skills, CLAUDE.md and permissions
 
@@ -283,7 +282,7 @@ A CI check, not a hook, closes the last layer of D3: on every push to an agent b
 
 Each kept `SKILL.md` has valid `name` and `description` frontmatter.
 
-**Proposed: D41's self-improvement is not a skill.** The agent evaluating and researching before it applies a fix or a correction is a rule for every agent, so it is a line in `CLAUDE.md`, not something invoked. D43's escalation reuses what already exists — a pull request to the copy's `main`, and the D21 proposal cycle into `pending/` (§5.2) — so `propagate`'s removal (§5.8) still holds <!-- Q: does anything of propagate's own job — recognising, mid-work, that a finding is bigger than this copy — still need a dedicated skill, or is a CLAUDE.md line enough? D41, D43 do not say -->.
+**D41's self-improvement is not a skill.** The agent evaluating and researching before it applies a fix or a correction is a rule for every agent, so it is a line in `CLAUDE.md`, not something invoked. D43's escalation reuses what already exists — a pull request to the copy's `main`, and the D21 proposal cycle into `pending/` (§5.2) — so `propagate`'s removal (§5.8) still holds.
 
 `CLAUDE.md` holds the north star, then only what applies to every agent in every session. First come the hard limits from today's `SYSTEM.md` §4: no money, no signatures, no promises to third parties, and the agent drafts while the Principal publishes. Then come the rescued rules that pass the removal test, and the one line on how a reply opens (`clock | header`). Two rules learned under the sandbox join them (D38): git is always called alone — never chained, never `git -C`, never beside a parallel sandboxed call; and the sandbox's network is fixed when Claude Code launches. Where a deny rule in `.claude/settings.json` can enforce a limit, it does, and the prose line goes.
 
@@ -371,7 +370,6 @@ The grader scores each criterion independently, as pass or fail, with evidence. 
 | R19 | Exactly one custodian role file exists per `main`, canon or copy: no `maintainer.md`, no separate mini-custodian file (D17) | `ls .claude/agents/` on each `main` |
 | R20 | `guard-main.sh` exists and its bench passes, on the canon and on a copy (D17) | Run the bench; check the file |
 | R21 | A copy's `pending/` entry (D21) is created on a proposal, and removed with the reverse patch applied once the canon accepts it | Run the cycle once end to end |
-| R22 | A push to an agent branch that changes `agent.md` outside an approved pull request is reverted and reported by CI (D3) | Push such a change on a test agent branch; read the CI run's outcome and its reverting commit |
 | R23 | The sandbox bench passes, and on the web: a write outside the workspace is refused, `api.anthropic.com` answers, a non-allowlisted host is refused, and git commits and pushes (D38) | Run `tools/test-sandbox.sh`; then attempt each of the four on a live web session |
 | R24 | A restarted chat — idle timeout, or archive and unarchive — re-attaches its agent's `.agent/` worktree and turns the sandbox back on, without asking (D39) | Archive and unarchive a mid-task chat; the next reply's header already names the agent and branch, with no adoption question |
 | R25 | A chat's tools can read only `chats/<this-chat-id>.md` under `chats/`; reading another chat's file is blocked (D44) | From a chat, attempt to read a different chat's `chats/<other-id>.md`; the hook refuses it and names the file |
@@ -383,7 +381,7 @@ The grader scores each criterion independently, as pass or fail, with evidence. 
 These go into `CONTRIBUTING.md`, in at most 10 lines:
 
 1. **No new rule without a failure a user saw.** Name the failure in the PR.
-2. **A rule is a hook with a bench, a declared effect, a deny rule, a CI check, or at most one line in `CLAUDE.md`.** Prose policies are not accepted.
+2. **A rule is a hook with a bench, a declared effect, a deny rule, or at most one line in `CLAUDE.md`.** Prose policies are not accepted.
 3. **One open template PR at a time.** Semver: a patch for fixes, a minor for features, a major for breaks.
 4. **Re-test assumptions when the model changes.** Rerun S3 for every hook, and apply the removal test to `CLAUDE.md`.
 5. **Sizes only ratchet down.** A PR that raises a CI ceiling states why in its description, and the Principal approves it.
