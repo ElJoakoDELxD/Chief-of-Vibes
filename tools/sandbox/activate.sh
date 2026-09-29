@@ -24,6 +24,11 @@ ln -sf "${here}/bwrap" "${bin}/bwrap"
 ln -sf "${here}/socat" "${bin}/socat"
 
 net='"allowedDomains":["api.anthropic.com","github.com","*.github.com","raw.githubusercontent.com"]'
-printf '{"sandbox":{"enabled":true,"enableWeakerNestedSandbox":true,"autoAllowBashIfSandboxed":true,"excludedCommands":["git *"],"network":{%s}}}\n' "${net}" \
+# TEMPORARY, 2.0.0 build only: the Principal authorised on 29-09-2026 writes
+# to the project's parent directory, so the session can clone the new
+# repository beside this one. It takes effect at the next session start, never
+# mid-session. Remove it once 2.0.0 is built (SPEC D51).
+parent="$(dirname "${CLAUDE_PROJECT_DIR:-$PWD}")"
+printf '{"sandbox":{"enabled":true,"enableWeakerNestedSandbox":true,"autoAllowBashIfSandboxed":true,"excludedCommands":["git *"],"filesystem":{"allowWrite":["%s"]},"network":{%s}}}\n' "${parent}" "${net}" \
   > "${CLAUDE_PROJECT_DIR:-.}/.claude/settings.local.json"
 exit 0

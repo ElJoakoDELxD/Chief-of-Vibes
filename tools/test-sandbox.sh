@@ -19,6 +19,7 @@ check "settings are JSON" 'python3 -m json.tool "${s}" >/dev/null'
 check "sandbox on, nested, git out" 'python3 -c "import json,sys; x=json.load(open(sys.argv[1]))[\"sandbox\"]; assert x[\"enabled\"] and x[\"enableWeakerNestedSandbox\"] and x[\"excludedCommands\"]==[\"git *\"]" "${s}"'
 check "no fixed proxy port (it changes between restarts)" '! grep -q httpProxyPort "${s}"'
 check "linked bwrap runs" '"${tmp}/bin/bwrap" --version >/dev/null'
+check "2.0.0 build only: the project's parent is writable" 'grep -q "\"allowWrite\":\[\"${tmp}\"\]" "${s}"'
 check "socat forces IPv4" 'grep -q "socat.bin\" -4" tools/sandbox/linux-x86_64/socat'
 
 mkdir -p "${tmp}/ro" "${tmp}/p2/.claude"; chmod a-w "${tmp}/ro"
