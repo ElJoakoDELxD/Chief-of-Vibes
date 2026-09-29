@@ -1,7 +1,7 @@
 # Chief of Vibes 2.0 — Rebuild Specification
 
-**Status:** revision 6 (28-09-2026), simplified 28-09-2026: §2's superseded and refining notes are merged into the row that governs, so each decision is stated once. It reconciles §4–§9 and §10 against §2, and the questions in §10 are all resolved. It is ready for the Principal's approval once the open points marked in the text are answered. The build needs no change to the environment (§5.0, E1).
-**Executor:** one fresh Claude Code session on branch `rebuild/2.0`, created from `claude/repository-organization-dkragp`, with this file as its only brief. That branch already carries the clock (§5.5) and an anchor hook that measures the time (D23, D25).
+**Status:** approved by the Principal on 29-09-2026, at revision 6 with the simplify passes and D46–D51. The build brief is `BUILD.md`, beside this file.
+**Executor:** builds 2.0.0 in the new, empty repository `Stewie` (D16, D47, D48), from this file and `BUILD.md` alone.
 **Grader:** a separate session or subagent that did not edit anything. It reads this file and the diff, nothing else.
 
 This document has the shape Anthropic uses for *outcomes* in Managed Agents: a description of the end state, then a rubric of gradeable criteria. The executor iterates until the grader returns every criterion as passed, for a maximum of **3 grading rounds**. After that, it stops and reports to the Principal.
